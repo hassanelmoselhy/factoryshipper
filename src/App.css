@@ -27,3 +27,63 @@ max-width: 83.333333%;
 flex: 0 0 16.666667%;
 max-width: 16.666667%;
 }
+.select-role-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  font-family: 'Cairo', sans-serif;
+}
+
+.select-role-container h1 {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.role-buttons {
+  display: flex;
+  gap: 30px;
+}
+
+.role-btn {
+  text-decoration: none;
+  padding: 15px 40px;
+  font-size: 1.2rem;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.sender-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.sender-btn:hover {
+  background-color: #0056b3;
+}
+
+.hanger-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.hanger-btn:hover {
+  background-color: #1e7e34;
+}
+
+@media (max-width: 768px) {
+  .role-buttons {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .role-btn {
+    width: 200px;
+    text-align: center;
+  }
+}
