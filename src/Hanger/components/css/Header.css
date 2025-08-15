@@ -1,0 +1,71 @@
+.header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 1rem 2rem;
+background-color: #ffffff;
+border-bottom: 1px solid #e9ecef;
+}
+
+.header-main {
+display: flex;
+align-items: center;
+}
+
+.header-icon {
+font-size: 1.5rem;
+color: #333;
+}
+
+.header-title {
+margin: 0 15px;
+font-size: 1.1rem;
+font-weight: 500;
+color: #555;
+}
+
+.new-request-btn {
+background-color: #0d6efd;
+color: white;
+border: none;
+padding: 10px 20px;
+border-radius: 8px;
+cursor: pointer;
+font-size: 1rem;
+font-weight: 500;
+display: flex;
+align-items: center;
+}
+
+.user-profile {
+display: flex;
+align-items: center;
+}
+
+.user-info {
+text-align: left;
+margin-left: 15px;
+}
+
+.user-name {
+display: block;
+font-weight: 700;
+}
+
+.user-role {
+font-size: 0.85rem;
+color: #777;
+}
+
+.user-avatar {
+width: 40px;
+height: 40px;
+border-radius: 50%;
+background-color: #0d6efd;
+color: white;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 1.2rem;
+font-weight: 700;
+}

@@ -1,0 +1,19 @@
+.shipment-item {
+background-color: #ffffff;
+border: 1px solid #e9ecef;
+border-radius: 8px;
+padding: 1rem 1.5rem;
+display: inline-block;
+justify-content: space-between;
+align-items: center;
+}
+
+.shipment-id {
+font-weight: 700;
+color: #333;
+}
+
+.shipment-details {
+color: #666;
+}
+

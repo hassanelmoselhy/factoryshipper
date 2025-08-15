@@ -1,0 +1,29 @@
+.app-container {
+display: flex;
+min-height: 100vh;
+direction: rtl; 
+}
+
+.main-layout {
+flex: 1;
+display: flex;
+flex-direction: column;
+}
+
+.content-area {
+padding: 2rem;
+flex-grow: 1;
+background-color: #f8f9fa;
+}
+
+.sender-layout .row {
+display: flex;
+}
+.sender-layout .col-10 {
+flex: 0 0 83.333333%;
+max-width: 83.333333%;
+}
+.sender-layout .col-2 {
+flex: 0 0 16.666667%;
+max-width: 16.666667%;
+}
