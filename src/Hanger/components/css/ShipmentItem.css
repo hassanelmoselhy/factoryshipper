@@ -1,10 +1,7 @@
 .shipment-item {
-background-color: #ffffff;
-border: 1px solid #e9ecef;
-border-radius: 8px;
-padding: 1rem 1.5rem;
-display: inline-block;
-justify-content: space-between;
+display: flex;
+flex-direction: column;
+padding: 10px;
 align-items: center;
 }
 

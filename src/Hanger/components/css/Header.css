@@ -2,9 +2,15 @@
 display: flex;
 justify-content: space-between;
 align-items: center;
-padding: 1rem 2rem;
-background-color: #ffffff;
-border-bottom: 1px solid #e9ecef;
+background-color: #fff;
+padding: 10px 20px;
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+direction: rtl;
+position: relative;
+z-index: 1000;
+width: 100%;
+margin: 0; 
+flex-wrap: wrap; 
 }
 
 .header-main {

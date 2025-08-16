@@ -8,8 +8,8 @@ const ShipmentUpdate = () => {
   return (
     <div className="shipment-update-container">
       <div className="page-header">
+      <FaSyncAlt className="refresh-icon" />
         <h2>تحديث حالة الشحنة</h2>
-        <FaSyncAlt className="refresh-icon" />
       </div>
 
       <div className="stats-grid">
@@ -40,16 +40,17 @@ const ShipmentUpdate = () => {
         </div>
         
         <div className='shipment-status'>
+            <div className="shipments-list">
+        <ShipmentItem id="SP001234" details="محمد أحمد - الرياض" />
+      </div>
         <div className="filter-tabs">
           <button className="filter-btn active">قيد التخزين</button>
           <button className="filter-btn">تعذر التوصيل</button>
           <button className="filter-btn">مرتجع</button>
+  
         </div>
       </div>
       
-      <div className="shipments-list">
-        <ShipmentItem id="SP001234" details="محمد أحمد - الرياض" />
-      </div>
 
         </div>
 

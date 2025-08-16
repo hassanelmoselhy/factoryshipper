@@ -1,6 +1,6 @@
 import React from 'react';
 import './css/Sidebar.css'; 
-import { FaCube, FaExpand, FaSyncAlt, FaUsers, FaCalendarAlt, FaClock, FaQuestionCircle } from 'react-icons/fa';
+import { FaCube, FaExpand, FaSyncAlt, FaUsers, FaCalendarAlt, FaClock } from 'react-icons/fa';
 
 const Sidebar = () => {
 const menuItems = [
@@ -25,9 +25,6 @@ return (
             ))}
         </ul>
         </nav>
-    </div>
-    <div className="sidebar-footer">
-        <FaQuestionCircle />
     </div>
     </aside>
 );

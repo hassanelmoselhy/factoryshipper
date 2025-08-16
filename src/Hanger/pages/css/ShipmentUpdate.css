@@ -1,13 +1,16 @@
 .shipment-update-container {
   background-color: white;
-  padding: 2rem;
+  padding: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  direction: rtl;
+  font-family: 'Cairo', sans-serif;
+  margin-right: 15rem;
 }
 
 .page-header {
   display: flex;
-  justify-content: space-between;
+  gap: 10px;
   align-items: center;
   margin-bottom: 2rem;
 }
@@ -37,14 +40,16 @@
 
 .search-bar {
   display: flex;
+  gap: 10px;
   margin-bottom: 1.5rem;
 }
 
 .search-bar input {
+  background-color: #e4ebf1;
   flex-grow: 1;
   padding: 10px 15px;
-  border: 1px solid #ced4da;
-  border-radius: 0 8px 8px 0;
+  border-radius: 8px;
+  border: none;
   font-size: 1rem;
 }
 
@@ -57,12 +62,13 @@
 .search-btn {
   padding: 10px 20px;
   border: 1px solid #ced4da;
-  border-right: none;
   background-color: #f8f9fa;
-  border-radius: 8px 0 0 8px;
+  border-radius: 8px;
   cursor: pointer;
 }
-
+.search-btn:hover {
+    background-color: #ffff;
+}
 .filter-tabs {
   display: flex;
   gap: 10px;
@@ -72,7 +78,6 @@
   padding: 8px 16px;
   border: 1px solid #ced4da;
   background-color: #ffffff;
-  border-radius: 20px;
   cursor: pointer;
   font-size: 0.9rem;
   transition: all 0.2s;
@@ -84,12 +89,11 @@
   color: #fd7e14;
 }
 
-.shipments-list {
-  display: inline-block;
-}
-
 .shipment-status{
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
+  border: 1px solid #ced4da; 
+  border-radius: 10px;
+  padding: 10px;
 }
