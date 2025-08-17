@@ -11,6 +11,8 @@ import Login from './Sender/auth/pages/Login';
 import Sidebar from './Hanger/components/Sidebar';
 import Header from './Hanger/components/Header';
 import ShipmentUpdate from './Hanger/pages/ShipmentUpdate';
+import HangerHome from './Hanger/pages/Home';
+
 import './App.css';
 
 const SelectRole = () => {
@@ -54,6 +56,7 @@ const HangerLayout = () => {
   );
 };
 
+
 const App = () => {
   return (
     <Router>
@@ -71,8 +74,10 @@ const App = () => {
         </Route>
 
         <Route path="/hanger" element={<HangerLayout />}>
-          <Route index element={<ShipmentUpdate />} />
-        </Route>
+  <Route index element={<ShipmentUpdate />} />
+  <Route path="home" element={<HangerHome />} /> 
+</Route>
+
       </Routes>
     </Router>
   );
