@@ -7,7 +7,7 @@ const Sidebar = () => {
   const menuItems = [
     { icon: <FaCube />, name: 'الرئيسي', path: '/hanger/home' },
     { icon: <FaExpand />, name: 'مسح وتسجيل الطرود', path: '/hanger/scan' },
-    { icon: <FaSyncAlt />, name: 'تحديث حالة الشحنة', path: '/hanger' },
+    { icon: <FaSyncAlt />, name: 'تحديث حالة الشحنة', path: '/hanger/update' },
     { icon: <FaUsers />, name: 'إدارة الموظفين', path: '/hanger/employees' },
     { icon: <FaCalendarAlt />, name: 'جدولة التوصيل', path: '/hanger/schedule' },
     { icon: <FaClock />, name: 'الحضور والانصراف', path: '/hanger/attendance' },

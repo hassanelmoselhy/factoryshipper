@@ -12,12 +12,13 @@ import Sidebar from './Hanger/components/Sidebar';
 import Header from './Hanger/components/Header';
 import ShipmentUpdate from './Hanger/pages/ShipmentUpdate';
 import HangerHome from './Hanger/pages/Home';
+import EmployeeMang from './Hanger/EmployeeMang';
 
 import './App.css';
 
 const SelectRole = () => {
   return (
-     <div className="select-role-container">
+    <div className="select-role-container">
       <h1>اختر نوع المستخدم</h1>
       <div className="role-buttons">
         <a href="/signup" className="role-btn sender-btn">🚚 Sender</a>
@@ -74,8 +75,9 @@ const App = () => {
         </Route>
 
         <Route path="/hanger" element={<HangerLayout />}>
-  <Route index element={<ShipmentUpdate />} />
-  <Route path="home" element={<HangerHome />} /> 
+  <Route index path="home" element={<HangerHome />} /> 
+  <Route path="update" element={<ShipmentUpdate />} />
+  <Route path="employees" element={<EmployeeMang />} />
 </Route>
 
       </Routes>
