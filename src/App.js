@@ -13,6 +13,7 @@ import Header from './Hanger/components/Header';
 import ShipmentUpdate from './Hanger/pages/ShipmentUpdate';
 import HangerHome from './Hanger/pages/Home';
 import EmployeeMang from './Hanger/EmployeeMang';
+import Scan from './Hanger/pages/Scan'
 
 import './App.css';
 
@@ -78,6 +79,7 @@ const App = () => {
   <Route index path="home" element={<HangerHome />} /> 
   <Route path="update" element={<ShipmentUpdate />} />
   <Route path="employees" element={<EmployeeMang />} />
+  <Route index path='scan' element={<Scan/>} />
 </Route>
 
       </Routes>
