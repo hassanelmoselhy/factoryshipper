@@ -12,6 +12,8 @@ import Sidebar from './Hanger/components/Sidebar';
 import Header from './Hanger/components/Header';
 import ShipmentUpdate from './Hanger/pages/ShipmentUpdate';
 import './App.css';
+import HangerAttendance from './Hanger/pages/HangerAttendance';
+import DeliverySchedule from './Hanger/pages/DeliverySchedule';
 
 const SelectRole = () => {
   return (
@@ -71,6 +73,8 @@ const App = () => {
         </Route>
 
         <Route path="/hanger" element={<HangerLayout />}>
+        <Route path="/hanger/Attendance" element={<HangerAttendance />} />
+        <Route path="/hanger/ScheduleDelivery" element={<DeliverySchedule />} />
           <Route index element={<ShipmentUpdate />} />
         </Route>
       </Routes>

@@ -1,0 +1,37 @@
+.stat-card{
+border-radius: 10px;
+font-size: 1.5rem;
+}
+.stat-card-green {
+  color: green;
+   border: 1px solid #B9F8CF;
+}
+.stat-card-yellow {
+  color: #D08700;
+    border: 1px solid #FFF085;
+}
+.stat-card-red {
+  color: #E7000B;
+    border: 1px solid #FFC9C9;
+}
+
+.stat-title{
+color: gray;
+font-weight: 600;
+font-size: 0.875rem;
+}
+
+.stat-count{
+font-size: 1.5rem;
+font-weight: 600;
+
+}
+.stat-count-green {
+color: green;
+}
+.stat-count-yellow {
+color: #D08700;
+}
+.stat-count-red {
+color: #E7000B;
+}
