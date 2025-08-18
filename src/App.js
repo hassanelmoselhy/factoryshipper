@@ -14,8 +14,9 @@ import ShipmentUpdate from './Hanger/pages/ShipmentUpdate';
 import HangerHome from './Hanger/pages/Home';
 import EmployeeMang from './Hanger/EmployeeMang';
 import Scan from './Hanger/pages/Scan'
-
+import HangerAttendance from './Hanger/pages/HangerAttendance'
 import './App.css';
+import DeliverySchedule from './Hanger/pages/DeliverySchedule';
 
 const SelectRole = () => {
   return (
@@ -75,11 +76,17 @@ const App = () => {
           <Route path="/wallet" element={<Wallet />} />
         </Route>
 
+        {/*Hanger*/}
         <Route path="/hanger" element={<HangerLayout />}>
   <Route index path="home" element={<HangerHome />} /> 
   <Route path="update" element={<ShipmentUpdate />} />
   <Route path="employees" element={<EmployeeMang />} />
   <Route index path='scan' element={<Scan/>} />
+
+
+  <Route path="/hanger/attendance" element={<HangerAttendance />} />
+  <Route path="/hanger/schedule" element={<DeliverySchedule />} />
+
 </Route>
 
       </Routes>

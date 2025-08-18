@@ -1,0 +1,67 @@
+.table-container {
+    width: 100%;
+    margin: 20px auto;
+  font-family: 'inter', sans-serif;
+}
+
+.table-container .attendance-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+border-radius: 16px;
+  overflow: hidden;
+}
+
+.attendance-table th,
+.attendance-table td {
+  padding: 12px 16px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+  font-size: 16px;
+  
+}
+
+
+.attendance-table thead {
+  background-color: #f8f9fa;
+  font-weight: bold;
+}
+
+
+.table-container .EmpStatus {
+
+  font-weight: bold;
+  font-size: 15px;
+  
+}
+
+ .EmpStatus.حاضر {
+  color: #28a745; 
+}
+
+ .EmpStatus.متأخر {
+  color: #d4a017; 
+}
+
+ .EmpStatus.انصرف {
+  color: #dc3545; 
+  
+}
+
+.table-container .assign-btn {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 10px 24px; 
+  background-color: #fff;
+  color: #007bff;
+  font-weight: bold;
+  font-size: 18px; 
+  min-width: 140px; 
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.table-container .assign-btn:hover {
+  background-color: #f0f8ff;
+}

@@ -1,0 +1,42 @@
+
+
+.list-group-item {
+  background: #fff;
+  border-color: #eef0f2;
+  padding: 18px;
+}
+
+.period-selected {
+  border-color: #e6eefc;
+  box-shadow: 0 8px 30px rgba(59, 130, 246, 0.05);
+}
+
+
+.status-badge {
+  padding: 6px 12px;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+
+.status-مجدول {
+  color: #2563eb;
+  border-color: #cfe0ff;
+  background: #fff;
+}
+
+.status-جاري-التنفيذ {
+  color: #16a34a;
+  border-color: #c7f0d1;
+  background: #fff;
+}
+
+.status-لم-يبدأ {
+  color: #6b7280;
+  border-color: #e6e6e6;
+  background: #fff;
+}
+
+
+
+
