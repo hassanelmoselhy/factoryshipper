@@ -1,13 +1,14 @@
-import React  , {useEffect}from "react";
+import React, { useEffect } from "react";
 import "./css/Home.css"; 
 
 const HangerHome = () => {
-      useEffect(() => {
-        document.body.classList.add('home-page');
-        return () => {
-          document.body.classList.remove('home-page');
-        };
-      }, []);
+  useEffect(() => {
+    document.body.classList.add('home-page');
+    return () => {
+      document.body.classList.remove('home-page');
+    };
+  }, []);
+
   return (
     <div className="dashboard">
       {/* القسم العلوي */}
@@ -64,10 +65,10 @@ const HangerHome = () => {
           <tbody>
             <tr>
               <td>
-                <button>✏️</button>
-                <button>🗑️</button>
-                <button>👁️</button>
-                <button>🔔</button>
+                <button className="btn btn-edit">✏️</button>
+                <button className="btn btn-delete">🗑️</button>
+                <button className="btn btn-view">👁️</button>
+                <button className="btn btn-notify">🔔</button>
               </td>
               <td>أحمد</td>
               <td><span className="status execute">قيد التنفيذ</span></td>
@@ -82,10 +83,10 @@ const HangerHome = () => {
 
             <tr>
               <td>
-                <button>✏️</button>
-                <button>🗑️</button>
-                <button>👁️</button>
-                <button>🔔</button>
+                <button className="btn btn-edit">✏️</button>
+                <button className="btn btn-delete">🗑️</button>
+                <button className="btn btn-view">👁️</button>
+                <button className="btn btn-notify">🔔</button>
               </td>
               <td>محمد</td>
               <td><span className="status receive">باستلام</span></td>

@@ -165,7 +165,8 @@ table tr:hover {
   color: #155724;
 }
 
-button {
+/* 🔹 زرار عام */
+.btn {
   margin: 0 3px;
   border: none;
   background: none;
@@ -174,6 +175,23 @@ button {
   transition: transform 0.2s ease;
 }
 
-button:hover {
+.btn:hover {
   transform: scale(1.2);
+}
+
+/* ألوان مختلفة لكل نوع زرار */
+.btn-edit {
+  color: #007bff;
+}
+
+.btn-delete {
+  color: #d9534f;
+}
+
+.btn-view {
+  color: #28a745;
+}
+
+.btn-notify {
+  color: #ffc107;
 }
