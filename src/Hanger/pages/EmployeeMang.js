@@ -1,5 +1,5 @@
 import React from 'react';
-import './pages/css/EmployeeMang.css';
+import './css/EmployeeMang.css';
 
 // Sample data
 const employees = [

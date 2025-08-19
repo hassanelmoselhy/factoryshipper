@@ -12,7 +12,7 @@ import Sidebar from './Hanger/components/Sidebar';
 import Header from './Hanger/components/Header';
 import ShipmentUpdate from './Hanger/pages/ShipmentUpdate';
 import HangerHome from './Hanger/pages/Home';
-import EmployeeMang from './Hanger/EmployeeMang';
+import EmployeeMang from './Hanger/pages/EmployeeMang';
 import Scan from './Hanger/pages/Scan'
 import HangerAttendance from './Hanger/pages/HangerAttendance'
 import './App.css';
