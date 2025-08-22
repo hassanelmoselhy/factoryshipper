@@ -17,6 +17,8 @@ import Scan from './Hanger/pages/Scan'
 import HangerAttendance from './Hanger/pages/HangerAttendance'
 import './App.css';
 import DeliverySchedule from './Hanger/pages/DeliverySchedule';
+import Reciver from './reciver/pages/reciver'; 
+
 
 const SelectRole = () => {
   return (
@@ -24,7 +26,8 @@ const SelectRole = () => {
       <h1>اختر نوع المستخدم</h1>
       <div className="role-buttons">
         <a href="/signup" className="role-btn sender-btn">🚚 Sender</a>
-        <a href="/hanger" className="role-btn hanger-btn">📦 Hanger</a>
+        <a href="/hanger/home" className="role-btn hanger-btn">📦 Hanger</a>
+        <a href="/reciver" className="role-btn reciver-btn">📬 Reciver</a>
       </div>
     </div>
   );
@@ -88,6 +91,7 @@ const App = () => {
   <Route path="/hanger/schedule" element={<DeliverySchedule />} />
 
 </Route>
+<Route path="/reciver" element={<Reciver />} />
 
       </Routes>
     </Router>
