@@ -17,13 +17,9 @@ import Scan from './Hanger/pages/Scan';
 import HangerAttendance from './Hanger/pages/HangerAttendance';
 import './App.css';
 import DeliverySchedule from './Hanger/pages/DeliverySchedule';
-<<<<<<< HEAD
 import Reciver from './reciver/pages/reciver'; 
-
-=======
 import SignUp from './Hanger/auth/pages/HangerSignup';
 import SignIn from './Hanger/auth/pages/HangerSignin';
->>>>>>> 6bfa83af7046eaeb25c08c9fdc70d6ebc00a0999
 
 const SelectRole = () => {
   return (
@@ -31,12 +27,8 @@ const SelectRole = () => {
       <h1>اختر نوع المستخدم</h1>
       <div className="role-buttons">
         <a href="/signup" className="role-btn sender-btn">🚚 Sender</a>
-<<<<<<< HEAD
-        <a href="/hanger/home" className="role-btn hanger-btn">📦 Hanger</a>
-        <a href="/reciver" className="role-btn reciver-btn">📬 Reciver</a>
-=======
         <a href="/hanger/sign-up" className="role-btn hanger-btn">📦 Hanger</a>
->>>>>>> 6bfa83af7046eaeb25c08c9fdc70d6ebc00a0999
+        <a href="/reciver" className="role-btn reciver-btn">📬 Reciver</a>
       </div>
     </div>
   );
@@ -95,20 +87,6 @@ const App = () => {
 
         {/* Hanger Layout */}
         <Route path="/hanger" element={<HangerLayout />}>
-<<<<<<< HEAD
-  <Route index path="home" element={<HangerHome />} /> 
-  <Route path="update" element={<ShipmentUpdate />} />
-  <Route path="employees" element={<EmployeeMang />} />
-  <Route index path='scan' element={<Scan/>} />
-
-
-  <Route path="/hanger/attendance" element={<HangerAttendance />} />
-  <Route path="/hanger/schedule" element={<DeliverySchedule />} />
-
-</Route>
-<Route path="/reciver" element={<Reciver />} />
-
-=======
           <Route path="home" element={<HangerHome />} /> 
           <Route path="update" element={<ShipmentUpdate />} />
           <Route path="employees" element={<EmployeeMang />} />
@@ -116,7 +94,9 @@ const App = () => {
           <Route path="attendance" element={<HangerAttendance />} />
           <Route path="schedule" element={<DeliverySchedule />} />
         </Route>
->>>>>>> 6bfa83af7046eaeb25c08c9fdc70d6ebc00a0999
+
+        {/* Reciver */}
+        <Route path="/reciver" element={<Reciver />} />
       </Routes>
     </Router>
   );
