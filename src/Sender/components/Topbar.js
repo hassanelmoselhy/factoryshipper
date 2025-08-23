@@ -1,35 +1,24 @@
-import React, { useState, useEffect } from 'react'; 
+import React, { useState } from 'react'; 
 import './css/Topbar.css';
 import { FaBell, FaPlus, FaTruck, FaUndo } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const TopBar = () => {
   const [showActions, setShowActions] = useState(false);
-  const [modalType, setModalType] = useState(null);
+  const navigate = useNavigate(); // ✅ Hook للتنقل
 
   const handleCreateClick = () => {
     setShowActions(prev => !prev);
   };
 
-  const openModal = (type) => {
-    setModalType(type);
+  const goToPage = (type) => {
     setShowActions(false);
-  };
-
-  const closeModal = () => {
-    setModalType(null);
-  };
-
-  useEffect(() => {
-    if (modalType) {
-      document.body.classList.add('modal-open');
-    } else {
-      document.body.classList.remove('modal-open');
+    if (type === 'shipping') {
+      navigate('/shipping'); // ✅ يوديك لصفحة طلب الإرسال
+    } else if (type === 'return') {
+      navigate('/return'); // ✅ يوديك لصفحة طلب الاسترجاع
     }
-
-    return () => {
-      document.body.classList.remove('modal-open'); 
-    };
-  }, [modalType]);
+  };
 
   return (
     <>
@@ -42,10 +31,10 @@ const TopBar = () => {
 
             {showActions && (
               <div className="dropdown-menu">
-                <div className="dropdown-item" onClick={() => openModal('shipping')}>
-                  <FaTruck /> طلب إرسال
+                <div className="dropdown-item" onClick={() => goToPage('shipping')}>
+                  <FaTruck />طلب انشاء 
                 </div>
-                <div className="dropdown-item" onClick={() => openModal('return')}>
+                <div className="dropdown-item" onClick={() => goToPage('return')}>
                   <FaUndo /> طلب استرجاع
                 </div>
               </div>
@@ -62,37 +51,6 @@ const TopBar = () => {
           <span className="user-name">حسن موسى</span>
         </div>
       </div>
-
-      {/* ✅ Modal */}
-      {modalType && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <h3>{modalType === 'shipping' ? 'طلب إرسال' : 'طلب استرجاع'}</h3>
-            <form>
-              <div className="form-group">
-                <label>اسم العميل</label>
-                <input type="text" placeholder="مثال: محمد أحمد" />
-              </div>
-              <div className="form-group">
-                <label>رقم الهاتف</label>
-                <input type="text" placeholder="مثال: 055xxxxxxx" />
-              </div>
-              <div className="form-group">
-                <label>العنوان</label>
-                <input type="text" placeholder="المدينة، الحي" />
-              </div>
-              <div className="form-group">
-                <label>تفاصيل إضافية</label>
-                <textarea placeholder="أي ملاحظات..." />
-              </div>
-              <div className="modal-actions">
-                <button type="button" className="cancel-btn" onClick={closeModal}>إلغاء</button>
-                <button type="submit" className="submit-btn">إرسال</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </>
   );
 };

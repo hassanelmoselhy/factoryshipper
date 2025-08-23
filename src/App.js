@@ -21,6 +21,8 @@ import Reciver from './reciver/pages/reciver';
 import SignUp from './Hanger/auth/pages/HangerSignup';
 import SignIn from './Hanger/auth/pages/HangerSignin';
 
+import ShippingPage from './Sender/pages/ShippingPage';
+
 const SelectRole = () => {
   return (
     <div className="select-role-container">
@@ -76,6 +78,8 @@ const App = () => {
         {/* Hanger Auth */}
         <Route path="/hanger/sign-up" element={<SignUp />} />
         <Route path="/hanger/sign-in" element={<SignIn />} />
+          <Route path="/shipping" element={<ShippingPage />} />
+
 
         {/* Sender Layout */}
         <Route element={<SenderLayout />}>
@@ -83,6 +87,8 @@ const App = () => {
           <Route path="/order" element={<Order />} />
           <Route path="/actions" element={<Actions />} />
           <Route path="/wallet" element={<Wallet />} />
+
+          {/* ✅ الصفحات الجديدة */}
         </Route>
 
         {/* Hanger Layout */}
