@@ -105,7 +105,7 @@ const Actions = () => {
   return (
     <div className="actions-container">
       <div className="header-actions">
-        <button className="new-request">طلب استلام جديد</button>
+        <a href="/new-request" className="new-request">طلب استلام جديد</a>
       </div>
 
       <div className="filter-search">
