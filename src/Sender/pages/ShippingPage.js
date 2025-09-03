@@ -20,7 +20,7 @@ const ShippingPage = () => {
     price: 125,
     deliveryType: 'سريع',
     openPackage: true,
-  });
+  }); 
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;

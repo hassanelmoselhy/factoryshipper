@@ -1,14 +1,76 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../css/LoginPage.css';
 import { FaShippingFast } from 'react-icons/fa';
 
 const Login = () => {
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
   useEffect(() => {
     document.body.classList.add('login-page');
     return () => {
       document.body.classList.remove('login-page');
     };
   }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!formData.email || !formData.password) {
+      setError('الرجاء إدخال البريد الإلكتروني وكلمة المرور');
+      return;
+    }
+
+    setError('');
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        'https://stakeexpress.runasp.net/api/Account/login',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Client-Key': 'web API'
+          },
+          body: JSON.stringify({
+            email: formData.email.trim(),
+            password: formData.password
+          })
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log('✅ Login successful:', data);
+
+        if (data.token) {
+          localStorage.setItem('authToken', data.token);
+        }
+
+        navigate('/home');
+      } else {
+        console.error('🚨 Login error:', data);
+        setError(data.message || '❌ بيانات الدخول غير صحيحة');
+      }
+    } catch (err) {
+      setError('❌ خطأ في الاتصال: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -25,26 +87,46 @@ const Login = () => {
 
       <div className="login-container">
         <div className="login-form-wrapper">
-          <form>
+          <form onSubmit={handleSubmit}>
             <h2 className="login-form-title">Sign In to Your Account</h2>
             <p className="login-form-subtitle">
               Welcome back! Please enter your credentials to continue
             </p>
 
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+
             <div className="login-input-group">
-              <input type="email" placeholder="Email Address *" />
-              <input type="password" placeholder="Password *" />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email Address *"
+                value={formData.email}
+                onChange={handleChange}
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="Password *"
+                value={formData.password}
+                onChange={handleChange}
+              />
             </div>
 
             <div className="login-options">
               <label>
                 <input type="checkbox" /> Remember me
               </label>
-              <a href="/" className="login-forgot-link">Forgot password?</a>
+              <a href="/" className="login-forgot-link">
+                Forgot password?
+              </a>
             </div>
 
-            <button type="submit" className="login-submit-button">
-              Sign In & Continue
+            <button
+              type="submit"
+              className="login-submit-button"
+              disabled={loading}
+            >
+              {loading ? 'Signing In...' : 'Sign In & Continue'}
             </button>
             <p className="login-footer-text">
               Don’t have an account? <a href="/signup">Sign up here</a>
