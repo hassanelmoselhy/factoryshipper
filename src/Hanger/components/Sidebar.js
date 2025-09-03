@@ -1,7 +1,7 @@
 import React from 'react';
 import './css/Sidebar.css'; 
 import { NavLink } from 'react-router-dom';
-import { FaCube, FaExpand, FaSyncAlt, FaUsers, FaCalendarAlt, FaClock } from 'react-icons/fa';
+import { FaCube, FaExpand, FaSyncAlt, FaUsers, FaCalendarAlt, FaClock, FaSignOutAlt } from 'react-icons/fa';
 
 const Sidebar = () => {
   const menuItems = [
@@ -11,6 +11,7 @@ const Sidebar = () => {
     { icon: <FaUsers />, name: 'إدارة الموظفين', path: '/hanger/employees' },
     { icon: <FaCalendarAlt />, name: 'جدولة التوصيل', path: '/hanger/schedule' },
     { icon: <FaClock />, name: 'الحضور والانصراف', path: '/hanger/attendance' },
+    { icon: <FaSignOutAlt />, name: 'تسجيل الخروج', path: '/hanger/sign-in' },
   ];
 
   return (

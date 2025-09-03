@@ -1,9 +1,10 @@
 import React from 'react';
 import './css/Rightsidebar.css';
 import { NavLink } from 'react-router-dom';
-import { FaHome, FaShoppingCart, FaTasks, FaWallet } from 'react-icons/fa';
+import { FaHome, FaShoppingCart, FaTasks, FaWallet, FaSignOutAlt } from 'react-icons/fa';
 
 const Rightsidebar = () => {
+
   return (
     <>
       <div className='top'>
@@ -35,6 +36,12 @@ const Rightsidebar = () => {
             <NavLink to="/wallet" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
               <span className="icon  icon3"><FaWallet /></span>
               <span className="text">المحفظة</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/login" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+              <span className="icon "><FaSignOutAlt /></span>
+              <span className="text">تسجيل الخروج</span>
             </NavLink>
           </li>
         </ul>
