@@ -1,15 +1,24 @@
-import React, { useState } from 'react'; 
+import React, { useEffect, useState } from 'react'; 
 import './css/Topbar.css';
 import { FaBell, FaPlus, FaTruck, FaUndo } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-
+import useUserStore from '../../Store/UserStore/userStore';
 const TopBar = () => {
+  const user =useUserStore((state)=>state.user)
   const [showActions, setShowActions] = useState(false);
   const navigate = useNavigate(); // ✅ Hook للتنقل
 
   const handleCreateClick = () => {
     setShowActions(prev => !prev);
   };
+/* test user data*/ 
+  useEffect(()=>{
+if(user) {console.log('user info =',user)
+
+}
+else console.log('no user info')
+
+  },[])
 
   const goToPage = (type) => {
     setShowActions(false);
@@ -48,7 +57,7 @@ const TopBar = () => {
 
         <div className="user-info">
           <img src="hassan.jpg" alt="User" className="user-img" />
-          <span className="user-name">حسن موسى</span>
+          <span className="user-name">{user?.userName}</span>
         </div>
       </div>
     </>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { use, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
 import Rightsidebar from './Sender/components/Rightsidebar';
 import Order from './Sender/pages/Order';
@@ -23,6 +23,7 @@ import SignIn from './Hanger/auth/pages/HangerSignin';
 
 import NewRequestPage from './Sender/pages/NewRequestPage';
 import ShippingPage from './Sender/pages/ShippingPage';
+import useUserStore from './Store/UserStore/userStore';
 
 const SelectRole = () => {
   return (
@@ -51,6 +52,31 @@ const SenderLayout = () => {
   );
 };
 
+
+
+async function RefreshToken() {
+
+try{
+
+  const response=await fetch('https://stakeexpress.runasp.net/api/Account/refreshToken',{
+    method:'GET',
+    headers:{
+      'Content-Type': 'application/json',
+      'X-Client-Key': 'web API'
+
+    }
+  })
+    const data = await response.json();
+      console.log("Token refreshed:", data);
+
+      // shceduleRefreshToken(data.expiresOn);
+}catch(error){
+console.log("Error refreshing token:", error);
+
+}
+}
+
+
 // Layout للـ Hanger
 const HangerLayout = () => {
   return (
@@ -66,7 +92,26 @@ const HangerLayout = () => {
   );
 };
 
+const shceduleRefreshToken=(expiresOn)=>{
+const expirems=new Date(expiresOn).getTime()-new Date().getTime()-(5*60*1000);
+console.log("Token expires in ms:",expirems);
+if(expirems<=0){
+RefreshToken();
+return;
+}
+
+setTimeout(RefreshToken,expirems);
+
+}
 const App = () => {
+const  user=useUserStore((state)=>state.user);
+useEffect(()=>{
+if(!user)return;
+
+shceduleRefreshToken(user.expiresOn);
+
+},[user])
+
   return (
     <Router>
       <Routes>

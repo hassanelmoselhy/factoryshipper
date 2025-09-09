@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../css/LoginPage.css';
 import { FaShippingFast } from 'react-icons/fa';
-
+import useUserStore from '../../../Store/UserStore/userStore';
 const Login = () => {
+const SetUser=useUserStore((state)=>state.SetUser)
+
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -31,6 +33,11 @@ const Login = () => {
       setError('الرجاء إدخال البريد الإلكتروني وكلمة المرور');
       return;
     }
+    if(formData.password.length < 8){
+
+      setError('كلمة المرور يجب أن تكون 8 أحرف على الأقل');
+      return;
+    }
 
     setError('');
     setLoading(true);
@@ -56,14 +63,15 @@ const Login = () => {
       if (response.ok) {
         console.log('✅ Login successful:', data);
 
-        if (data.token) {
-          localStorage.setItem('authToken', data.token);
+        if (data) {
+          sessionStorage.setItem('user', JSON.stringify(data));
+          SetUser(data);
         }
 
         navigate('/home');
       } else {
         console.error('🚨 Login error:', data);
-        setError(data.message || '❌ بيانات الدخول غير صحيحة');
+        setError(`❌ ${data.message}`);
       }
     } catch (err) {
       setError('❌ خطأ في الاتصال: ' + err.message);
