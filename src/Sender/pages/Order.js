@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './css/Order.css';
+import { Link } from 'react-router-dom';
 
 const fallbackOrders = [
   {
@@ -58,7 +59,7 @@ const Order = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await fetch('https://your-api-link.com/api/orders');
+        const res = await fetch('https://stakeexpress.runasp.net/api/Shipment/GetAllShipments');
         if (!res.ok) throw new Error('Request failed');
         const data = await res.json();
         setOrders(data);
@@ -81,7 +82,8 @@ const Order = () => {
     return matchesTab && matchesSearch;
   });
 
-  const handleMenuToggle = (id) => {
+  const handleMenuToggle = (e, id) => {
+    e.preventDefault();
     setOpenMenuId(openMenuId === id ? null : id);
   };
 
@@ -119,7 +121,7 @@ const Order = () => {
       <div className="order-list">
         {filteredOrders.length > 0 ? (
           filteredOrders.map((order) => (
-            <div key={order.id} className="order-card">
+            <Link to={`/order-details/${order.id}`} key={order.id} className="order-card">
               <div className="order-card-header">
                 <span className="order-id">#{order.id}</span>
                 <span className={`status-badge ${order.status}`}>{order.status}</span>
@@ -137,7 +139,7 @@ const Order = () => {
                 <div className="order-options">
                   <span 
                     className="options-btn"
-                    onClick={() => handleMenuToggle(order.id)}
+                    onClick={(e) => handleMenuToggle(e, order.id)}
                   >
                     ⋮
                   </span>
@@ -152,7 +154,7 @@ const Order = () => {
                   )}
                 </div>
               </div>
-            </div>
+            </Link>
           ))
         ) : (
           <p style={{ textAlign: 'center', marginTop: '30px', color: '#888' }}>لا توجد طلبات مطابقة</p>

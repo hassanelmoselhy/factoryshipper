@@ -1,4 +1,4 @@
-import React, { use, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
 import Rightsidebar from './Sender/components/Rightsidebar';
 import Order from './Sender/pages/Order';
@@ -24,6 +24,7 @@ import SignIn from './Hanger/auth/pages/HangerSignin';
 import NewRequestPage from './Sender/pages/NewRequestPage';
 import ShippingPage from './Sender/pages/ShippingPage';
 import useUserStore from './Store/UserStore/userStore';
+import { OrderDetails } from './Sender/pages/OrderDetails';
 
 const SelectRole = () => {
   return (
@@ -136,6 +137,7 @@ shceduleRefreshToken(user.expiresOn);
           <Route path="/wallet" element={<Wallet />} />
 
         </Route>
+          <Route path="/order-details/:orderId" element={<OrderDetails />} />
 
         {/* Hanger Layout */}
         <Route path="/hanger" element={<HangerLayout />}>

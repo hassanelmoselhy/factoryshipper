@@ -51,15 +51,21 @@
   border-radius: 12px;
   box-shadow: 0 0 10px #ddd;
   padding: 15px;
+  cursor: pointer;
+  text-decoration: none;
 }
 
+.order-card:hover {
+  box-shadow: 0 0 15px #ccc;
+  scale: 1.02;
+  transition: all 0.3s ease;
+}
 .order-card-header {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-bottom: 10px;
 }
-
 .order-id {
   font-weight: bold;
   color: #333;
