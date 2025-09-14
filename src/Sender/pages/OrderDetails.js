@@ -4,7 +4,7 @@ import Barcode from "react-barcode";
 import "./css/OrderDetails.css";
 import TopBar from "../components/Topbar";
 
-const fallbackOrderDetails = {
+ export  const fallbackOrderDetails = {
   842: {
     id: 842,
     status: "تم التوصيل",
@@ -173,10 +173,14 @@ const supplyValue = orderDetails.price - (orderDetails.shipping + totalExtras);
             تعديل الطلب
             <i class="fa-solid fa-pen-to-square"></i>
           </button>
-          <button className="print-button primary">
-            طباعة بوليصة الشحن
-            <i class="fa-solid fa-print"></i>
-          </button>
+         <button
+  className="print-button primary"
+  onClick={() => navigate(`/print/${orderDetails.id}`)}
+>
+  طباعة بوليصة الشحن
+  <i className="fa-solid fa-print"></i>
+</button>
+
         </div>
 
         <div className="order-details-section">
