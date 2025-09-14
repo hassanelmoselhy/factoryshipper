@@ -26,6 +26,9 @@ import ShippingPage from './Sender/pages/ShippingPage';
 import useUserStore from './Store/UserStore/userStore';
 import { OrderDetails } from './Sender/pages/OrderDetails';
 import { Toaster, toast } from "sonner";
+
+import  Print from './Sender/pages/Print'
+
 const SelectRole = () => {
   return (
     <div className="select-role-container">
@@ -140,6 +143,8 @@ shceduleRefreshToken(user.expiresOn);
 
         </Route>
           <Route path="/order-details/:orderId" element={<OrderDetails />} />
+                  <Route path="/print/:orderId" element={<Print />} />
+
 
         {/* Hanger Layout */}
         <Route path="/hanger" element={<HangerLayout />}>

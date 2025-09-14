@@ -3,10 +3,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import Barcode from "react-barcode";
 import "./css/OrderDetails.css";
 import TopBar from "../components/Topbar";
-import useShipmentsStore from "../../Store/UserStore/ShipmentsStore";
-const fallbackOrderDetails = {
+import useShipmentsStore from '../../Store/UserStore/ShipmentsStore';
+export const fallbackOrderDetails = {
   2: {
-    id: 2,
+    id: 842,
     status: "تم التوصيل",
     type: "سريع",
     name: "أحمد محمد علي",
@@ -178,10 +178,14 @@ const supplyValue = Shipment.collectionAmount - (orderDetails.shipping + totalEx
             تعديل الطلب
             <i class="fa-solid fa-pen-to-square"></i>
           </button>
-          <button className="print-button primary">
-            طباعة بوليصة الشحن
-            <i class="fa-solid fa-print"></i>
-          </button>
+         <button
+  className="print-button primary"
+  onClick={() => navigate(`/print/${orderDetails.id}`)}
+>
+  طباعة بوليصة الشحن
+  <i className="fa-solid fa-print"></i>
+</button>
+
         </div>
 
         <div className="order-details-section">
