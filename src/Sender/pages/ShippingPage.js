@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import "./css/ShippingPage.css";
 import useUserStore from "../../Store/UserStore/userStore";
-
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 const ShippingPage = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     receiverName: "",
     receiverPhone: "",
@@ -21,6 +23,7 @@ const ShippingPage = () => {
     expressDeliveryEnabled: false, // 0=عادي, 1=سريع
     openPackageOnDeliveryEnabled: false,
     cashOnDeliveryEnabled: false,
+    collectionAmount: 0,
   });
 
   const user = useUserStore((state) => state.user);
@@ -86,7 +89,7 @@ const ShippingPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!user?.token) {
-      alert("❌ غير مصرح: سجل الدخول أولاً");
+      toast.error("UnAuthorized, Please log in to create a shipment.");
       return;
     }
 console.log(user?.token);
@@ -96,7 +99,7 @@ console.log(user?.token);
       setLoading(true);
       console.log("Submitting form data:", formData);
       const response = await fetch(
-        "https://stakeexpress.runasp.net/api/Shipment/addShipment",
+        "https://stakeexpress.runasp.net/api/Shipments/addShipment",
         {
           method: "POST",
           headers: {
@@ -114,17 +117,29 @@ console.log(user?.token);
 
       if (response.ok) {
          
-      alert("✅ تم إنشاء الطلب بنجاح");
+      
     
-    
+        toast.success("Shipment created successfully!");
+        navigate('/home');
       
       }
+      else if(response.status===400){
+
+        toast.error("❌ Failed to create shipment. Please check your data.");
+      }
+
+        else if(response.status===401){
+          toast.error("❌ Unauthorized. Please log in again.");
+        }
+        else {
+          toast.error("server error");
+        }
 
 
      } catch (err) {
       console.log(err);
       
-      alert("❌ حدث خطأ أثناء إنشاء الطلب");
+      toast.error(`❌ Failed to create shipment. ${err.message}`);
     } finally {
       setLoading(false);
     }
@@ -252,6 +267,19 @@ console.log(user?.token);
             />
             {errors.city && <p className="error">{errors.city}</p>}
           </div>
+        
+          <div className="form-group">
+            <label>البلد *</label>
+            <input
+              type="text"
+              name="country"
+              value={formData.country}
+              onChange={handleChange}
+            />
+            {errors.country && <p className="error">{errors.country}</p>}
+          </div>
+        
+        
         </div>
 
         {/* تفاصيل الطرد */}
@@ -365,6 +393,22 @@ console.log(user?.token);
             </label>
           </div>
 
+            <div className="form-group">
+            <label>قيمه التحصيل *</label>
+            <input
+              type="number"
+              name="collectionAmount"
+              value={formData.collectionAmount}
+              onChange={handleChange}
+            >
+              
+            </input>
+            {errors.collectionAmount && (
+              <p className="error">{errors.collectionAmount}</p>
+            )}
+          </div>
+        
+
           <div className="form-group">
             <label>أولوية التوصيل *</label>
             <select
@@ -379,6 +423,8 @@ console.log(user?.token);
               <p className="error">{errors.expressDeliveryEnabled}</p>
             )}
           </div>
+        
+        
         </div>
       </form>
     </div>

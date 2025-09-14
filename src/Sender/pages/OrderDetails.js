@@ -3,10 +3,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import Barcode from "react-barcode";
 import "./css/OrderDetails.css";
 import TopBar from "../components/Topbar";
-
+import useShipmentsStore from "../../Store/UserStore/ShipmentsStore";
 const fallbackOrderDetails = {
-  842: {
-    id: 842,
+  2: {
+    id: 2,
     status: "تم التوصيل",
     type: "سريع",
     name: "أحمد محمد علي",
@@ -105,8 +105,13 @@ export const OrderDetails = () => {
   const [orderDetails, setOrderDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [Shipment,SetShipment]=useState();
+  const Shipments = useShipmentsStore((state) => state.shipments);
   useEffect(() => {
+    const findShipment=Shipments?.find(s=>s.id===parseInt(orderId));
+    SetShipment(findShipment);
+
+
     const fetchDetails = async () => {
       setLoading(true);
       setError(null);
@@ -153,7 +158,7 @@ export const OrderDetails = () => {
   }
 
 const totalExtras = orderDetails.extras.reduce((acc, e) => acc + e.value, 0);
-const supplyValue = orderDetails.price - (orderDetails.shipping + totalExtras);
+const supplyValue = Shipment.collectionAmount - (orderDetails.shipping + totalExtras);
 
   return (
     <>
@@ -215,19 +220,19 @@ const supplyValue = orderDetails.price - (orderDetails.shipping + totalExtras);
             <div className="customer-info-grid">
               <div className="info-item">
                 <span className="info-label">اسم العميل</span>
-                <i className="fas fa-user"></i> {orderDetails.name}
+                <i className="fas fa-user"></i> {Shipment.receiverName}
               </div>
               <div className="info-item">
                 <span className="info-label">رقم الهاتف</span>
-                <i className="fas fa-phone"></i> {orderDetails.phone}
+                <i className="fas fa-phone"></i> {Shipment.receiverPhone}
               </div>
               <div className="info-item">
                 <span className="info-label">العنوان الكامل</span>
-                <i className="fas fa-map-marker-alt"></i> {orderDetails.address}
+                <i className="fas fa-map-marker-alt"></i> {Shipment.receiverAddress}
               </div>
               <div className="info-item">
                 <span className="info-label">محتوى الطرد</span>
-                <i className="fas fa-box"></i> {orderDetails.packageContent}
+                <i className="fas fa-box"></i> {Shipment.shipmentDescription}
               </div>
             </div>
           </div>
@@ -236,7 +241,7 @@ const supplyValue = orderDetails.price - (orderDetails.shipping + totalExtras);
           <div className="finance-section">
             <h3>المعلومات المالية</h3>
             <div className="finance-box">
-              <div className="finance-row"><span>قيمة التحصيل</span><strong>{orderDetails.price} جنيه</strong></div>
+              <div className="finance-row"><span>قيمة التحصيل</span><strong>{Shipment.collectionAmount} جنيه</strong></div>
               <div className="finance-row"><span>قيمة الشحن</span><strong>{orderDetails.shipping} جنيه</strong></div>
               <div className="finance-row"><span>المبالغ الإضافية</span>
                 <div>

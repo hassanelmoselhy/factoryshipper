@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { FaShippingFast } from 'react-icons/fa';
 import '../css/Signup.css';
 import { useNavigate } from 'react-router-dom';
-
+import {  toast } from "sonner";
+import useUserStore from '../../../Store/UserStore/userStore';
 const Signup = () => {
+  const Setuser=useUserStore((state)=>state.Setuser)
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -104,7 +106,7 @@ const Signup = () => {
 
   try {
   const response = await fetch(
-    'https://stakeexpress.runasp.net/api/Account/shipperRegistration',
+    'https://stakeexpress.runasp.net/api/Accounts/shipperRegistration',
     {
       method: 'POST',
       headers: {
@@ -117,12 +119,11 @@ const Signup = () => {
 
   if (response.ok) {
     const data = await response.json(); 
-
-    alert('✅ تم إنشاء الحساب بنجاح');
-
-    if (data.token) {
-      localStorage.setItem('authToken', data.token);
-    }
+    Setuser(data.data);
+    sessionStorage.setItem('user', JSON.stringify(data));
+    // alert('✅ تم إنشاء الحساب بنجاح');
+    toast.success("Account created successfuly ");
+   
 
     navigate('/home');
   } else {
@@ -144,7 +145,7 @@ const Signup = () => {
     alert('❌ خطأ: ' + errorText);
   }
 } catch (error) {
-  alert('❌ خطأ في الاتصال: ' + error.message);
+  alert('❌ server error, ' + error.message);
 }
 
   };
@@ -302,7 +303,7 @@ const Signup = () => {
             </button>
           </form>
           <p className="signup-login-text">
-            Already have an account? <a href="/login">Login here</a>
+            Already have an account? <a href="/">Login here</a>
           </p>
         </div>
       </div>

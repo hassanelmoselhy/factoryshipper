@@ -57,7 +57,7 @@ else console.log('no user info')
 
         <div className="user-info">
           <img src="hassan.jpg" alt="User" className="user-img" />
-          <span className="user-name">{user?.userName}</span>
+          <span className="user-name">{user?.firstName}</span>
         </div>
       </div>
     </>

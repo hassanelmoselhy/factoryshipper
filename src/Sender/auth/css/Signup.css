@@ -2,7 +2,7 @@ body.signup-page {
   margin: 0;
   padding: 0;
   font-family: "Segoe UI", sans-serif;
-  background-image: url('../../../../public/slider-03-a.jpg');
+  background-image: url('/public/hanger.jpg');
   background-size: cover;
 background-attachment: fixed;
   background-position: center;

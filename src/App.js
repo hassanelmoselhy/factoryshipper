@@ -25,7 +25,7 @@ import NewRequestPage from './Sender/pages/NewRequestPage';
 import ShippingPage from './Sender/pages/ShippingPage';
 import useUserStore from './Store/UserStore/userStore';
 import { OrderDetails } from './Sender/pages/OrderDetails';
-
+import { Toaster, toast } from "sonner";
 const SelectRole = () => {
   return (
     <div className="select-role-container">
@@ -114,13 +114,15 @@ shceduleRefreshToken(user.expiresOn);
 },[user])
 
   return (
+    <>
+    <Toaster position="top-right" richColors />
     <Router>
       <Routes>
-        <Route path="/" element={<SelectRole />} />
+        {/* <Route path="/" element={<SelectRole />} /> */}
 
         {/* Sender Auth */}
         <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
 
         {/* Hanger Auth */}
         <Route path="/hanger/sign-up" element={<SignUp />} />
@@ -153,6 +155,7 @@ shceduleRefreshToken(user.expiresOn);
         <Route path="/reciver" element={<Reciver />} />
       </Routes>
     </Router>
+ </>
   );
 };
 

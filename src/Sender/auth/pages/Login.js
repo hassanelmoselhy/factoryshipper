@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import '../css/LoginPage.css';
 import { FaShippingFast } from 'react-icons/fa';
 import useUserStore from '../../../Store/UserStore/userStore';
+import {  toast } from "sonner";
 const Login = () => {
 const SetUser=useUserStore((state)=>state.SetUser)
 
@@ -44,7 +45,7 @@ const SetUser=useUserStore((state)=>state.SetUser)
 
     try {
       const response = await fetch(
-        'https://stakeexpress.runasp.net/api/Account/login',
+        'https://stakeexpress.runasp.net/api/Accounts/login',
         {
           method: 'POST',
           headers: {
@@ -65,7 +66,8 @@ const SetUser=useUserStore((state)=>state.SetUser)
 
         if (data) {
           sessionStorage.setItem('user', JSON.stringify(data));
-          SetUser(data);
+          SetUser(data.data);
+        toast.success("Login successfuly ");
         }
 
         navigate('/home');
@@ -137,7 +139,7 @@ const SetUser=useUserStore((state)=>state.SetUser)
               {loading ? 'Signing In...' : 'Sign In & Continue'}
             </button>
             <p className="login-footer-text">
-              Don’t have an account? <a href="/signup">Sign up here</a>
+             Are you shipper?,Don’t have an account? <a href="/signup">Sign up here</a>
             </p>
           </form>
         </div>
