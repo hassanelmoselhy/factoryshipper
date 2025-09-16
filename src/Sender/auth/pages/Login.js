@@ -4,13 +4,17 @@ import '../css/LoginPage.css';
 import { FaShippingFast } from 'react-icons/fa';
 import useUserStore from '../../../Store/UserStore/userStore';
 import {  toast } from "sonner";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+
 const Login = () => {
 const SetUser=useUserStore((state)=>state.SetUser)
-
+const user=useUserStore((state)=>state.user)
+const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
+
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -21,6 +25,39 @@ const SetUser=useUserStore((state)=>state.SetUser)
       document.body.classList.remove('login-page');
     };
   }, []);
+
+
+  async function RefreshToken() {
+
+  try{
+  toast.info("Refreshing token...");
+
+  const response=await fetch('https://stakeexpress.runasp.net/api/Accounts/refreshToken',{
+    method:'GET',
+    headers:{
+      'Content-Type': 'application/json',
+      'X-Client-Key': 'web API',
+      // 'Authorization': `Bearer ${user?.token}`
+    },
+    credentiyals: 'include'
+
+  })
+  const data = await response.json();
+  if(response.status===200){
+    SetUser(data.data);
+      console.log("Token refreshed:", data);
+        toast.info(" token refreshed successfully");
+
+      shceduleRefreshToken(data.expiresOn);
+
+  }
+  console.log("Token ", data);
+    
+}catch(error){
+console.log("Error refreshing token:", error);
+
+}
+}
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,6 +71,7 @@ const SetUser=useUserStore((state)=>state.SetUser)
       setError('الرجاء إدخال البريد الإلكتروني وكلمة المرور');
       return;
     }
+    
     if(formData.password.length < 8){
 
       setError('كلمة المرور يجب أن تكون 8 أحرف على الأقل');
@@ -55,7 +93,8 @@ const SetUser=useUserStore((state)=>state.SetUser)
           body: JSON.stringify({
             email: formData.email.trim(),
             password: formData.password
-          })
+          }),
+          
         }
       );
 
@@ -67,6 +106,7 @@ const SetUser=useUserStore((state)=>state.SetUser)
         if (data) {
           sessionStorage.setItem('user', JSON.stringify(data));
           SetUser(data.data);
+          shceduleRefreshToken(data.data.expiresOn);
         toast.success("Login successfuly ");
         }
 
@@ -82,6 +122,16 @@ const SetUser=useUserStore((state)=>state.SetUser)
     }
   };
 
+  const shceduleRefreshToken=(expiresOn)=>{
+const expirems=new Date(expiresOn).getTime()-new Date().getTime()-(4*60*1000);
+console.log("Token expires in ms:",expirems);
+if(expirems<=0){
+RefreshToken();
+return;
+}
+
+setTimeout(RefreshToken,expirems);
+}
   return (
     <>
       <div className="page-overlay"></div>
@@ -113,13 +163,25 @@ const SetUser=useUserStore((state)=>state.SetUser)
                 value={formData.email}
                 onChange={handleChange}
               />
+              <div className='d-flex align-items-center position-relative'>
               <input
-                type="password"
+                type={showPassword?"text":"password"}
                 name="password"
                 placeholder="Password *"
                 value={formData.password}
                 onChange={handleChange}
-              />
+                className='w-100'
+                >
+                </input>
+                <button
+                type='button'
+                className=' btn-link p-2 text-muted password-toggle'
+                onClick={()=>setShowPassword((prev)=>!prev)}
+                >
+
+                {showPassword? <AiOutlineEyeInvisible  size={"1.2em"} />:<AiOutlineEye size={"1.2em"} />}
+                </button>
+                </div>
             </div>
 
             <div className="login-options">

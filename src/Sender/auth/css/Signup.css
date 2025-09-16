@@ -127,10 +127,15 @@ form {
 form select {
   flex: 1 1 48%;
   padding: 12px;
+  width: 100%;
   font-size: 14px;
   border: 1px solid #ccc;
+  width: 100%;
   border-radius: 8px;
   background: #fff;
+}
+.signup-input-group div{
+  width: 48%;
 }
 
 .signup-input-group input:focus,

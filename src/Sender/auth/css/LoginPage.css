@@ -177,6 +177,26 @@ form {
   color: #333;
   text-decoration: underline;
 }
+.password-toggle {
+position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: #6c757d;
+  display: flex; /* Ensure consistent layout */
+  align-items: center;
+  justify-content: center;
+  z-index: 2; /* Ensure it’s above the input */
+  transition: color 0.2s ease; /* Explicitly limit transition to color */
+}
+
+.password-toggle:hover {
+  color: #000; 
+}
 @media (max-width: 768px) {
   .login-banner {
     margin-right: 0;

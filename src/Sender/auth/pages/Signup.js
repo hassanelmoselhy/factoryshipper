@@ -1,35 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import { FaShippingFast } from 'react-icons/fa';
-import '../css/Signup.css';
-import { useNavigate } from 'react-router-dom';
-import {  toast } from "sonner";
-import useUserStore from '../../../Store/UserStore/userStore';
+import React, { useEffect, useState } from "react";
+import { FaShippingFast } from "react-icons/fa";
+import "../css/Signup.css";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import useUserStore from "../../../Store/UserStore/userStore";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 const Signup = () => {
-  const Setuser=useUserStore((state)=>state.Setuser)
+  const Setuser = useUserStore((state) => state.Setuser);
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phoneNumber: '',
-    companyName: '',
-    companyLink: '',
-    city: '',
-    street: '',
-    country: '',
-    details: '',
-    password: '',
-    confirmPassword: '',
-    typeOfProduction: ''
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    companyName: "",
+    companyLink: "",
+    city: "",
+    street: "",
+    country: "",
+    details: "",
+    password: "",
+    confirmPassword: "",
+    typeOfProduction: "",
   });
 
-  const [error, setError] = useState('');
-    const navigate = useNavigate(); 
-
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    document.body.classList.add('signup-page');
+    document.body.classList.add("signup-page");
     return () => {
-      document.body.classList.remove('signup-page');
+      document.body.classList.remove("signup-page");
     };
   }, []);
 
@@ -52,23 +53,23 @@ const Signup = () => {
       !formData.confirmPassword ||
       !formData.typeOfProduction
     ) {
-      return 'الرجاء ملء جميع الحقول المطلوبة *';
+      return "الرجاء ملء جميع الحقول المطلوبة *";
     }
 
     const phoneRegex = /^(010|011|012|015)\d{8}$/;
     if (!phoneRegex.test(formData.phoneNumber)) {
-      return 'رقم الهاتف يجب أن يكون 11 رقم ويبدأ بـ 010 أو 011 أو 012 أو 015';
+      return "رقم الهاتف يجب أن يكون 11 رقم ويبدأ بـ 010 أو 011 أو 012 أو 015";
     }
 
     if (formData.password.length < 8) {
-      return 'كلمة المرور يجب ألا تقل عن 8 أحرف';
+      return "كلمة المرور يجب ألا تقل عن 8 أحرف";
     }
 
     if (formData.password !== formData.confirmPassword) {
-      return 'كلمتا المرور غير متطابقتين';
+      return "كلمتا المرور غير متطابقتين";
     }
 
-    return '';
+    return "";
   };
 
   const handleSubmit = async (e) => {
@@ -80,7 +81,7 @@ const Signup = () => {
       return;
     }
 
-    setError('');
+    setError("");
 
     const payload = {
       firstName: formData.firstName.trim(),
@@ -92,62 +93,60 @@ const Signup = () => {
         ? formData.companyLink.match(/^https?:\/\//)
           ? formData.companyLink
           : `https://${formData.companyLink}`
-        : '',
+        : "",
       city: formData.city.trim(),
       street: formData.street.trim(),
       country: formData.country.trim(),
       details: formData.details.trim(),
       typeOfProduction: formData.typeOfProduction,
       password: formData.password,
-      confirmPassword: formData.confirmPassword
+      confirmPassword: formData.confirmPassword,
     };
 
-    console.log('🚀 Payload sent:', payload);
-
-  try {
-  const response = await fetch(
-    'https://stakeexpress.runasp.net/api/Accounts/shipperRegistration',
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Client-Key': 'web API'
-      },
-      body: JSON.stringify(payload)
-    }
-  );
-
-  if (response.ok) {
-    const data = await response.json(); 
-    Setuser(data.data);
-    sessionStorage.setItem('user', JSON.stringify(data));
-    // alert('✅ تم إنشاء الحساب بنجاح');
-    toast.success("Account created successfuly ");
-   
-
-    navigate('/home');
-  } else {
-    const rawError = await response.text();
-    let errorText;
+    console.log("🚀 Payload sent:", payload);
 
     try {
-      const parsed = JSON.parse(rawError);
-      if (parsed.errors) {
-        errorText = Object.values(parsed.errors).flat().join(' | ');
+      const response = await fetch(
+        "https://stakeexpress.runasp.net/api/Accounts/shipperRegistration",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Client-Key": "web API",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        Setuser(data.data);
+        sessionStorage.setItem("user", JSON.stringify(data));
+        // alert('✅ تم إنشاء الحساب بنجاح');
+        toast.success("Account created successfuly ");
+
+        navigate("/home");
       } else {
-        errorText = parsed.message || JSON.stringify(parsed);
+        const rawError = await response.text();
+        let errorText;
+
+        try {
+          const parsed = JSON.parse(rawError);
+          if (parsed.errors) {
+            errorText = Object.values(parsed.errors).flat().join(" | ");
+          } else {
+            errorText = parsed.message || JSON.stringify(parsed);
+          }
+        } catch {
+          errorText = rawError;
+        }
+
+        console.error("🚨 Response:", errorText);
+        alert("❌ خطأ: " + errorText);
       }
-    } catch {
-      errorText = rawError;
+    } catch (error) {
+      alert("❌ server error, " + error.message);
     }
-
-    console.error('🚨 Response:', errorText);
-    alert('❌ خطأ: ' + errorText);
-  }
-} catch (error) {
-  alert('❌ server error, ' + error.message);
-}
-
   };
 
   return (
@@ -172,7 +171,7 @@ const Signup = () => {
             </p>
 
             {error && (
-              <p style={{ color: 'red', marginBottom: '10px' }}>{error}</p>
+              <p style={{ color: "red", marginBottom: "10px" }}>{error}</p>
             )}
 
             {/* Personal Info */}
@@ -213,21 +212,48 @@ const Signup = () => {
             {/* Password Section */}
             <div className="signup-section">
               <h3 className="signup-section-title">Account Security</h3>
-              <div className="signup-input-group">
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="Password *"
-                  value={formData.password}
-                  onChange={handleChange}
-                />
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  placeholder="Confirm Password *"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                />
+              <div className="signup-input-group ">
+                <div className="d-flex align-items-center position-relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    placeholder="Password *"
+                    value={formData.password}
+                    onChange={handleChange}
+                  />
+                  <button
+                    type="button"
+                    className=" btn-link p-2 text-muted password-toggle"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                  >
+                    {showPassword ? (
+                      <AiOutlineEyeInvisible size={"1.2em"} />
+                    ) : (
+                      <AiOutlineEye size={"1.2em"} />
+                    )}
+                  </button>
+                </div>
+
+                <div className="d-flex align-items-center position-relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="confirmPassword"
+                    placeholder="Confirm Password *"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                  />
+                  <button
+                    type="button"
+                    className=" btn-link p-2 text-muted password-toggle"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                  >
+                    {showPassword ? (
+                      <AiOutlineEyeInvisible size={"1.2em"} />
+                    ) : (
+                      <AiOutlineEye size={"1.2em"} />
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
 
