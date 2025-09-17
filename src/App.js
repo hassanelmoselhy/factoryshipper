@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
 import Rightsidebar from './Sender/components/Rightsidebar';
 import Order from './Sender/pages/Order';
@@ -17,8 +17,17 @@ import Scan from './Hanger/pages/Scan';
 import HangerAttendance from './Hanger/pages/HangerAttendance';
 import './App.css';
 import DeliverySchedule from './Hanger/pages/DeliverySchedule';
+import Reciver from './reciver/pages/reciver'; 
 import SignUp from './Hanger/auth/pages/HangerSignup';
 import SignIn from './Hanger/auth/pages/HangerSignin';
+
+import NewRequestPage from './Sender/pages/NewRequestPage';
+import ShippingPage from './Sender/pages/ShippingPage';
+import useUserStore from './Store/UserStore/userStore';
+import { OrderDetails } from './Sender/pages/OrderDetails';
+import { Toaster, toast } from "sonner";
+
+import  Print from './Sender/pages/Print'
 
 const SelectRole = () => {
   return (
@@ -27,6 +36,7 @@ const SelectRole = () => {
       <div className="role-buttons">
         <a href="/signup" className="role-btn sender-btn">🚚 Sender</a>
         <a href="/hanger/sign-up" className="role-btn hanger-btn">📦 Hanger</a>
+        <a href="/reciver" className="role-btn reciver-btn">📬 Reciver</a>
       </div>
     </div>
   );
@@ -46,6 +56,10 @@ const SenderLayout = () => {
   );
 };
 
+
+
+
+
 // Layout للـ Hanger
 const HangerLayout = () => {
   return (
@@ -61,19 +75,28 @@ const HangerLayout = () => {
   );
 };
 
+
 const App = () => {
+
+const  user=useUserStore((state)=>state.user);
+
   return (
+    <>
+    <Toaster position="top-right" richColors />
     <Router>
       <Routes>
-        <Route path="/" element={<SelectRole />} />
+        {/* <Route path="/" element={<SelectRole />} /> */}
 
         {/* Sender Auth */}
         <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
 
         {/* Hanger Auth */}
         <Route path="/hanger/sign-up" element={<SignUp />} />
         <Route path="/hanger/sign-in" element={<SignIn />} />
+        <Route path="/shipping" element={<ShippingPage />} />
+        <Route path="/new-request" element={<NewRequestPage />} />
+
 
         {/* Sender Layout */}
         <Route element={<SenderLayout />}>
@@ -81,7 +104,11 @@ const App = () => {
           <Route path="/order" element={<Order />} />
           <Route path="/actions" element={<Actions />} />
           <Route path="/wallet" element={<Wallet />} />
+
         </Route>
+          <Route path="/order-details/:orderId" element={<OrderDetails />} />
+                  <Route path="/print/:orderId" element={<Print />} />
+
 
         {/* Hanger Layout */}
         <Route path="/hanger" element={<HangerLayout />}>
@@ -92,8 +119,12 @@ const App = () => {
           <Route path="attendance" element={<HangerAttendance />} />
           <Route path="schedule" element={<DeliverySchedule />} />
         </Route>
+
+        {/* Reciver */}
+        <Route path="/reciver" element={<Reciver />} />
       </Routes>
     </Router>
+ </>
   );
 };
 

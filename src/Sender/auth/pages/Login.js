@@ -1,8 +1,24 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../css/LoginPage.css';
 import { FaShippingFast } from 'react-icons/fa';
+import useUserStore from '../../../Store/UserStore/userStore';
+import {  toast } from "sonner";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const Login = () => {
+const SetUser=useUserStore((state)=>state.SetUser)
+const user=useUserStore((state)=>state.user)
+const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
   useEffect(() => {
     document.body.classList.add('login-page');
     return () => {
@@ -10,6 +26,112 @@ const Login = () => {
     };
   }, []);
 
+
+  async function RefreshToken() {
+
+  try{
+  toast.info("Refreshing token...");
+
+  const response=await fetch('https://stakeexpress.runasp.net/api/Accounts/refreshToken',{
+    method:'GET',
+    headers:{
+      'Content-Type': 'application/json',
+      'X-Client-Key': 'web API',
+      // 'Authorization': `Bearer ${user?.token}`
+    },
+    credentiyals: 'include'
+
+  })
+  const data = await response.json();
+  if(response.status===200){
+    SetUser(data.data);
+      console.log("Token refreshed:", data);
+        toast.info(" token refreshed successfully");
+
+      shceduleRefreshToken(data.expiresOn);
+
+  }
+  console.log("Token ", data);
+    
+}catch(error){
+console.log("Error refreshing token:", error);
+
+}
+}
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!formData.email || !formData.password) {
+      setError('الرجاء إدخال البريد الإلكتروني وكلمة المرور');
+      return;
+    }
+    
+    if(formData.password.length < 8){
+
+      setError('كلمة المرور يجب أن تكون 8 أحرف على الأقل');
+      return;
+    }
+
+    setError('');
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        'https://stakeexpress.runasp.net/api/Accounts/login',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Client-Key': 'web API'
+          },
+          body: JSON.stringify({
+            email: formData.email.trim(),
+            password: formData.password
+          }),
+          
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log('✅ Login successful:', data);
+
+        if (data) {
+          sessionStorage.setItem('user', JSON.stringify(data));
+          SetUser(data.data);
+          shceduleRefreshToken(data.data.expiresOn);
+        toast.success("Login successfuly ");
+        }
+
+        navigate('/home');
+      } else {
+        console.error('🚨 Login error:', data);
+        setError(`❌ ${data.message}`);
+      }
+    } catch (err) {
+      setError('❌ خطأ في الاتصال: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const shceduleRefreshToken=(expiresOn)=>{
+const expirems=new Date(expiresOn).getTime()-new Date().getTime()-(4*60*1000);
+console.log("Token expires in ms:",expirems);
+if(expirems<=0){
+RefreshToken();
+return;
+}
+
+setTimeout(RefreshToken,expirems);
+}
   return (
     <>
       <div className="page-overlay"></div>
@@ -25,29 +147,61 @@ const Login = () => {
 
       <div className="login-container">
         <div className="login-form-wrapper">
-          <form>
+          <form onSubmit={handleSubmit}>
             <h2 className="login-form-title">Sign In to Your Account</h2>
             <p className="login-form-subtitle">
               Welcome back! Please enter your credentials to continue
             </p>
 
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+
             <div className="login-input-group">
-              <input type="email" placeholder="Email Address *" />
-              <input type="password" placeholder="Password *" />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email Address *"
+                value={formData.email}
+                onChange={handleChange}
+              />
+              <div className='d-flex align-items-center position-relative'>
+              <input
+                type={showPassword?"text":"password"}
+                name="password"
+                placeholder="Password *"
+                value={formData.password}
+                onChange={handleChange}
+                className='w-100'
+                >
+                </input>
+                <button
+                type='button'
+                className=' btn-link p-2 text-muted password-toggle'
+                onClick={()=>setShowPassword((prev)=>!prev)}
+                >
+
+                {showPassword? <AiOutlineEyeInvisible  size={"1.2em"} />:<AiOutlineEye size={"1.2em"} />}
+                </button>
+                </div>
             </div>
 
             <div className="login-options">
               <label>
                 <input type="checkbox" /> Remember me
               </label>
-              <a href="/" className="login-forgot-link">Forgot password?</a>
+              <a href="/" className="login-forgot-link">
+                Forgot password?
+              </a>
             </div>
 
-            <button type="submit" className="login-submit-button">
-              Sign In & Continue
+            <button
+              type="submit"
+              className="login-submit-button"
+              disabled={loading}
+            >
+              {loading ? 'Signing In...' : 'Sign In & Continue'}
             </button>
             <p className="login-footer-text">
-              Don’t have an account? <a href="/signup">Sign up here</a>
+             Are you shipper?,Don’t have an account? <a href="/signup">Sign up here</a>
             </p>
           </form>
         </div>
