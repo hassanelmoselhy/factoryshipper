@@ -1,11 +1,12 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import "./css/Print.css";
-import { fallbackOrderDetails } from "./OrderDetails"; // لو ملف OrderDetails فيه البيانات
+import useShipmentsStore from "../../Store/UserStore/ShipmentsStore";
 
 const Print = () => {
   const { orderId } = useParams();
-  const order = fallbackOrderDetails[orderId];
+  const Shipments = useShipmentsStore((state) => state.shipments);
+  const order = Shipments?.find((s) => s.id === parseInt(orderId));
 
   if (!order) {
     return <div>لم يتم العثور على بيانات الطرد</div>;
@@ -24,7 +25,7 @@ const Print = () => {
         <div className="print-box">
           <div className="print-box-top">
             <div className="print-location">
-              <p><span className="bold">العنوان :</span> {order.address}</p>
+              <p><span className="bold">العنوان :</span> {order.receiverAddress}</p>
             </div>
             <div className="print-logo">
               <img
@@ -41,10 +42,10 @@ const Print = () => {
 
           <div className="print-barcode">
             <img
-              src={`https://barcodeapi.org/api/128/${order.barcode}`}
+              src={`https://barcodeapi.org/api/128/${order.id}`}
               alt="barcode"
             />
-            <p className="bold">كود الطرد : {order.barcode}</p>
+            <p className="bold">كود الطرد : {order.id}</p>
           </div>
         </div>
 
@@ -52,19 +53,19 @@ const Print = () => {
         <div className="print-details">
           <div>
             <p><span className="bold">المرسل :</span> urban skate store</p>
-            <p><span className="bold">المستلم :</span> {order.name}</p>
+            <p><span className="bold">المستلم :</span> {order.receiverName}</p>
           </div>
           <div>
-            <p><span className="bold">القيمة :</span> {order.price} جنيه</p>
-            <p><span className="bold">الشحن :</span> {order.shipping} جنيه</p>
+            <p><span className="bold">القيمة :</span> {order.collectionAmount} جنيه</p>
+            <p><span className="bold">الشحن :</span> 10 جنيه</p>
           </div>
         </div>
 
         {/* Address & Contact */}
         <div className="print-address">
-          <p><span className="bold">العنوان :</span> {order.address}</p>
-          <p><span className="bold">محتوي الباكدج :</span> {order.packageContent}</p>
-          <p><span className="bold">التليفون :</span> {order.phone}</p>
+          <p><span className="bold">العنوان :</span> {order.receiverAddress}</p>
+          <p><span className="bold">محتوي الباكدج :</span> {order.shipmentDescription}</p>
+          <p><span className="bold">التليفون :</span> {order.receiverPhone}</p>
         </div>
       </div>
     </div>
