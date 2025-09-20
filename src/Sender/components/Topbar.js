@@ -9,7 +9,7 @@ const TopBar = () => {
   const user = useUserStore((state) => state.user);
   const [showActions, setShowActions] = useState(false);
   const navigate = useNavigate();
-  const { lang, toggleLang } = useLanguageStore(); // ✅ هنا كل حاجة
+  const { lang, toggleLang } = useLanguageStore();
 
   const handleCreateClick = () => {
     setShowActions((prev) => !prev);
@@ -18,7 +18,9 @@ const TopBar = () => {
   useEffect(() => {
     if (user) {
       console.log('user info =', user);
-    } else console.log('no user info');
+    } else {
+      console.log('no user info');
+    }
   }, [user]);
 
   const goToPage = (type) => {
@@ -50,19 +52,21 @@ const TopBar = () => {
           )}
         </div>
 
+        {/* 🔔 زر الإشعارات */}
         <button className="icon-button">
           <FaBell />
         </button>
 
-        {/* ✅ زر اللغة */}
+        {/* 🌐 زر اللغة */}
         <button className="icon-button" onClick={toggleLang}>
           {lang.toUpperCase()}
         </button>
       </div>
 
+      {/* 👤 بيانات المستخدم */}
       <div className="user-info">
         <img src="hassan.jpg" alt="User" className="user-img" />
-        <span className="user-name">{user?.userName}</span>
+        <span className="user-name">{user?.userName || user?.firstName}</span>
       </div>
     </div>
   );

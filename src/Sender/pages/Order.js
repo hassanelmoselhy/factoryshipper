@@ -3,22 +3,26 @@ import "./css/Order.css";
 import { Link } from "react-router-dom";
 import useLanguageStore from "../../Store/LanguageStore/languageStore";
 import translations from "../../Store/LanguageStore/translations";
+import useUserStore from "../../Store/UserStore/userStore";
+import { toast } from "sonner";
+import useShipmentsStore from "../../Store/UserStore/ShipmentsStore";
+import LoadingOverlay from "../components/LoadingOverlay";
 
-// 🎨 ألوان الـ Status
+// 🎨 ألوان الـ Status (للـ fallback فقط)
 const statusColors = {
-  delivered: "green",         // تم التوصيل / Delivered
-  customerProduct: "blue",    // منتج للعميل / Customer Product
-  inProgress: "yellow",       // قيد التنفيذ / In Progress
-  waitingDecision: "orange",  // انتظار القرار / Pending Decision
+  delivered: "green",
+  customerProduct: "blue",
+  inProgress: "yellow",
+  waitingDecision: "orange",
 };
 
-// 🎨 ألوان نوع الطلب
+// 🎨 ألوان نوع الطلب (للـ fallback فقط)
 const typeColors = {
-  fast: "purple", // سريع
-  normal: "gray", // عادي
+  fast: "purple",
+  normal: "gray",
 };
 
-// ✅ بيانات احتياطية (مفتاح ثابت بدل النصوص)
+// ✅ بيانات احتياطية (fallback لو API فشل)
 const fallbackOrders = [
   {
     id: 842,
@@ -66,7 +70,7 @@ const fallbackOrders = [
   },
 ];
 
-// ✅ Tabs الأساسية
+// ✅ Tabs الأساسية (للـ fallback)
 const tabKeys = ["all", "delivered", "customerProduct", "inProgress", "waitingDecision"];
 
 const Order = () => {
@@ -74,130 +78,188 @@ const Order = () => {
   const t = translations[lang];
 
   const [orders, setOrders] = useState([]);
+  const [Shipments, setShipments] = useState([]);
   const [activeTab, setActiveTab] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [openMenuId, setOpenMenuId] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const user = useUserStore((state) => state.user);
+  const SetShipmentsStore = useShipmentsStore((state) => state.SetShipments);
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const res = await fetch("https://stakeexpress.runasp.net/api/Shipment/GetAllShipments");
-        if (!res.ok) throw new Error("Request failed");
-        const data = await res.json();
+    setOrders(fallbackOrders);
 
-        // ⚡ لازم هنا تتأكد إن الـ API بيرجع statusKey / typeKey مش نصوص
-        // لو بيرجع نصوص لازم تعمل mapping هنا
-        setOrders(data);
+    if (!user) {
+      toast.error("Unauthorized, login first");
+      return;
+    }
+
+    const fetchOrders = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch("https://stakeexpress.runasp.net/api/Shipments/getShipments", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Client-Key": "web API",
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+
+        if (res.status === 200) {
+          const data = await res.json();
+          data.data.forEach((shipment) => {
+            shipment.receiverAddress =
+              shipment.receiverAddress.country +
+              " - " +
+              shipment.receiverAddress.city +
+              " - " +
+              shipment.receiverAddress.street +
+              " - " +
+              shipment.receiverAddress.details;
+          });
+
+          setShipments(data.data);
+          SetShipmentsStore(data.data);
+        }
       } catch (error) {
         console.warn("Using fallback orders due to error:", error.message);
         setOrders(fallbackOrders);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchOrders();
-  }, []);
+  }, [user, SetShipmentsStore]);
 
-  // ✅ فلترة الأوردرات
+  // ✅ فلترة الأوردرات (fallback فقط)
   const filteredOrders = orders.filter((order) => {
     const matchesTab = activeTab === "all" || order.statusKey === activeTab;
-
     const matchesSearch =
       order.name.includes(searchTerm) ||
       order.phone.includes(searchTerm) ||
       order.id.toString().includes(searchTerm);
-
     return matchesTab && matchesSearch;
   });
 
   return (
-<div className="order-page" dir={lang === "ar" ? "rtl" : "ltr"}>      {/* ✅ العنوان والبحث */}
-      <div className="order-header">
-        <h2>{t.orders}</h2>
-        <input
-          type="text"
-          placeholder={t.searchOrder}
-          className="order-search"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
+    <>
+      <LoadingOverlay loading={loading} message="please wait..." color="#fff" size={44} />
+      <div className="order-page" dir={lang === "ar" ? "rtl" : "ltr"}>
+        {/* ✅ العنوان والبحث */}
+        <div className="order-header">
+          <h2>{t.orders}</h2>
+          <input
+            type="text"
+            placeholder={t.searchOrder}
+            className="order-search"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
 
-      {/* ✅ Tabs */}
-      <div className="order-tabs">
-        {tabKeys.map((key) => (
-          <button
-            key={key}
-            className={`tab ${activeTab === key ? "active" : ""}`}
-            onClick={() => setActiveTab(key)}
-          >
-            {t[key]} (
-              {
-                orders.filter((o) =>
-                  key === "all" ? true : o.statusKey === key
-                ).length
-              }
-            )
-          </button>
-        ))}
-      </div>
+        {/* ✅ Tabs */}
+        <div className="order-tabs">
+          {tabKeys.map((key) => (
+            <button
+              key={key}
+              className={`tab ${activeTab === key ? "active" : ""}`}
+              onClick={() => setActiveTab(key)}
+            >
+              {t[key]} (
+                {orders.filter((o) => (key === "all" ? true : o.statusKey === key)).length}
+              )
+            </button>
+          ))}
+        </div>
 
-      {/* ✅ قائمة الأوردرات */}
-      <div className="order-list">
-        {filteredOrders.length > 0 ? (
-          filteredOrders.map((order) => (
-            <Link to={`/order-details/${order.id}`} key={order.id} className="order-card">
-              <div className="order-card-header">
-                <span className="order-id">#{order.id}</span>
-                <span
-                  className="status-badge"
-                  style={{ backgroundColor: statusColors[order.statusKey] }}
-                >
-                  {t.statusMap[order.statusKey][lang]}
-                </span>
-                <span
-                  className="type-badge"
-                  style={{ backgroundColor: typeColors[order.typeKey] }}
-                >
-                  {t.typeMap[order.typeKey][lang]}
-                </span>
-              </div>
-
-              <div className="order-info">
-                <p>{t.client}: {order.name}</p>
-                <p>{t.phone}: {order.phone}</p>
-                <p>{t.address}: {order.address}</p>
-                <p>{t.date}: {order.date} - {order.time}</p>
-              </div>
-
-              <div className="order-footer">
-                <span className="order-price">{order.price} ر.س</span>
-                <div className="order-options">
-                  <span 
-                    className="options-btn"
-                    onClick={(e) => { e.preventDefault(); setOpenMenuId(openMenuId === order.id ? null : order.id); }}
-                  >
-                    ⋮
+        {/* ✅ قائمة الأوردرات */}
+        <div className="order-list">
+          {Shipments.length > 0 ? (
+            Shipments.map((order) => (
+              <Link to={`/order-details/${order.id}`} key={order.id} className="order-card">
+                <div className="order-card-header">
+                  <span className="order-id">#{order.id}</span>
+                  <span className={`status-badge Shipmentstatuscolor`}>
+                    {order.shipmentStatuses[0].status}
                   </span>
-                  {openMenuId === order.id && (
-                    <div className="options-menu">
-                      <button>{t.postpone}</button>
-                      <button>{t.redeliver}</button>
-                      <button>{t.editData}</button>
-                      <button>{t.printPolicy}</button>
-                      <button className="danger">{t.cancel}</button>
-                    </div>
-                  )}
+                  <span className={`type-badge Shipmentstatuscolor`}>
+                    {order.expressDeliveryEnabled === false ? "Normal" : "Fast"}
+                  </span>
                 </div>
-              </div>
-            </Link>
-          ))
-        ) : (
-          <p style={{ textAlign: "center", marginTop: "30px", color: "#888" }}>
-            {t.noOrders}
-          </p>
-        )}
+                <div className="order-info">
+                  <p>العميل: {order.receiverName}</p>
+                  <p>الهاتف: {order.receiverPhone}</p>
+                  <p>العنوان: {order.receiverAddress}</p>
+                  <p>التاريخ: {order.createdAt}</p>
+                </div>
+                <div className="order-footer">
+                  <span className="order-price">{order.collectionAmount} ر.س</span>
+
+                  <div className="order-options">
+                    <span
+                      className="options-btn"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setOpenMenuId(openMenuId === order.id ? null : order.id);
+                      }}
+                    >
+                      ⋮
+                    </span>
+                    {openMenuId === order.id && (
+                      <div className="options-menu">
+                        <button>تأجيل الأوردر</button>
+                        <button>إعادة توصيل الأوردر</button>
+                        <button>تعديل البيانات</button>
+                        <button>طباعة بوليسة</button>
+                        <button className="danger">إلغاء</button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </Link>
+            ))
+          ) : filteredOrders.length > 0 ? (
+            filteredOrders.map((order) => (
+              <Link to={`/order-details/${order.id}`} key={order.id} className="order-card">
+                <div className="order-card-header">
+                  <span className="order-id">#{order.id}</span>
+                  <span
+                    className="status-badge"
+                    style={{ backgroundColor: statusColors[order.statusKey] }}
+                  >
+                    {t.statusMap[order.statusKey][lang]}
+                  </span>
+                  <span
+                    className="type-badge"
+                    style={{ backgroundColor: typeColors[order.typeKey] }}
+                  >
+                    {t.typeMap[order.typeKey][lang]}
+                  </span>
+                </div>
+
+                <div className="order-info">
+                  <p>{t.client}: {order.name}</p>
+                  <p>{t.phone}: {order.phone}</p>
+                  <p>{t.address}: {order.address}</p>
+                  <p>{t.date}: {order.date} - {order.time}</p>
+                </div>
+
+                <div className="order-footer">
+                  <span className="order-price">{order.price} ر.س</span>
+                </div>
+              </Link>
+            ))
+          ) : (
+            <p style={{ textAlign: "center", marginTop: "30px", color: "#888" }}>
+              {t.noOrders}
+            </p>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

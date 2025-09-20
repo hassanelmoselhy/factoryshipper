@@ -25,8 +25,14 @@ import NewRequestPage from './Sender/pages/NewRequestPage';
 import ShippingPage from './Sender/pages/ShippingPage';
 import useUserStore from './Store/UserStore/userStore';
 import { OrderDetails } from './Sender/pages/OrderDetails';
-import  Print from './Sender/pages/Print'
+import { Toaster } from "sonner";
 
+import Print from './Sender/pages/Print'
+import { scheduleRefreshToken } from "./utils/auth";
+
+
+// لو عندك فانكشن اسمها shceduleRefreshToken لازم تكون مستوردة
+// import { shceduleRefreshToken } from "./utils/auth"; 
 
 const SelectRole = () => {
   return (
@@ -55,31 +61,6 @@ const SenderLayout = () => {
   );
 };
 
-
-
-async function RefreshToken() {
-
-try{
-
-  const response=await fetch('https://stakeexpress.runasp.net/api/Account/refreshToken',{
-    method:'GET',
-    headers:{
-      'Content-Type': 'application/json',
-      'X-Client-Key': 'web API'
-
-    }
-  })
-    const data = await response.json();
-      console.log("Token refreshed:", data);
-
-      // shceduleRefreshToken(data.expiresOn);
-}catch(error){
-console.log("Error refreshing token:", error);
-
-}
-}
-
-
 // Layout للـ Hanger
 const HangerLayout = () => {
   return (
@@ -95,70 +76,61 @@ const HangerLayout = () => {
   );
 };
 
-const shceduleRefreshToken=(expiresOn)=>{
-const expirems=new Date(expiresOn).getTime()-new Date().getTime()-(5*60*1000);
-console.log("Token expires in ms:",expirems);
-if(expirems<=0){
-RefreshToken();
-return;
-}
-
-setTimeout(RefreshToken,expirems);
-
-}
 const App = () => {
-const  user=useUserStore((state)=>state.user);
-useEffect(()=>{
-if(!user)return;
+  const user = useUserStore((state) => state.user);
 
+  useEffect(() => {
+    if (!user) return;
 
-shceduleRefreshToken(user.expiresOn);
-
-},[user]) 
-
+    // استدعاء الفانكشن اللي بتعمل refresh للـ token
+   if (typeof scheduleRefreshToken === "function") {
+  scheduleRefreshToken(user.expiresOn);
+}
+}, [user]);
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<SelectRole />} />
+    <>
+      <Toaster position="top-right" richColors />
+      <Router>
+        <Routes>
+          {/* <Route path="/" element={<SelectRole />} /> */}
 
-        {/* Sender Auth */}
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
+          {/* Sender Auth */}
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/" element={<Login />} />
 
-        {/* Hanger Auth */}
-        <Route path="/hanger/sign-up" element={<SignUp />} />
-        <Route path="/hanger/sign-in" element={<SignIn />} />
-        <Route path="/shipping" element={<ShippingPage />} />
-        <Route path="/new-request" element={<NewRequestPage />} />
+          {/* Hanger Auth */}
+          <Route path="/hanger/sign-up" element={<SignUp />} />
+          <Route path="/hanger/sign-in" element={<SignIn />} />
+          <Route path="/shipping" element={<ShippingPage />} />
+          <Route path="/new-request" element={<NewRequestPage />} />
 
+          {/* Sender Layout */}
+          <Route element={<SenderLayout />}>
+            <Route path="/home" element={<Home />} />
+            <Route path="/order" element={<Order />} />
+            <Route path="/actions" element={<Actions />} />
+            <Route path="/wallet" element={<Wallet />} />
+          </Route>
 
-        {/* Sender Layout */}
-        <Route element={<SenderLayout />}>
-          <Route path="/home" element={<Home />} />
-          <Route path="/order" element={<Order />} />
-          <Route path="/actions" element={<Actions />} />
-          <Route path="/wallet" element={<Wallet />} />
-
-        </Route>
           <Route path="/order-details/:orderId" element={<OrderDetails />} />
-                  <Route path="/print/:orderId" element={<Print />} />
+          <Route path="/print/:orderId" element={<Print />} />
 
+          {/* Hanger Layout */}
+          <Route path="/hanger" element={<HangerLayout />}>
+            <Route path="home" element={<HangerHome />} /> 
+            <Route path="update" element={<ShipmentUpdate />} />
+            <Route path="employees" element={<EmployeeMang />} />
+            <Route path="scan" element={<Scan />} />
+            <Route path="attendance" element={<HangerAttendance />} />
+            <Route path="schedule" element={<DeliverySchedule />} />
+          </Route>
 
-        {/* Hanger Layout */}
-        <Route path="/hanger" element={<HangerLayout />}>
-          <Route path="home" element={<HangerHome />} /> 
-          <Route path="update" element={<ShipmentUpdate />} />
-          <Route path="employees" element={<EmployeeMang />} />
-          <Route path="scan" element={<Scan />} />
-          <Route path="attendance" element={<HangerAttendance />} />
-          <Route path="schedule" element={<DeliverySchedule />} />
-        </Route>
-
-        {/* Reciver */}
-        <Route path="/reciver" element={<Reciver />} />
-      </Routes>
-    </Router>
+          {/* Reciver */}
+          <Route path="/reciver" element={<Reciver />} />
+        </Routes>
+      </Router>
+    </>
   );
 };
 

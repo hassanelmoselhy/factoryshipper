@@ -88,6 +88,7 @@
   color: #333;
 }
 
+/* Badges */
 .status-badge,
 .type-badge {
   padding: 4px 10px;
@@ -96,6 +97,33 @@
   font-weight: bold;
   color: #fff;
   white-space: nowrap;
+}
+
+/* Status Colors */
+.status-badge.delivered {
+  background-color: #28a745;
+}
+
+.status-badge.customerProduct {
+  background-color: #17a2b8;
+}
+
+.status-badge.inProgress {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.status-badge.waitingDecision {
+  background-color: #fd7e14;
+}
+
+/* Type Colors */
+.type-badge.fast {
+  background-color: #6f42c1;
+}
+
+.type-badge.normal {
+  background-color: #adb5bd;
 }
 
 /* معلومات الأوردر */
@@ -139,7 +167,7 @@
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   overflow: hidden;
   z-index: 10;
   min-width: 160px;

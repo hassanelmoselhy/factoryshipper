@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import './reciver.css';
 import {
+ 
   FiMessageCircle,
   FiCopy,
   FiLink,
   FiStar,
-  FiPhone,
-  FiMail,
 } from 'react-icons/fi';
 import TrackingTimeline from './../components/Follow';
 
 const Reciver = () => {
   const [rating, setRating] = useState(0);
-  const [showSupport, setShowSupport] = useState(false); // ✅ state للبوب-أب
 
   const trackingNo = 'SP12345678';
   const trackUrl = 'https://example.com/track/SP12345678';
+
+
 
   return (
     <div className="receiver-page">
@@ -23,7 +23,7 @@ const Reciver = () => {
       <p className="page-subtitle">إدارة شحنتك والتحكم في عملية التوصيل</p>
 
       <div className="grid">
-        {/* باقي الكروت زي ما هي */}
+        {/* كارت تتبع الشحنة */}
         <section className="card col-span-2">
           <div className="card-head">
             <div className="head-left">
@@ -34,15 +34,18 @@ const Reciver = () => {
               <span className="tracking-no">{trackingNo}</span>
             </div>
           </div>
-          <TrackingTimeline />
+      <TrackingTimeline/>
+        
         </section>
 
+        {/* وقت التسليم المتوقع */}
         <section className="card">
           <div className="card-title">الوقت المتوقع للتوصيل</div>
           <div className="eta-box danger">تم التوصيل</div>
           <div className="eta-meta">٢:٣٥م • ٢٠٢٤/٠٨/١٩ • القاهرة</div>
         </section>
 
+        {/* رابط تتبع الشحنة */}
         <section className="card">
           <div className="card-title">رابط تتبع الشحنة</div>
           <div className="track-link">
@@ -56,11 +59,12 @@ const Reciver = () => {
               <FiCopy />
             </button>
           </div>
-          <div className="muted small">
-            يمكنك مشاركة الرابط لمتابعة حالة الشحنة في وقتها.
-          </div>
+          <div className="muted small">يمكنك مشاركة الرابط لمتابعة حالة الشحنة في وقتها.</div>
         </section>
 
+       
+
+        {/* تقييم الخدمة */}
         <section className="card col-span-2">
           <div className="card-title">تقييم الخدمة (اختياري)</div>
           <div className="rate-row">
@@ -78,49 +82,16 @@ const Reciver = () => {
               ))}
             </div>
           </div>
-          <textarea
-            className="note"
-            placeholder="اكتب ملاحظاتك عن التجربة…"
-          ></textarea>
+          <textarea className="note" placeholder="اكتب ملاحظاتك عن التجربة…"></textarea>
           <button className="btn1 btn-primary wide">إرسال التقييم</button>
         </section>
       </div>
 
-      {/* زرار الدعم */}
-      <button
-        className="fab-message"
-        title="مراسلة الدعم"
-        onClick={() => setShowSupport(true)}
-      >
+      {/* زرار الرسالة     */}
+      <button className="fab-message" title="مراسلة الدعم">
         <FiMessageCircle />
       </button>
 
-      {/* ✅ البوب-أب */}
-      {showSupport && (
-        <div className="support-overlay">
-          <div className="support-popup">
-            <button className="close-btn" onClick={() => setShowSupport(false)}>
-              ✖
-            </button>
-            <h2 className="support-title">الدعم الفني</h2>
-            <p className="support-subtitle">فريق الدعم الفني</p>
-            <p className="support-status">متاح 24/7</p>
-
-            <div className="support-item">
-              <FiPhone />
-              <span>اتصل بنا: 920000000</span>
-            </div>
-            <div className="support-item">
-              <FiMail />
-              <span>البريد الإلكتروني: support@company.com</span>
-            </div>
-
-            <div className="support-note">
-              💬 يمكنك التواصل معنا في أي وقت للحصول على المساعدة والدعم اللازم
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

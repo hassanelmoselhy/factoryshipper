@@ -3,13 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import '../css/LoginPage.css';
 import { FaShippingFast } from 'react-icons/fa';
 import useUserStore from '../../../Store/UserStore/userStore';
+import {  toast } from "sonner";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import LoadingOverlay from '../../components/LoadingOverlay';
 const Login = () => {
 const SetUser=useUserStore((state)=>state.SetUser)
-
+const user=useUserStore((state)=>state.user)
+const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
+
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -20,6 +25,39 @@ const SetUser=useUserStore((state)=>state.SetUser)
       document.body.classList.remove('login-page');
     };
   }, []);
+
+
+  async function RefreshToken() {
+
+  try{
+  toast.info("Refreshing token...");
+
+  const response=await fetch('https://stakeexpress.runasp.net/api/Accounts/refreshToken',{
+    method:'GET',
+    headers:{
+      'Content-Type': 'application/json',
+      'X-Client-Key': 'web API',
+     
+    },
+    credentials: 'include'
+
+  })
+  const data = await response.json();
+  if(response.status===200){
+    SetUser(data.data);
+      console.log("Token refreshed:", data);
+       
+        console.log("token data = ", data.data.expiresOn);
+      shceduleRefreshToken(data.data.expiresOn);
+
+  }
+  console.log("Token ", data);
+    
+}catch(error){
+console.log("Error refreshing token:", error);
+
+}
+}
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,6 +71,7 @@ const SetUser=useUserStore((state)=>state.SetUser)
       setError('الرجاء إدخال البريد الإلكتروني وكلمة المرور');
       return;
     }
+    
     if(formData.password.length < 8){
 
       setError('كلمة المرور يجب أن تكون 8 أحرف على الأقل');
@@ -44,7 +83,7 @@ const SetUser=useUserStore((state)=>state.SetUser)
 
     try {
       const response = await fetch(
-        'https://stakeexpress.runasp.net/api/Account/login',
+        'https://stakeexpress.runasp.net/api/Accounts/login',
         {
           method: 'POST',
           headers: {
@@ -54,7 +93,8 @@ const SetUser=useUserStore((state)=>state.SetUser)
           body: JSON.stringify({
             email: formData.email.trim(),
             password: formData.password
-          })
+          }),
+          credentials:'include'
         }
       );
 
@@ -65,7 +105,9 @@ const SetUser=useUserStore((state)=>state.SetUser)
 
         if (data) {
           sessionStorage.setItem('user', JSON.stringify(data));
-          SetUser(data);
+          SetUser(data.data);
+          shceduleRefreshToken(data.data.expiresOn);
+        toast.success("Login successfuly ");
         }
 
         navigate('/home');
@@ -79,9 +121,41 @@ const SetUser=useUserStore((state)=>state.SetUser)
       setLoading(false);
     }
   };
+const refreshTokenExpirationhandle=()=>{
 
+navigate('/login');
+SetUser(null);
+sessionStorage.removeItem('user');
+toast.error("Session expired, please login again");
+
+}
+  const shceduleRefreshToken=(expiresOn,refreshTokenExpiration)=>{
+const expirems=new Date(expiresOn).getTime()-new Date().getTime()-(1*60*1000);
+const refreshTokenExpirationms=new Date(refreshTokenExpiration).getTime()-new Date().getTime();
+
+if(refreshTokenExpirationms<=0){
+refreshTokenExpirationhandle();
+return;
+}
+else if(refreshTokenExpirationms>0 ){
+  setTimeout(refreshTokenExpirationhandle,refreshTokenExpirationms );
+return;
+}
+
+console.log("Token expires in ms:",expirems);
+if(expirems === NaN) return;
+
+if(expirems<=0){
+RefreshToken();
+return;
+}
+
+setTimeout(RefreshToken,expirems);
+}
   return (
     <>
+      <LoadingOverlay loading={loading} message="please wait..." color="#fff" size={44} />
+
       <div className="page-overlay"></div>
       <div className="login-banner">
         <div className="login-logo">
@@ -111,13 +185,25 @@ const SetUser=useUserStore((state)=>state.SetUser)
                 value={formData.email}
                 onChange={handleChange}
               />
+              <div className='d-flex align-items-center position-relative'>
               <input
-                type="password"
+                type={showPassword?"text":"password"}
                 name="password"
                 placeholder="Password *"
                 value={formData.password}
                 onChange={handleChange}
-              />
+                className='w-100'
+                >
+                </input>
+                <button
+                type='button'
+                className=' btn-link p-2 text-muted password-toggle'
+                onClick={()=>setShowPassword((prev)=>!prev)}
+                >
+
+                {showPassword? <AiOutlineEyeInvisible  size={"1.2em"} />:<AiOutlineEye size={"1.2em"} />}
+                </button>
+                </div>
             </div>
 
             <div className="login-options">
@@ -137,7 +223,7 @@ const SetUser=useUserStore((state)=>state.SetUser)
               {loading ? 'Signing In...' : 'Sign In & Continue'}
             </button>
             <p className="login-footer-text">
-              Don’t have an account? <a href="/signup">Sign up here</a>
+             Are you shipper?,Don’t have an account? <a href="/signup">Sign up here</a>
             </p>
           </form>
         </div>

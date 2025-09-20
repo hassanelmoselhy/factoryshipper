@@ -3,9 +3,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import Barcode from "react-barcode";
 import "./css/OrderDetails.css";
 import TopBar from "../components/Topbar";
-
- export  const fallbackOrderDetails = {
-  842: {
+import useShipmentsStore from '../../Store/UserStore/ShipmentsStore';
+import { toast } from "sonner";
+import useUserStore from "../../Store/UserStore/userStore";
+import LoadingOverlay from "../components/LoadingOverlay";
+export const fallbackOrderDetails = {
+  2: {
     id: 842,
     status: "تم التوصيل",
     type: "سريع",
@@ -105,29 +108,21 @@ export const OrderDetails = () => {
   const [orderDetails, setOrderDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [Shipment,SetShipment]=useState();
+  const Shipments = useShipmentsStore((state) => state.shipments);
+  const user=useUserStore((state)=>state.user);
   useEffect(() => {
-    const fetchDetails = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = fallbackOrderDetails[orderId];
-        if (data) {
-          setOrderDetails(data);
-        } else {
-          throw new Error("Order not found");
-        }
-      } catch (err) {
-        setError(err.message);
-        console.error("Error fetching order details:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (orderId) {
-      fetchDetails();
+    setLoading(true);
+    const findShipment=Shipments?.find(s=>s.id===parseInt(orderId));
+    
+    if(findShipment){   
+    SetShipment(findShipment);
+    setLoading(false);
     }
+    console.log("Found Shipment:",orderId );
+
+  setLoading(false);
+
   }, [orderId]);
 
   if (loading) {
@@ -136,15 +131,15 @@ export const OrderDetails = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="order-details-container" style={{ color: "red" }}>
-        خطأ: {error}
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="order-details-container" style={{ color: "red" }}>
+  //       خطأ: {error}
+  //     </div>
+  //   );
+  // }
 
-  if (!orderDetails) {
+  if (Shipment===null) {
     return (
       <div className="order-details-container">
         لم يتم العثور على تفاصيل لهذا الطلب.
@@ -152,20 +147,59 @@ export const OrderDetails = () => {
     );
   }
 
-const totalExtras = orderDetails.extras.reduce((acc, e) => acc + e.value, 0);
-const supplyValue = orderDetails.price - (orderDetails.shipping + totalExtras);
+// const totalExtras = orderDetails.extras.reduce((acc, e) => acc + e.value, 0);
+const supplyValue = Shipment.collectionAmount ;
+
+
+
+  const DeleteShipment= async ()=>{
+    try{
+  setLoading(true);
+console.log("Deleting Shipment:",orderId );
+  const res=await fetch("https://stakeexpress.runasp.net/api/Shipments/deleteShipment/"+orderId,{
+
+    method:"DELETE",
+    headers:{
+      'Content-Type': 'application/json',
+      'X-Client-Key': 'web API',
+      'Authorization': `Bearer ${user?.token}`
+    },
+    
+
+  });
+  console.log("Response Status:",res.status);
+  if(res.ok===true){
+  
+    toast.success("تم إلغاء الطلب بنجاح");
+    navigate(-1);
+  }
+  else {
+
+   
+    toast.error("حدث خطأ أثناء إلغاء الطلب");
+  }
+
+}catch(err){
+    toast.error("حدث خطأ في الخادم أثناء إلغاء الطلب");
+    console.log('Server Error',err);
+
+  }finally{
+    setLoading(false);
+  }
+}
 
   return (
     <>
+    <LoadingOverlay loading={loading} message="please wait..." color="#fff" size={44} />
       <TopBar />
       <div className="order-details-page">
         <div className="order-details-header">
           <h2>تفاصيل الطلب</h2>
-          <p>إدارة ومتابعة تفاصيل الطلب #{orderDetails.id}</p>
+          <p>إدارة ومتابعة تفاصيل الطلب #{Shipment.id}</p>
         </div>
 
         <div className="order-actions-bar">
-          <button className="cancel-button ">
+          <button className="cancel-button"      onClick={DeleteShipment} >
             إلغاء الطلب
             <i class="fa-solid fa-xmark"></i>
           </button>
@@ -175,7 +209,7 @@ const supplyValue = orderDetails.price - (orderDetails.shipping + totalExtras);
           </button>
          <button
   className="print-button primary"
-  onClick={() => navigate(`/print/${orderDetails.id}`)}
+  onClick={() => navigate(`/print/${Shipment.id}`)}
 >
   طباعة بوليصة الشحن
   <i className="fa-solid fa-print"></i>
@@ -190,8 +224,8 @@ const supplyValue = orderDetails.price - (orderDetails.shipping + totalExtras);
           <div className="order-info-grid">
             <div className="info-item1">
               <span className="info-label">حالة الطلب</span>
-              <div className={`status-badge ${orderDetails.status}`}>
-                {orderDetails.status}
+              <div className={`status-badge ${Shipment.status}`}>
+                {Shipment.status}
               </div>
             </div>
             <div className="info-item2">
@@ -199,14 +233,14 @@ const supplyValue = orderDetails.price - (orderDetails.shipping + totalExtras);
             <div className="order-info">
             <span className="info-label">رقم الطلب</span>
             <div className="order-id-display">
-                <i className="fa-regular fa-copy"></i> {orderDetails.id}
+                <i className="fa-regular fa-copy"></i> {Shipment.id}
               </div>
             </div>
             {/* 2 */}
               <div className="barcode-display">
                 <span className="info-label">الباركود</span>
                 <Barcode
-                  value={orderDetails.barcode}
+                  value={123}
                   height={60}
                   displayValue={true}
                 />
@@ -219,19 +253,19 @@ const supplyValue = orderDetails.price - (orderDetails.shipping + totalExtras);
             <div className="customer-info-grid">
               <div className="info-item">
                 <span className="info-label">اسم العميل</span>
-                <i className="fas fa-user"></i> {orderDetails.name}
+                <i className="fas fa-user"></i> {Shipment.receiverName}
               </div>
               <div className="info-item">
                 <span className="info-label">رقم الهاتف</span>
-                <i className="fas fa-phone"></i> {orderDetails.phone}
+                <i className="fas fa-phone"></i> {Shipment.receiverPhone}
               </div>
               <div className="info-item">
                 <span className="info-label">العنوان الكامل</span>
-                <i className="fas fa-map-marker-alt"></i> {orderDetails.address}
+                <i className="fas fa-map-marker-alt"></i> {Shipment.receiverAddress}
               </div>
               <div className="info-item">
                 <span className="info-label">محتوى الطرد</span>
-                <i className="fas fa-box"></i> {orderDetails.packageContent}
+                <i className="fas fa-box"></i> {Shipment.shipmentDescription}
               </div>
             </div>
           </div>
@@ -240,13 +274,13 @@ const supplyValue = orderDetails.price - (orderDetails.shipping + totalExtras);
           <div className="finance-section">
             <h3>المعلومات المالية</h3>
             <div className="finance-box">
-              <div className="finance-row"><span>قيمة التحصيل</span><strong>{orderDetails.price} جنيه</strong></div>
-              <div className="finance-row"><span>قيمة الشحن</span><strong>{orderDetails.shipping} جنيه</strong></div>
+              <div className="finance-row"><span>قيمة التحصيل</span><strong>{Shipment.collectionAmount} جنيه</strong></div>
+              <div className="finance-row"><span>قيمة الشحن</span><strong>{10} جنيه</strong></div>
               <div className="finance-row"><span>المبالغ الإضافية</span>
                 <div>
-                  {orderDetails.extras.map((ex, i) => (
-                    <div key={i} className="extra-item">{ex.label}: {ex.value} جنيه</div>
-                  ))}
+                  
+                    <div  className="extra-item">{"وزن زائد"}: {15} جنيه</div>
+                
                 </div>
               </div>
               <div className="finance-total">قيمة التوريد: {supplyValue} جنيه</div>
@@ -254,7 +288,7 @@ const supplyValue = orderDetails.price - (orderDetails.shipping + totalExtras);
           </div>
 
 
-    <div className="tracking-section">
+    {/* <div className="tracking-section">
             <h3>تتبع مسار الطلب</h3>
             <ul className="tracking-list">
               {orderDetails.tracking.map((t, i) => (
@@ -265,7 +299,7 @@ const supplyValue = orderDetails.price - (orderDetails.shipping + totalExtras);
                 </li>
               ))}
             </ul>
-          </div>
+          </div> */}
         </div>
 
 
@@ -276,4 +310,7 @@ const supplyValue = orderDetails.price - (orderDetails.shipping + totalExtras);
       </div>
     </>
   );
+
+
+
 };

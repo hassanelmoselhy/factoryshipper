@@ -39,7 +39,7 @@ const Rightsidebar = () => {
             </NavLink>
           </li>
           <li>
-            <NavLink to="/login" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+            <NavLink to="/" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
               <span className="icon "><FaSignOutAlt /></span>
               <span className="text">تسجيل الخروج</span>
             </NavLink>
