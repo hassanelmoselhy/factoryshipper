@@ -1,9 +1,19 @@
+/* الاتجاه العام */
 .order-page {
   padding: 20px;
-  direction: rtl;
   font-family: "Segoe UI", sans-serif;
 }
 
+/* RTL vs LTR */
+[dir="rtl"] .order-page {
+  text-align: right;
+}
+
+[dir="ltr"] .order-page {
+  text-align: left;
+}
+
+/* العنوان والبحث */
 .order-header {
   display: flex;
   justify-content: space-between;
@@ -15,9 +25,11 @@
   padding: 10px 15px;
   border-radius: 10px;
   border: 1px solid #ccc;
-  width: 300px;
+  width: 280px;
+  font-size: 14px;
 }
 
+/* Tabs */
 .order-tabs {
   display: flex;
   gap: 10px;
@@ -33,6 +45,8 @@
   cursor: pointer;
   font-weight: bold;
   font-size: 14px;
+  transition: background 0.3s ease;
+  margin-inline-start: 5px; /* بديل RTL/LTR */
 }
 
 .tab.active {
@@ -40,6 +54,7 @@
   color: #fff;
 }
 
+/* قائمة الأوردرات */
 .order-list {
   display: flex;
   flex-direction: column;
@@ -53,155 +68,56 @@
   padding: 15px;
   cursor: pointer;
   text-decoration: none;
+  transition: all 0.3s ease;
 }
 
 .order-card:hover {
-  box-shadow: 0 0 15px #ccc;
-  scale: 1.02;
-  transition: all 0.3s ease;
+  box-shadow: 0 0 15px #bbb;
+  transform: scale(1.02);
 }
+
 .order-card-header {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-bottom: 10px;
 }
+
 .order-id {
   font-weight: bold;
   color: #333;
 }
 
-.status-badge {
+.status-badge,
+.type-badge {
   padding: 4px 10px;
   border-radius: 10px;
   font-size: 12px;
   font-weight: bold;
   color: #fff;
+  white-space: nowrap;
 }
 
-.status-badge.تم\ التوصيل {
-  background-color: #28a745;
-}
-
-.status-badge.منتج\ للعميل {
-  background-color: #17a2b8;
-}
-
-.status-badge.قيد\ التنفيذ {
-  background-color: #ffc107;
-  color: #000;
-}
-
-.status-badge.انتظار\ القرار {
-  background-color: #fd7e14;
-}
-
-.type-badge {
-  padding: 3px 10px;
-  border-radius: 10px;
-  font-size: 12px;
-  font-weight: bold;
-  color: #fff;
-}
-
-.type-badge.سريع {
-  background-color: #6f42c1;
-}
-
-.type-badge.عادي {
-  background-color: #adb5bd;
-}
-
+/* معلومات الأوردر */
 .order-info p {
   margin: 2px 0;
   font-size: 14px;
   color: #444;
 }
 
+/* الفوتر */
 .order-footer {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-top: 10px;
   font-size: 14px;
   color: #333;
 }
 
-.options {
+.order-price {
   font-weight: bold;
-  cursor: pointer;
-}
-.order-page {
-  padding: 20px;
-  direction: rtl;
-}
-
-.order-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.order-search {
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-
-.order-tabs {
-  margin-top: 15px;
-}
-
-.tab {
-  margin-left: 5px;
-  padding: 6px 12px;
-  border: none;
-  border-radius: 6px;
-  background: #eee;
-  cursor: pointer;
-}
-
-.tab.active {
-  background: #007bff;
-  color: white;
-}
-
-.order-list {
-  margin-top: 20px;
-}
-
-.order-card {
-  background: white;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-.order-card-header {
-  display: flex;
-  justify-content: flex-start;
-  gap: 10px;
-}
-
-.status-badge {
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  background: #eee;
-}
-
-.type-badge {
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  background: #ddd;
-}
-
-.order-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 10px;
+  color: #007bff;
 }
 
 .order-options {
@@ -215,10 +131,11 @@
   user-select: none;
 }
 
+/* المنيو تطلع يمين أو شمال حسب الاتجاه */
 .options-menu {
   position: absolute;
   bottom: 30px;
-  left: 0;
+  inset-inline-end: 0; /* بديل left/right */
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -232,11 +149,12 @@
   display: block;
   width: 100%;
   padding: 10px;
-  text-align: right;
   background: none;
   border: none;
   font-size: 14px;
   cursor: pointer;
+  text-align: start; /* RTL = right, LTR = left */
+  transition: background 0.2s ease;
 }
 
 .options-menu button:hover {
@@ -246,4 +164,3 @@
 .options-menu .danger {
   color: red;
 }
-

@@ -1,7 +1,18 @@
 .actions-container {
-  direction: rtl;
   font-family: "Segoe UI", sans-serif;
   padding: 20px;
+}
+
+/* RTL */
+.actions-container.rtl {
+  direction: rtl;
+  text-align: right;
+}
+
+/* LTR */
+.actions-container.ltr {
+  direction: ltr;
+  text-align: left;
 }
 
 .header-actions {
@@ -30,6 +41,14 @@
   padding: 8px 12px;
   border-radius: 8px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* قلب اتجاه زرار الفلتر */
+.actions-container.rtl .filter-btn {
+  flex-direction: row-reverse;
 }
 
 .filter-search input {
@@ -129,8 +148,14 @@
   transition: 0.2s;
 }
 
+/* أي زرار فيه أيقونة + نص */
 .actions-btns button i {
   font-size: 12px;
+}
+
+/* قلب اتجاه الأزرار في RTL */
+.actions-container.rtl .actions-btns button {
+  flex-direction: row-reverse;
 }
 
 .cancel {

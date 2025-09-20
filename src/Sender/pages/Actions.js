@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./css/Actions.css";
 import { FaFilter } from "react-icons/fa";
-
+import useLanguageStore from "../../Store/LanguageStore/languageStore";
+import translations from "../../Store/LanguageStore/translations";
 const fallbackData = [
   {
     id: "T-001",
@@ -79,6 +80,9 @@ const fallbackData = [
 
 const API_URL = "https://example.com/api/tasks"; 
 const Actions = () => {
+  const { lang } = useLanguageStore();
+  const t = translations[lang];
+
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -103,39 +107,39 @@ const Actions = () => {
   }, []);
 
   return (
-    <div className="actions-container">
+<div className={`actions-container ${lang === "ar" ? "rtl" : "ltr"}`}>
       <div className="header-actions">
-        <a href="/new-request" className="new-request">طلب استلام جديد</a>
+        <a href="/new-request" className="new-request">{t.newRequest}</a>
       </div>
 
       <div className="filter-search">
         <button className="filter-btn">
-          <FaFilter /> فلترة متقدمة
+          <FaFilter /> {t.advancedFilter}
         </button>
         <input
           type="text"
-          placeholder="البحث برقم المهمة، اسم المرسل، رقم الهاتف أو العنوان..."
+          placeholder={t.searchTask}
         />
       </div>
 
       <div className="tabs">
-        <span>اليوم (0)</span>
-        <span>الأسبوع (0)</span>
-        <span className="active">الكل ({data.length})</span>
+        <span>{t.today} (0)</span>
+        <span>{t.week} (0)</span>
+        <span className="active">{t.all} ({data.length})</span>
       </div>
 
       <table className="tasks-table">
         <thead>
           <tr>
-            <th>رقم المهمة</th>
-            <th>اسم المرسل</th>
-            <th>عدد الطلبات</th>
-            <th>تاريخ ووقت الاستلام</th>
-            <th>عنوان الاستلام</th>
-            <th>رقم الهاتف</th>
-            <th>اسم المندوب</th>
-            <th>حالة المهمة</th>
-            <th>الإجراءات</th>
+            <th>{t.taskId}</th>
+            <th>{t.senderName}</th>
+            <th>{t.ordersCount}</th>
+            <th>{t.pickupDateTime}</th>
+            <th>{t.pickupAddress}</th>
+            <th>{t.phoneNumber}</th>
+            <th>{t.delegateName}</th>
+            <th>{t.taskStatus}</th>
+            <th>{t.actions}</th>
           </tr>
         </thead>
         <tbody>
@@ -143,37 +147,18 @@ const Actions = () => {
             <tr key={task.id}>
               <td className="task-id">{task.id}</td>
               <td>{task.sender}</td>
-              <td>
-                <span className="orders-count">{task.orders}</span>
-              </td>
-              <td>
-                <div>{task.date}</div>
-                <div>{task.time}</div>
-              </td>
+              <td><span className="orders-count">{task.orders}</span></td>
+              <td><div>{task.date}</div><div>{task.time}</div></td>
               <td>{task.address}</td>
               <td>{task.phone}</td>
-              <td
-                className={
-                  task.delegate === "غير محدد" ? "no-delegate" : "delegate"
-                }
-              >
+              <td className={task.delegate === t.undefinedDelegate ? "no-delegate" : "delegate"}>
                 {task.delegate}
               </td>
-              <td>
-                <span className={`status ${task.statusColor}`}>
-                  {task.status}
-                </span>
-              </td>
+              <td><span className={`status ${task.statusColor}`}>{task.status}</span></td>
               <td className="actions-btns">
-                <button className="cancel">
-                  <i className="fas fa-times"></i> إلغاء
-                </button>
-                <button className="edit">
-                  <i className="fas fa-edit"></i> تعديل الموعد
-                </button>
-                <button className="details">
-                  <i className="fas fa-eye"></i> تفاصيل
-                </button>
+                <button className="cancel"><i className="fas fa-times"></i> {t.cancelTask}</button>
+                <button className="edit"><i className="fas fa-edit"></i> {t.editTask}</button>
+                <button className="details"><i className="fas fa-eye"></i> {t.details}</button>
               </td>
             </tr>
           ))}

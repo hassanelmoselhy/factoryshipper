@@ -1,6 +1,7 @@
+/* Home.css (محدث) */
+
 .home-container {
   padding: 20px;
-  direction: rtl;
   font-family: 'Cairo', sans-serif;
 }
 
@@ -9,8 +10,10 @@
   font-weight: bold;
   margin-bottom: 20px;
   color: #333;
+  text-align: start;
 }
 
+/* البطاقات */
 .balance-card {
   background: linear-gradient(to left, #2a6ef4, #377dff);
   border-radius: 15px;
@@ -21,8 +24,13 @@
 
 .card-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  flex-direction: row; /* default LTR-like ordering */
+}
+
+.home-container[dir="rtl"] .card-header {
+  flex-direction: row-reverse;
 }
 
 .account-label {
@@ -34,28 +42,34 @@
   font-size: 20px;
 }
 
+/* استخدم text-align: start بدل left/right */
 .sub-label {
   font-size: 12px;
   opacity: 0.9;
   margin: 5px 0;
+  text-align: start;
 }
 
 .amount {
   font-size: 26px;
   font-weight: bold;
   margin: 10px 0;
+  text-align: start;
 }
 
+/* صف الإحصائيات: استخدم gap بدل المسافات الصعبة */
 .stats-row {
   display: flex;
-  justify-content: space-between;
+  gap: 20px;
   margin-top: 10px;
+  flex-wrap: wrap;
 }
 
 .stat-item p {
   font-size: 12px;
   margin: 0;
   opacity: 0.9;
+  text-align: start;
 }
 
 .stat-item span {
@@ -63,19 +77,24 @@
   font-weight: bold;
 }
 
+/* ملخص الأوردرات */
 .orders-summary {
   background-color: #fff;
+  padding: 12px;
+  border-radius: 10px;
 }
 
 .orders-summary h4 {
   font-size: 18px;
   margin-bottom: 15px;
+  text-align: start;
 }
 
 .tabs {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
+  justify-content: flex-start;
 }
 
 .tab {
@@ -120,6 +139,7 @@
   font-weight: bold;
 }
 
+/* ألوان البطاقات */
 .yellow {
   background-color: #fff7e1;
   color: #856404;
