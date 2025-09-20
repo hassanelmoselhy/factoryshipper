@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import useUserStore from "../../../Store/UserStore/userStore";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import LoadingOverlay from "../../components/LoadingOverlay";
 const Signup = () => {
   const Setuser = useUserStore((state) => state.Setuser);
   const [showPassword, setShowPassword] = useState(false);
@@ -26,7 +27,7 @@ const Signup = () => {
 
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
+const [loading,setLoading]=useState(false)
   useEffect(() => {
     document.body.classList.add("signup-page");
     return () => {
@@ -106,6 +107,7 @@ const Signup = () => {
     console.log("🚀 Payload sent:", payload);
 
     try {
+      setLoading(true)
       const response = await fetch(
         "https://stakeexpress.runasp.net/api/Accounts/shipperRegistration",
         {
@@ -142,15 +144,18 @@ const Signup = () => {
         }
 
         console.error("🚨 Response:", errorText);
-        alert("❌ خطأ: " + errorText);
+        toast.error("❌ خطأ: " + errorText);
       }
     } catch (error) {
-      alert("❌ server error, " + error.message);
+      toast.error("❌ server error, " + error.message);
+    }finally{
+      setLoading(false)
     }
   };
 
   return (
     <>
+    <LoadingOverlay loading={loading} message="please wait..." color="#fff" size={44} />
       <div className="signup-banner">
         <div className="signup-logo">
           <FaShippingFast className="signup-icon" />

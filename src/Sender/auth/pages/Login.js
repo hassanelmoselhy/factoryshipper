@@ -5,7 +5,7 @@ import { FaShippingFast } from 'react-icons/fa';
 import useUserStore from '../../../Store/UserStore/userStore';
 import {  toast } from "sonner";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-
+import LoadingOverlay from '../../components/LoadingOverlay';
 const Login = () => {
 const SetUser=useUserStore((state)=>state.SetUser)
 const user=useUserStore((state)=>state.user)
@@ -37,18 +37,18 @@ const [showPassword, setShowPassword] = useState(false);
     headers:{
       'Content-Type': 'application/json',
       'X-Client-Key': 'web API',
-      // 'Authorization': `Bearer ${user?.token}`
+     
     },
-    credentiyals: 'include'
+    credentials: 'include'
 
   })
   const data = await response.json();
   if(response.status===200){
     SetUser(data.data);
       console.log("Token refreshed:", data);
-        toast.info(" token refreshed successfully");
-
-      shceduleRefreshToken(data.expiresOn);
+       
+        console.log("token data = ", data.data.expiresOn);
+      shceduleRefreshToken(data.data.expiresOn);
 
   }
   console.log("Token ", data);
@@ -94,7 +94,7 @@ console.log("Error refreshing token:", error);
             email: formData.email.trim(),
             password: formData.password
           }),
-          
+          credentials:'include'
         }
       );
 
@@ -121,10 +121,30 @@ console.log("Error refreshing token:", error);
       setLoading(false);
     }
   };
+const refreshTokenExpirationhandle=()=>{
 
-  const shceduleRefreshToken=(expiresOn)=>{
-const expirems=new Date(expiresOn).getTime()-new Date().getTime()-(4*60*1000);
+navigate('/login');
+SetUser(null);
+sessionStorage.removeItem('user');
+toast.error("Session expired, please login again");
+
+}
+  const shceduleRefreshToken=(expiresOn,refreshTokenExpiration)=>{
+const expirems=new Date(expiresOn).getTime()-new Date().getTime()-(1*60*1000);
+const refreshTokenExpirationms=new Date(refreshTokenExpiration).getTime()-new Date().getTime();
+
+if(refreshTokenExpirationms<=0){
+refreshTokenExpirationhandle();
+return;
+}
+else if(refreshTokenExpirationms>0 ){
+  setTimeout(refreshTokenExpirationhandle,refreshTokenExpirationms );
+return;
+}
+
 console.log("Token expires in ms:",expirems);
+if(expirems === NaN) return;
+
 if(expirems<=0){
 RefreshToken();
 return;
@@ -134,6 +154,8 @@ setTimeout(RefreshToken,expirems);
 }
   return (
     <>
+      <LoadingOverlay loading={loading} message="please wait..." color="#fff" size={44} />
+
       <div className="page-overlay"></div>
       <div className="login-banner">
         <div className="login-logo">

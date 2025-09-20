@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import useUserStore from '../../Store/UserStore/userStore';
 import {  toast } from "sonner";
 import useShipmentsStore from '../../Store/UserStore/ShipmentsStore';
+import LoadingOverlay from '../components/LoadingOverlay';
 const fallbackOrders = [
   {
     id: 842,
@@ -69,6 +70,7 @@ const Order = () => {
   const user = useUserStore((state) => state.user);
   const [Shipments, setShipments] = useState([]); // New state for shipments
   const SetShipmentsStore = useShipmentsStore((state) => state.SetShipments);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     setOrders(fallbackOrders);
     if (!user) {
@@ -77,6 +79,7 @@ return;
   }
 
     const fetchOrders = async () => {
+      setLoading(true);
       try {
         const res = await fetch('https://stakeexpress.runasp.net/api/Shipments/getShipments',{
           method:'GET',   
@@ -102,7 +105,10 @@ return;
       } catch (error) {
         console.log('Using fallback orders due to error:', error.message);
         
+      }finally{
+        setLoading(false);
       }
+    
     };
 
     fetchOrders();
@@ -124,6 +130,8 @@ return;
   };
 
   return (
+      <>
+      <LoadingOverlay loading={loading} message="please wait..." color="#fff" size={44} />
     <div className="order-page">
       <div className="order-header">
         <h2>الطلبات</h2>
@@ -208,7 +216,7 @@ return;
 
 
 
-        {filteredOrders.length > 0 ? (
+        {/* {filteredOrders.length > 0 ? (
           filteredOrders.map((order) => (
             <Link to={`/order-details/${order.id}`} key={order.id} className="order-card">
               <div className="order-card-header">
@@ -247,9 +255,10 @@ return;
           ))
         ) : (
           <p style={{ textAlign: 'center', marginTop: '30px', color: '#888' }}>لا توجد طلبات مطابقة</p>
-        )}
+        )} */}
       </div>
     </div>
+    </>
   );
 };
 
