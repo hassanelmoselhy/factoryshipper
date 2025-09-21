@@ -8,71 +8,6 @@ import { toast } from "sonner";
 import useShipmentsStore from "../../Store/UserStore/ShipmentsStore";
 import LoadingOverlay from "../components/LoadingOverlay";
 
-// 🎨 ألوان الـ Status (للـ fallback فقط)
-const statusColors = {
-  delivered: "green",
-  customerProduct: "blue",
-  inProgress: "yellow",
-  waitingDecision: "orange",
-};
-
-// 🎨 ألوان نوع الطلب (للـ fallback فقط)
-const typeColors = {
-  fast: "purple",
-  normal: "gray",
-};
-
-// ✅ بيانات احتياطية (fallback لو API فشل)
-const fallbackOrders = [
-  {
-    id: 842,
-    statusKey: "delivered",
-    typeKey: "fast",
-    name: "أحمد محمد",
-    phone: "0551234567",
-    address: "الرياض، حي الزهري",
-    date: "2024-01-15",
-    time: "14:30",
-    price: 45,
-  },
-  {
-    id: 841,
-    statusKey: "customerProduct",
-    typeKey: "normal",
-    name: "فاطمة علي",
-    phone: "0559876543",
-    address: "جدة، حي الأزهراء",
-    date: "2024-01-15",
-    time: "12:15",
-    price: 35,
-  },
-  {
-    id: 840,
-    statusKey: "inProgress",
-    typeKey: "fast",
-    name: "محمد سالم",
-    phone: "0551112233",
-    address: "الدمام، حي الفيصلية",
-    date: "2024-01-15",
-    time: "10:45",
-    price: 25,
-  },
-  {
-    id: 839,
-    statusKey: "waitingDecision",
-    typeKey: "normal",
-    name: "نورا أحمد",
-    phone: "0554445556",
-    address: "مكة، حي العزيزية",
-    date: "2024-01-14",
-    time: "16:20",
-    price: 50,
-  },
-];
-
-// ✅ Tabs الأساسية (للـ fallback)
-const tabKeys = ["all", "delivered", "customerProduct", "inProgress", "waitingDecision"];
-
 const Order = () => {
   const { lang } = useLanguageStore();
   const t = translations[lang];
@@ -83,9 +18,51 @@ const Order = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [openMenuId, setOpenMenuId] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [menuPosition, setMenuPosition] = useState("bottom"); // ✅ هنا
 
   const user = useUserStore((state) => state.user);
   const SetShipmentsStore = useShipmentsStore((state) => state.SetShipments);
+
+  // ✅ حساب وضع المنيو (Top/Bottom)
+  const toggleMenu = (id, e) => {
+    e.preventDefault();
+    if (openMenuId === id) {
+      setOpenMenuId(null);
+    } else {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      if (spaceBelow < 200) {
+        setMenuPosition("top");
+      } else {
+        setMenuPosition("bottom");
+      }
+      setOpenMenuId(id);
+    }
+  };
+
+  // 🎨 ألوان الـ Status (للـ fallback فقط)
+  const statusColors = {
+    delivered: "green",
+    customerProduct: "blue",
+    inProgress: "yellow",
+    waitingDecision: "orange",
+  };
+
+  // 🎨 ألوان نوع الطلب (للـ fallback فقط)
+  const typeColors = {
+    fast: "purple",
+    normal: "gray",
+  };
+
+  // ✅ بيانات احتياطية (fallback لو API فشل)
+  const fallbackOrders = [
+    { id: 842, statusKey: "delivered", typeKey: "fast", name: "أحمد محمد", phone: "0551234567", address: "الرياض، حي الزهري", date: "2024-01-15", time: "14:30", price: 45 },
+    { id: 841, statusKey: "customerProduct", typeKey: "normal", name: "فاطمة علي", phone: "0559876543", address: "جدة، حي الأزهراء", date: "2024-01-15", time: "12:15", price: 35 },
+    { id: 840, statusKey: "inProgress", typeKey: "fast", name: "محمد سالم", phone: "0551112233", address: "الدمام، حي الفيصلية", date: "2024-01-15", time: "10:45", price: 25 },
+    { id: 839, statusKey: "waitingDecision", typeKey: "normal", name: "نورا أحمد", phone: "0554445556", address: "مكة، حي العزيزية", date: "2024-01-14", time: "16:20", price: 50 },
+  ];
+
+  const tabKeys = ["all", "delivered", "customerProduct", "inProgress", "waitingDecision"];
 
   useEffect(() => {
     setOrders(fallbackOrders);
@@ -134,7 +111,6 @@ const Order = () => {
     fetchOrders();
   }, [user, SetShipmentsStore]);
 
-  // ✅ فلترة الأوردرات (fallback فقط)
   const filteredOrders = orders.filter((order) => {
     const matchesTab = activeTab === "all" || order.statusKey === activeTab;
     const matchesSearch =
@@ -148,7 +124,7 @@ const Order = () => {
     <>
       <LoadingOverlay loading={loading} message="please wait..." color="#fff" size={44} />
       <div className="order-page" dir={lang === "ar" ? "rtl" : "ltr"}>
-        {/* ✅ العنوان والبحث */}
+        {/* العنوان والبحث */}
         <div className="order-header">
           <h2>{t.orders}</h2>
           <input
@@ -160,7 +136,7 @@ const Order = () => {
           />
         </div>
 
-        {/* ✅ Tabs */}
+        {/* Tabs */}
         <div className="order-tabs">
           {tabKeys.map((key) => (
             <button
@@ -175,7 +151,7 @@ const Order = () => {
           ))}
         </div>
 
-        {/* ✅ قائمة الأوردرات */}
+        {/* قائمة الأوردرات */}
         <div className="order-list">
           {Shipments.length > 0 ? (
             Shipments.map((order) => (
@@ -201,15 +177,12 @@ const Order = () => {
                   <div className="order-options">
                     <span
                       className="options-btn"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setOpenMenuId(openMenuId === order.id ? null : order.id);
-                      }}
+                      onClick={(e) => toggleMenu(order.id, e)} // ✅ هنا
                     >
                       ⋮
                     </span>
                     {openMenuId === order.id && (
-                      <div className="options-menu">
+                      <div className={`options-menu ${menuPosition}`}>
                         <button>تأجيل الأوردر</button>
                         <button>إعادة توصيل الأوردر</button>
                         <button>تعديل البيانات</button>
@@ -239,14 +212,12 @@ const Order = () => {
                     {t.typeMap[order.typeKey][lang]}
                   </span>
                 </div>
-
                 <div className="order-info">
                   <p>{t.client}: {order.name}</p>
                   <p>{t.phone}: {order.phone}</p>
                   <p>{t.address}: {order.address}</p>
                   <p>{t.date}: {order.date} - {order.time}</p>
                 </div>
-
                 <div className="order-footer">
                   <span className="order-price">{order.price} ر.س</span>
                 </div>
