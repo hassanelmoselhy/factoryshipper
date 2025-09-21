@@ -11,7 +11,6 @@ import Login from './Sender/auth/pages/Login';
 import Sidebar from './Hanger/components/Sidebar';
 import Header from './Hanger/components/Header';
 import ShipmentUpdate from './Hanger/pages/ShipmentUpdate';
-import HangerHome from './Hanger/pages/Home';
 import EmployeeMang from './Hanger/pages/EmployeeMang';
 import Scan from './Hanger/pages/Scan';
 import HangerAttendance from './Hanger/pages/HangerAttendance';
@@ -29,6 +28,7 @@ import { Toaster } from "sonner";
 
 import Print from './Sender/pages/Print'
 import { scheduleRefreshToken } from "./utils/auth";
+import HangerOrders from './Hanger/pages/Orders';
 
 
 // لو عندك فانكشن اسمها shceduleRefreshToken لازم تكون مستوردة
@@ -118,7 +118,7 @@ const App = () => {
 
           {/* Hanger Layout */}
           <Route path="/hanger" element={<HangerLayout />}>
-            <Route path="home" element={<HangerHome />} /> 
+            <Route path="orders" element={<HangerOrders />} /> 
             <Route path="update" element={<ShipmentUpdate />} />
             <Route path="employees" element={<EmployeeMang />} />
             <Route path="scan" element={<Scan />} />
