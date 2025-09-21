@@ -7,6 +7,7 @@ import useShipmentsStore from '../../Store/UserStore/ShipmentsStore';
 import { toast } from "sonner";
 import useUserStore from "../../Store/UserStore/userStore";
 import LoadingOverlay from "../components/LoadingOverlay";
+import DeleteModal from "../../Components/DeleteModal";
 export const fallbackOrderDetails = {
   2: {
     id: 842,
@@ -111,6 +112,7 @@ export const OrderDetails = () => {
   const [Shipment,SetShipment]=useState();
   const Shipments = useShipmentsStore((state) => state.shipments);
   const user=useUserStore((state)=>state.user);
+  const [showdeleteModal, setShowDeleteModal] = useState(false);
   useEffect(() => {
     setLoading(true);
     const findShipment=Shipments?.find(s=>s.id===parseInt(orderId));
@@ -118,9 +120,9 @@ export const OrderDetails = () => {
     if(findShipment){   
     SetShipment(findShipment);
     setLoading(false);
-    }
-    console.log("Found Shipment:",orderId );
 
+    }
+console.log("found hipment:",findShipment );
   setLoading(false);
 
   }, [orderId]);
@@ -191,6 +193,11 @@ console.log("Deleting Shipment:",orderId );
   return (
     <>
     <LoadingOverlay loading={loading} message="please wait..." color="#fff" size={44} />
+    <DeleteModal show={showdeleteModal} title="Delete Shipment" message="Are you sure you want to delete this Shipment? This action cannot be undone." 
+    onCancel={()=>setShowDeleteModal(false)}
+    onConfirm={DeleteShipment}
+    loading={loading}
+    />
       <TopBar />
       <div className="order-details-page">
         <div className="order-details-header">
@@ -199,7 +206,7 @@ console.log("Deleting Shipment:",orderId );
         </div>
 
         <div className="order-actions-bar">
-          <button className="cancel-button"      onClick={DeleteShipment} >
+          <button className="cancel-button"      onClick={()=>setShowDeleteModal((prev)=>!prev)} >
             إلغاء الطلب
             <i class="fa-solid fa-xmark"></i>
           </button>
@@ -208,6 +215,7 @@ console.log("Deleting Shipment:",orderId );
             <i class="fa-solid fa-pen-to-square"></i>
           </button>
          <button
+
   className="print-button primary"
   onClick={() => navigate(`/print/${Shipment.id}`)}
 >
@@ -240,8 +248,9 @@ console.log("Deleting Shipment:",orderId );
               <div className="barcode-display">
                 <span className="info-label">الباركود</span>
                 <Barcode
-                  value={123}
-                  height={60}
+                  value={Shipment?.shipmentTrackingNumber}
+                  height={50}
+                  width={1.5}
                   displayValue={true}
                 />
               </div>
