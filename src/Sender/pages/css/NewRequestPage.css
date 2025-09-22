@@ -1,22 +1,24 @@
 .new-request-page {
-display: flex;
-justify-content: center;
-align-items: center;
-min-height: 100vh;
-background-color: #f0f2f5;
-font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f2f5;
+  font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  padding: 16px; /* علشان ما يلزقش الفورم في أطراف الشاشة */
 }
 
+
 .form-container {
-background-color: #ffffff;
-border-radius: 12px;
-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-width: 100%;
-max-width: 500px;
-padding: 24px;
-direction: rtl;
-text-align: right;
-box-sizing: border-box;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+  padding: 24px;
+  direction: rtl;
+  text-align: right;
+  box-sizing: border-box;
 }
 
 
@@ -154,4 +156,77 @@ color: #ffffff;
 
 .submit-btn:hover {
 background-color: #0056b3;
+}
+/* === Responsive === */
+
+/* تابلت */
+@media (max-width: 992px) {
+  .form-container {
+    max-width: 90%;
+    padding: 20px;
+  }
+
+  .form-header h1 {
+    font-size: 20px;
+  }
+
+  .request-form input,
+  .request-form select,
+  .request-form textarea {
+    font-size: 15px;
+    padding: 10px;
+  }
+}
+
+/* موبايل متوسط */
+@media (max-width: 768px) {
+  .form-container {
+    max-width: 100%;
+    border-radius: 10px;
+    padding: 18px;
+  }
+
+  .form-header h1 {
+    font-size: 18px;
+  }
+
+  .close-icon {
+    font-size: 22px;
+  }
+
+  .button-group {
+    flex-direction: column; /* الأزرار تنزل تحت بعض */
+  }
+
+  .button-group button {
+    width: 100%;
+  }
+}
+
+/* موبايل صغير جدًا */
+@media (max-width: 480px) {
+  .form-container {
+    padding: 16px;
+    border-radius: 8px;
+  }
+
+  .form-header h1 {
+    font-size: 16px;
+  }
+
+  .form-group label {
+    font-size: 13px;
+  }
+
+  .request-form input,
+  .request-form select,
+  .request-form textarea {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .button-group button {
+    font-size: 14px;
+    padding: 10px;
+  }
 }

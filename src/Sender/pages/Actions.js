@@ -142,27 +142,28 @@ const Actions = () => {
             <th>{t.actions}</th>
           </tr>
         </thead>
-        <tbody>
-          {data.map((task) => (
-            <tr key={task.id}>
-              <td className="task-id">{task.id}</td>
-              <td>{task.sender}</td>
-              <td><span className="orders-count">{task.orders}</span></td>
-              <td><div>{task.date}</div><div>{task.time}</div></td>
-              <td>{task.address}</td>
-              <td>{task.phone}</td>
-              <td className={task.delegate === t.undefinedDelegate ? "no-delegate" : "delegate"}>
-                {task.delegate}
-              </td>
-              <td><span className={`status ${task.statusColor}`}>{task.status}</span></td>
-              <td className="actions-btns">
-                <button className="cancel"><i className="fas fa-times"></i> {t.cancelTask}</button>
-                <button className="edit"><i className="fas fa-edit"></i> {t.editTask}</button>
-                <button className="details"><i className="fas fa-eye"></i> {t.details}</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
+      <tbody>
+  {data.map((task) => (
+    <tr key={task.id}>
+      <td data-label={t.taskId} className="task-id">{task.id}</td>
+      <td data-label={t.senderName}>{task.sender}</td>
+      <td data-label={t.ordersCount}><span className="orders-count">{task.orders}</span></td>
+      <td data-label={t.pickupDateTime}><div>{task.date}</div><div>{task.time}</div></td>
+      <td data-label={t.pickupAddress}>{task.address}</td>
+      <td data-label={t.phoneNumber}>{task.phone}</td>
+      <td data-label={t.delegateName} className={task.delegate === t.undefinedDelegate ? "no-delegate" : "delegate"}>
+        {task.delegate}
+      </td>
+      <td data-label={t.taskStatus}><span className={`status ${task.statusColor}`}>{task.status}</span></td>
+      <td data-label={t.actions} className="actions-btns">
+        <button className="cancel"><i className="fas fa-times"></i> {t.cancelTask}</button>
+        <button className="edit"><i className="fas fa-edit"></i> {t.editTask}</button>
+        <button className="details"><i className="fas fa-eye"></i> {t.details}</button>
+      </td>
+    </tr>
+  ))}
+</tbody>
+
       </table>
     </div>
   );

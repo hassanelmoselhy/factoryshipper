@@ -1,10 +1,11 @@
-/* Home.css (محدث) */
+/* Home.css (Responsive محسّن) */
 
 .home-container {
   padding: 20px;
   font-family: 'Cairo', sans-serif;
 }
 
+/* العنوان */
 .page-title {
   font-size: 22px;
   font-weight: bold;
@@ -13,7 +14,7 @@
   text-align: start;
 }
 
-/* البطاقات */
+/* البطاقة الرئيسية */
 .balance-card {
   background: linear-gradient(to left, #2a6ef4, #377dff);
   border-radius: 15px;
@@ -26,7 +27,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-direction: row; /* default LTR-like ordering */
+  flex-direction: row;
 }
 
 .home-container[dir="rtl"] .card-header {
@@ -42,7 +43,6 @@
   font-size: 20px;
 }
 
-/* استخدم text-align: start بدل left/right */
 .sub-label {
   font-size: 12px;
   opacity: 0.9;
@@ -57,7 +57,7 @@
   text-align: start;
 }
 
-/* صف الإحصائيات: استخدم gap بدل المسافات الصعبة */
+/* الإحصائيات */
 .stats-row {
   display: flex;
   gap: 20px;
@@ -94,6 +94,7 @@
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
+  flex-wrap: wrap;
   justify-content: flex-start;
 }
 
@@ -103,6 +104,7 @@
   border: none;
   border-radius: 12px;
   cursor: pointer;
+  font-size: 14px;
 }
 
 .tab.active {
@@ -158,4 +160,61 @@
 .blue {
   background-color: #e7f0fc;
   color: #1565c0;
+}
+
+/* 📱 Responsive Design */
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .balance-card {
+    text-align: center;
+  }
+
+  .card-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .amount {
+    font-size: 22px;
+    text-align: center;
+  }
+
+  .stats-row {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .tabs {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-title {
+    font-size: 18px;
+  }
+
+  .account-label {
+    font-size: 14px;
+  }
+
+  .wallet-icon {
+    font-size: 18px;
+  }
+
+  .amount {
+    font-size: 20px;
+  }
+
+  .summary-card {
+    padding: 12px;
+  }
+
+  .summary-card .value {
+    font-size: 18px;
+  }
 }

@@ -154,3 +154,130 @@
   padding: 2px 6px;
   border-radius: 8px;
 }
+/* 📱 Responsive Design */
+
+/* تابلت */
+@media (max-width: 992px) {
+  .wallet-container {
+    padding: 15px;
+  }
+  .wallet-amount {
+    font-size: 24px;
+  }
+  .wallet-card {
+    padding: 15px;
+  }
+  .transactions-section {
+    padding: 12px;
+  }
+}
+
+/* موبايل */
+@media (max-width: 768px) {
+  .wallet-header {
+    justify-content: center;
+    margin-bottom: 15px;
+  }
+
+  .refresh-btn {
+    width: 100%;
+    justify-content: center;
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .wallet-card {
+    padding: 15px;
+  }
+
+  .wallet-top {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .wallet-amount {
+    font-size: 22px;
+  }
+
+  .deposit-btn {
+    width: 100%;
+    justify-content: center;
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .wallet-stats {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 15px;
+  }
+
+  .transactions-header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .show-all {
+    width: 100%;
+    text-align: center;
+  }
+
+  .transaction-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 12px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background: #fafafa;
+  }
+
+  .transaction-amount {
+    text-align: right;
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .transaction-status {
+    align-self: flex-end;
+  }
+}
+
+/* موبايل صغير جدًا */
+@media (max-width: 480px) {
+  .wallet-container {
+    padding: 10px;
+  }
+
+  .wallet-amount {
+    font-size: 20px;
+  }
+
+  .wallet-label {
+    font-size: 13px;
+  }
+
+  .wallet-sub {
+    font-size: 11px;
+  }
+
+  .transaction-title {
+    font-size: 13px;
+  }
+
+  .transaction-date {
+    font-size: 11px;
+  }
+
+  .transaction-amount {
+    font-size: 13px;
+  }
+
+  .transaction-status {
+    font-size: 11px;
+    padding: 2px 5px;
+  }
+}
