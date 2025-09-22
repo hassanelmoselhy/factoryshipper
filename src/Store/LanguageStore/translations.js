@@ -31,7 +31,13 @@ const translations = {
     client: "العميل",
     phone: "الهاتف",
     address: "العنوان",
-    date: "التاريخ",
+    date: "التاريخ", 
+    
+    deferOrder: "تأجيل الأوردر",
+    redeliverOrder: "إعادة توصيل الأوردر",
+    editOrder: "تعديل البيانات",
+    cancelOrder: "إلغاء",
+  
 
     // Map statuses
     statusMap: {
@@ -100,6 +106,10 @@ const translations = {
     phone: "Phone",
     address: "Address",
     date: "Date",
+    deferOrder: "Defer Order",
+    redeliverOrder: "Redeliver Order",
+    editOrder: "Edit Order",
+    cancelOrder: "Cancel",
 
     // Map statuses
     statusMap: {

@@ -110,12 +110,13 @@ body {
 /* موبايل متوسط */
 @media (max-width: 768px) {
   .top {
-    width: 100%;
+    /* width: 100%;
     position: fixed;
     top: 0;
     right: 0;
     border-bottom: 2px solid #e58ca3;
-    z-index: 1001;
+    z-index: 1001; */
+    display: none;
   }
 
   .bottom {

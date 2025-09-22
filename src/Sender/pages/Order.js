@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./css/Order.css";
 import { Link } from "react-router-dom";
 import useLanguageStore from "../../Store/LanguageStore/languageStore";
@@ -18,7 +18,9 @@ const Order = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [openMenuId, setOpenMenuId] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [menuPosition, setMenuPosition] = useState("bottom"); // ✅ هنا
+  const [menuPosition, setMenuPosition] = useState("bottom");
+
+  const menuRef = useRef(null);
 
   const user = useUserStore((state) => state.user);
   const SetShipmentsStore = useShipmentsStore((state) => state.SetShipments);
@@ -40,7 +42,7 @@ const Order = () => {
     }
   };
 
-  // 🎨 ألوان الـ Status (للـ fallback فقط)
+  // 🎨 ألوان الـ Status (fallback فقط)
   const statusColors = {
     delivered: "green",
     customerProduct: "blue",
@@ -48,7 +50,7 @@ const Order = () => {
     waitingDecision: "orange",
   };
 
-  // 🎨 ألوان نوع الطلب (للـ fallback فقط)
+  // 🎨 ألوان نوع الطلب (fallback فقط)
   const typeColors = {
     fast: "purple",
     normal: "gray",
@@ -177,17 +179,31 @@ const Order = () => {
                   <div className="order-options">
                     <span
                       className="options-btn"
-                      onClick={(e) => toggleMenu(order.id, e)} // ✅ هنا
+                      onClick={(e) => toggleMenu(order.id, e)}
                     >
                       ⋮
                     </span>
                     {openMenuId === order.id && (
-                      <div className={`options-menu ${menuPosition}`}>
-                        <button>تأجيل الأوردر</button>
-                        <button>إعادة توصيل الأوردر</button>
-                        <button>تعديل البيانات</button>
-                        <button>طباعة بوليسة</button>
-                        <button className="danger">إلغاء</button>
+                      <div className={`options-menu ${menuPosition}`} ref={menuRef}>
+                        <button
+                          className="options-arrow left"
+                          onClick={() => menuRef.current.scrollBy({ left: -100, behavior: "smooth" })}
+                        >
+                          ‹
+                        </button>
+
+                        <button>{t.deferOrder}</button>
+                        <button>{t.redeliverOrder}</button>
+                        <button>{t.editOrder}</button>
+                        <button>{t.printPolicy}</button>
+                        <button className="danger">{t.cancelOrder}</button>
+
+                        <button
+                          className="options-arrow right"
+                          onClick={() => menuRef.current.scrollBy({ left: 100, behavior: "smooth" })}
+                        >
+                          ›
+                        </button>
                       </div>
                     )}
                   </div>

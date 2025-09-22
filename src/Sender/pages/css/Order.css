@@ -144,6 +144,7 @@
 
 .order-options {
   position: relative;
+  overflow: visible;
 }
 
 .options-btn {
@@ -153,37 +154,41 @@
   user-select: none;
 }
 
-/* المنيو */
 .options-menu {
   position: absolute;
   inset-inline-end: 0;
   background: #fff;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  min-width: 160px;
-  z-index: 1000;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  min-width: 180px;
+  z-index: 2000;
+  overflow: hidden;
 }
 
-.options-menu.bottom { top: 100%; margin-top: 4px; }
-.options-menu.top { bottom: 100%; margin-bottom: 4px; }
+.options-menu.bottom { top: 100%; margin-top: 6px; }
+.options-menu.top { bottom: 100%; margin-bottom: 6px; }
 
 .options-menu button {
   display: block;
   width: 100%;
-  padding: 10px;
+  padding: 10px 14px;
   background: none;
   border: none;
   font-size: 14px;
   cursor: pointer;
   text-align: start;
   transition: background 0.2s ease;
-  white-space: normal;
-  word-break: break-word;
+  white-space: nowrap;
 }
 
-.options-menu button:hover { background: #f5f5f5; }
-.options-menu .danger { color: red; }
+.options-menu button:hover {
+  background: #f5f5f5;
+}
+.options-menu .danger {
+  color: #e74c3c;
+  font-weight: bold;
+}
 
 /* 📱 Responsive */
 @media (max-width: 992px) {
@@ -196,6 +201,14 @@
   .order-card-header { flex-direction: column; align-items: flex-start; }
   .order-footer { flex-direction: column; align-items: flex-start; gap: 6px; }
   .tab { font-size: 13px; padding: 6px 12px; }
+  .options-menu {
+    min-width: 200px;
+    font-size: 15px;
+  }
+  .options-menu button {
+    padding: 14px 16px;
+    font-size: 15px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -206,16 +219,49 @@
   .tab { font-size: 12px; padding: 5px 10px; }
   .status-badge, .type-badge { font-size: 11px; padding: 3px 8px; }
 
+  .order-options { position: static; }
+
   .options-menu {
-    min-width: unset;
+    position: fixed;
+    bottom: 20px;
+    inset-inline: 5%;
     max-width: 90%;
-    inset-inline-end: 5%;
-    border-radius: 10px;
+    border-radius: 12px;
+    z-index: 5000;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+
+    display: flex;
+    align-items: center;
+    overflow-x: auto;        /* ✅ Scrollable */
+    scrollbar-width: none;
   }
 
+  .options-menu::-webkit-scrollbar { display: none; }
+
   .options-menu button {
-    font-size: 13px;
-    padding: 12px;
+    flex: 0 0 auto;
+    font-size: 15px;
+    padding: 14px 20px;
     text-align: center;
+    white-space: nowrap;
+    scroll-snap-align: start;
   }
+
+  /* أسهم التنقل */
+  .options-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.5);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    z-index: 6000;
+  }
+
+  .options-arrow.left { left: 10px; }
+  .options-arrow.right { right: 10px; }
 }

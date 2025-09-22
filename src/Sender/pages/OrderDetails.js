@@ -250,7 +250,7 @@ console.log("Deleting Shipment:",orderId );
                 <Barcode
                   value={Shipment?.shipmentTrackingNumber}
                   height={50}
-                  width={1.5}
+                  width={1}
                   displayValue={true}
                 />
               </div>
