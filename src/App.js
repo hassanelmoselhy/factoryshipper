@@ -29,7 +29,7 @@ import { Toaster } from "sonner";
 
 import Print from './Sender/pages/Print'
 import { scheduleRefreshToken } from "./utils/auth";
-
+import PageNotFound from './Components/PageNotFound';
 
 // لو عندك فانكشن اسمها shceduleRefreshToken لازم تكون مستوردة
 // import { shceduleRefreshToken } from "./utils/auth"; 
@@ -127,7 +127,13 @@ const App = () => {
           </Route>
 
           {/* Reciver */}
+        
           <Route path="/reciver" element={<Reciver />} />
+          
+          
+          <Route path="/a" element={<PageNotFound />} />
+        
+        
         </Routes>
       </Router>
     </>

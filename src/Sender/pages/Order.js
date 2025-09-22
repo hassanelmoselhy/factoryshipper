@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useMemo } from "react";
 import "./css/Order.css";
 import { Link } from "react-router-dom";
 import useLanguageStore from "../../Store/LanguageStore/languageStore";
@@ -22,54 +22,6 @@ const typeColors = {
   normal: "gray",
 };
 
-// ✅ بيانات احتياطية (fallback لو API فشل)
-const fallbackOrders = [
-  {
-    id: 842,
-    statusKey: "delivered",
-    typeKey: "fast",
-    name: "أحمد محمد",
-    phone: "0551234567",
-    address: "الرياض، حي الزهري",
-    date: "2024-01-15",
-    time: "14:30",
-    price: 45,
-  },
-  {
-    id: 841,
-    statusKey: "customerProduct",
-    typeKey: "normal",
-    name: "فاطمة علي",
-    phone: "0559876543",
-    address: "جدة، حي الأزهراء",
-    date: "2024-01-15",
-    time: "12:15",
-    price: 35,
-  },
-  {
-    id: 840,
-    statusKey: "inProgress",
-    typeKey: "fast",
-    name: "محمد سالم",
-    phone: "0551112233",
-    address: "الدمام، حي الفيصلية",
-    date: "2024-01-15",
-    time: "10:45",
-    price: 25,
-  },
-  {
-    id: 839,
-    statusKey: "waitingDecision",
-    typeKey: "normal",
-    name: "نورا أحمد",
-    phone: "0554445556",
-    address: "مكة، حي العزيزية",
-    date: "2024-01-14",
-    time: "16:20",
-    price: 50,
-  },
-];
-
 // ✅ Tabs الأساسية (للـ fallback)
 const tabKeys = ["all", "delivered", "customerProduct", "inProgress", "waitingDecision"];
 
@@ -81,14 +33,13 @@ const Order = () => {
   const [Shipments, setShipments] = useState([]);
   const [activeTab, setActiveTab] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
-  const [openMenuId, setOpenMenuId] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const user = useUserStore((state) => state.user);
   const SetShipmentsStore = useShipmentsStore((state) => state.SetShipments);
 
   useEffect(() => {
-    setOrders(fallbackOrders);
+  
 
     if (!user) {
       toast.error("Unauthorized, login first");
@@ -107,7 +58,7 @@ const Order = () => {
           },
         });
 
-        if (res.status === 200) {
+        if (res.ok===true ) {
           const data = await res.json();
           data.data.forEach((shipment) => {
             shipment.receiverAddress =
@@ -125,24 +76,34 @@ const Order = () => {
         }
       } catch (error) {
         console.warn("Using fallback orders due to error:", error.message);
-        setOrders(fallbackOrders);
+        
       } finally {
         setLoading(false);
       }
     };
 
     fetchOrders();
-  }, [user, SetShipmentsStore]);
+  }, [user]);
 
-  // ✅ فلترة الأوردرات (fallback فقط)
-  const filteredOrders = orders.filter((order) => {
-    const matchesTab = activeTab === "all" || order.statusKey === activeTab;
-    const matchesSearch =
-      order.name.includes(searchTerm) ||
-      order.phone.includes(searchTerm) ||
-      order.id.toString().includes(searchTerm);
-    return matchesTab && matchesSearch;
-  });
+    const filteredShipments = useMemo(() => {
+    let list = Shipments || [];
+
+
+    
+    const q = searchTerm.trim().toLowerCase();
+    if (q !== "") {
+      list = list.filter((o) => {
+        const idMatch = String(o.id).includes(q); 
+        const nameMatch = (o.receiverName || "").toLowerCase().includes(q);
+        const phoneMatch = (o.receiverPhone || "").toLowerCase().includes(q);
+        const addressMatch = (o.receiverAddress || "").toLowerCase().includes(q);
+        const priceMatch = String(o.collectionAmount).includes(q);
+        return idMatch || nameMatch || phoneMatch || addressMatch|| priceMatch;
+      });
+    }
+
+    return list;
+  }, [Shipments, searchTerm]);
 
   return (
     <>
@@ -177,8 +138,8 @@ const Order = () => {
 
         {/* ✅ قائمة الأوردرات */}
         <div className="order-list">
-          {Shipments.length > 0 ? (
-            Shipments.map((order) => (
+          {filteredShipments.length > 0 ? (
+            filteredShipments.map((order) => (
               <Link to={`/order-details/${order.id}`} key={order.id} className="order-card">
                 <div className="order-card-header">
                   <span className="order-id">#{order.id}</span>
@@ -198,61 +159,12 @@ const Order = () => {
                 <div className="order-footer">
                   <span className="order-price">{order.collectionAmount} ر.س</span>
 
-                  <div className="order-options">
-                    <span
-                      className="options-btn"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setOpenMenuId(openMenuId === order.id ? null : order.id);
-                      }}
-                    >
-                      ⋮
-                    </span>
-                    {openMenuId === order.id && (
-                      <div className="options-menu">
-                        <button>تأجيل الأوردر</button>
-                        <button>إعادة توصيل الأوردر</button>
-                        <button>تعديل البيانات</button>
-                        <button>طباعة بوليسة</button>
-                        <button className="danger">إلغاء</button>
-                      </div>
-                    )}
-                  </div>
+                 
                 </div>
               </Link>
             ))
-          ) : filteredOrders.length > 0 ? (
-            filteredOrders.map((order) => (
-              <Link to={`/order-details/${order.id}`} key={order.id} className="order-card">
-                <div className="order-card-header">
-                  <span className="order-id">#{order.id}</span>
-                  <span
-                    className="status-badge"
-                    style={{ backgroundColor: statusColors[order.statusKey] }}
-                  >
-                    {t.statusMap[order.statusKey][lang]}
-                  </span>
-                  <span
-                    className="type-badge"
-                    style={{ backgroundColor: typeColors[order.typeKey] }}
-                  >
-                    {t.typeMap[order.typeKey][lang]}
-                  </span>
-                </div>
-
-                <div className="order-info">
-                  <p>{t.client}: {order.name}</p>
-                  <p>{t.phone}: {order.phone}</p>
-                  <p>{t.address}: {order.address}</p>
-                  <p>{t.date}: {order.date} - {order.time}</p>
-                </div>
-
-                <div className="order-footer">
-                  <span className="order-price">{order.price} ر.س</span>
-                </div>
-              </Link>
-            ))
-          ) : (
+          ) 
+           : (
             <p style={{ textAlign: "center", marginTop: "30px", color: "#888" }}>
               {t.noOrders}
             </p>

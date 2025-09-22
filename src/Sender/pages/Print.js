@@ -42,10 +42,10 @@ const Print = () => {
 
           <div className="print-barcode">
             <img
-              src={`https://barcodeapi.org/api/128/${order.id}`}
+              src={`https://barcodeapi.org/api/128/${order?.shipmentTrackingNumber}`}
               alt="barcode"
             />
-            <p className="bold">كود الطرد : {order.id}</p>
+            {/* <p className="bold">كود الطرد : {order?.shipmentTrackingNumber}</p> */}
           </div>
         </div>
 
