@@ -49,7 +49,7 @@ const SelectRole = () => {
 
 const SenderLayout = () => {
   return (
-    <div className="row">
+    <div className="row ">
       <div className="col-10">
         <TopBar />
         <Outlet />
@@ -64,15 +64,15 @@ const SenderLayout = () => {
 // Layout للـ Hanger
 const HangerLayout = () => {
   return (
-    <div className="app-container">
-      <Sidebar />
-      <div className="main-layout">
+    <div className="row p-0 m-0">
+      <div className="col-10 m-0">
         <Header />
-        <main className="content-area">
-          <Outlet />
-        </main>
+        <Outlet />
+        </div>
+        <div className="col-2">
+        <Sidebar />
+        </div>
       </div>
-    </div>
   );
 };
 
@@ -83,7 +83,7 @@ const App = () => {
     if (!user) return;
 
     // استدعاء الفانكشن اللي بتعمل refresh للـ token
-   if (typeof scheduleRefreshToken === "function") {
+  if (typeof scheduleRefreshToken === "function") {
   scheduleRefreshToken(user.expiresOn);
 }
 }, [user]);

@@ -1,18 +1,18 @@
 .sidebar {
   width: 250px;
-  background: #fff;
+  background: #fafafa;
   height: 100vh;
   padding: 10px;
-  border-right: 1px solid #eee;
   direction: rtl;
+  border-left: 1px solid #ccc;
+  transition: transform 0.3s ease-in-out;
 }
 
 .sidebar-header {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
   margin-bottom: 30px;
-  padding: 0 10px;
   flex-direction: row-reverse;
 }
 
@@ -33,6 +33,7 @@
   color: #666;
   margin: 0;
 }
+
 .sidebar-nav ul {
   list-style: none;
   padding: 0;
@@ -71,5 +72,60 @@
 .nav-link svg {
   font-size: 16px;
   color: #000;
-} 
+}
 
+/* Toggle btn*/
+.toggle-btn {
+  display: none;
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  font-size: 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  z-index: 1100;
+}
+
+/* Overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 900;
+}
+
+/* Mobile and tablet */
+@media (max-width: 991px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    transform: translateX(100%);
+    z-index: 1000;
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
+  }
+
+  .toggle-btn {
+    display: block;
+  }
+}
+
+/* Desktop */
+@media (min-width: 992px) {
+  .sidebar {
+    position: sticky;
+    top: 0;
+    transform: none !important;
+  }
+
+  .overlay {
+    display: none !important;
+  }
+}
