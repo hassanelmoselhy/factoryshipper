@@ -11,11 +11,11 @@ import Login from './Sender/auth/pages/Login';
 import Sidebar from './Hanger/components/Sidebar';
 import Header from './Hanger/components/Header';
 import ShipmentUpdate from './Hanger/pages/ShipmentUpdate';
-import EmployeeMang from './Hanger/pages/EmployeeMang';
+// import EmployeeMang from './Hanger/pages/EmployeeMang';
 import Scan from './Hanger/pages/Scan';
-import HangerAttendance from './Hanger/pages/HangerAttendance';
+// import HangerAttendance from './Hanger/pages/HangerAttendance';
 import './App.css';
-import DeliverySchedule from './Hanger/pages/DeliverySchedule';
+// import DeliverySchedule from './Hanger/pages/DeliverySchedule';
 import Reciver from './reciver/pages/reciver'; 
 import SignUp from './Hanger/auth/pages/HangerSignup';
 import SignIn from './Hanger/auth/pages/HangerSignin';
@@ -29,6 +29,7 @@ import { Toaster } from "sonner";
 import Print from './Sender/pages/Print'
 import { scheduleRefreshToken } from "./utils/auth";
 import HangerOrders from './Hanger/pages/Orders';
+import OrderRelease from './Hanger/pages/OrdersRelease';
 
 
 // لو عندك فانكشن اسمها shceduleRefreshToken لازم تكون مستوردة
@@ -120,10 +121,11 @@ const App = () => {
           <Route path="/hanger" element={<HangerLayout />}>
             <Route path="orders" element={<HangerOrders />} /> 
             <Route path="update" element={<ShipmentUpdate />} />
-            <Route path="employees" element={<EmployeeMang />} />
+            {/* <Route path="employees" element={<EmployeeMang />} /> */}
             <Route path="scan" element={<Scan />} />
-            <Route path="attendance" element={<HangerAttendance />} />
-            <Route path="schedule" element={<DeliverySchedule />} />
+            {/* <Route path="attendance" element={<HangerAttendance />} />
+            <Route path="schedule" element={<DeliverySchedule />} /> */}
+            <Route path="release-orders" element={<OrderRelease />} />
           </Route>
 
           {/* Reciver */}
