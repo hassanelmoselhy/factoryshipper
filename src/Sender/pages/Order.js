@@ -39,7 +39,7 @@ const Order = () => {
   const SetShipmentsStore = useShipmentsStore((state) => state.SetShipments);
 
   useEffect(() => {
-  
+    console.log("User in Orders page ", user);
 
     if (!user) {
       toast.error("Unauthorized, login first");
@@ -60,22 +60,13 @@ const Order = () => {
 
         if (res.ok===true ) {
           const data = await res.json();
-          data.data.forEach((shipment) => {
-            shipment.receiverAddress =
-              shipment.receiverAddress.country +
-              " - " +
-              shipment.receiverAddress.city +
-              " - " +
-              shipment.receiverAddress.street +
-              " - " +
-              shipment.receiverAddress.details;
-          });
+          
 
           setShipments(data.data);
           SetShipmentsStore(data.data);
         }
       } catch (error) {
-        console.warn("Using fallback orders due to error:", error.message);
+        console.log("Using fallback orders due to error:", error.message);
         
       } finally {
         setLoading(false);
@@ -96,9 +87,9 @@ const Order = () => {
         const idMatch = String(o.id).includes(q); 
         const nameMatch = (o.receiverName || "").toLowerCase().includes(q);
         const phoneMatch = (o.receiverPhone || "").toLowerCase().includes(q);
-        const addressMatch = (o.receiverAddress || "").toLowerCase().includes(q);
+        
         const priceMatch = String(o.collectionAmount).includes(q);
-        return idMatch || nameMatch || phoneMatch || addressMatch|| priceMatch;
+        return idMatch || nameMatch || phoneMatch || priceMatch;
       });
     }
 
@@ -153,7 +144,14 @@ const Order = () => {
                 <div className="order-info">
                   <p>العميل: {order.receiverName}</p>
                   <p>الهاتف: {order.receiverPhone}</p>
-                  <p>العنوان: {order.receiverAddress}</p>
+                  <p>العنوان: {
+              order.receiverAddress.country +
+              " - " +
+              order.receiverAddress.city +
+              " - " +
+              order.receiverAddress.street +
+              " - " +
+              order.receiverAddress.details}</p>
                   <p>التاريخ: {order.createdAt}</p>
                 </div>
                 <div className="order-footer">

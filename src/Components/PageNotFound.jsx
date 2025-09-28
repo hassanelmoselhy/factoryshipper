@@ -1,8 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import NotFound from '../Images/Error-404-Page-Not-Found.png';
-
+import { useNavigate } from 'react-router-dom';
 export default function PageNotFound() {
+const navigate=useNavigate();
   return (
     <main className="container-fluid vh-100 d-flex align-items-center bg-white">
       <div className="container">
@@ -13,9 +13,9 @@ export default function PageNotFound() {
             <p className="text-muted mb-3">
               The page you are looking for doesn't exist or has been moved.
             </p>
-            <Link to="/" className="btn btn-primary btn-lg">
-              Go Home
-            </Link>
+            <button onClick={()=>{navigate(-1)}} className="btn btn-primary btn-lg">
+              Go Back
+            </button>
           </div>
 
           {/* Image column: stacks below text on small screens */}

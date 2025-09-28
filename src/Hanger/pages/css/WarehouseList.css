@@ -1,0 +1,97 @@
+
+.warehouse-wrapper {
+  background: #f8f9fa;
+  min-height: 100vh;
+}
+
+.warehouse-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 14px;
+}
+
+.assign-btn {
+  background: #030213;
+  color: white;
+  border-radius: 8px;
+}
+
+.filters .form-select {
+  min-width: 160px;
+  border-radius: 8px;
+}
+
+.search-wrapper .search-icon {
+  position: absolute;
+  right: 14px; 
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.5;
+}
+
+.search-wrapper .search-input {
+  padding-right: 40px;
+  padding-left: 16px; 
+  border-radius: 10px;
+  height: 44px;
+}
+
+.orders-list .order-item {
+  border: 1px solid #f0f0f0;
+  background: #fff;
+
+}
+.order-item:hover {
+  
+background-color: #f9f8fb;
+}
+
+.order-left {
+  border-radius: 10px;
+}
+
+.order-right {
+  background: transparent;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.badge-ready {
+  background: #e6f8ef;
+  color: #1b8f51;
+}
+
+.badge-waiting {
+  background: #fff6d6;
+  color: #9a7b00;
+}
+
+.order-number {
+  font-size: 18px;
+}
+
+.ellipsis-btn {
+  width: 44px;
+  height: 44px;
+}
+
+.edit-btn {
+  color: #000;
+  font-weight: 600;
+  border-radius: 14px;
+}
+.edit-btn:hover {
+  background: #f0f0f0;
+  text-decoration: none;
+}
+
+@media (min-width: 768px) {
+  .w-40 { width: 40%; }
+}
+

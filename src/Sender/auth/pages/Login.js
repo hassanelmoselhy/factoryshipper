@@ -30,7 +30,6 @@ const [showPassword, setShowPassword] = useState(false);
   async function RefreshToken() {
 
   try{
-  toast.info("Refreshing token...");
 
   const response=await fetch('https://stakeexpress.runasp.net/api/Accounts/refreshToken',{
     method:'GET',
@@ -104,7 +103,7 @@ console.log("Error refreshing token:", error);
         console.log('✅ Login successful:', data);
 
         if (data) {
-          sessionStorage.setItem('user', JSON.stringify(data));
+          sessionStorage.setItem('user', JSON.stringify(data.data));
           SetUser(data.data);
           shceduleRefreshToken(data.data.expiresOn);
         toast.success("Login successfuly ");

@@ -55,7 +55,7 @@ const Sidebar = () => {
     { icon: <FaClipboardList />, name: "الطلبات", path: "/hanger/orders" },
     { icon: <FaCube />, name: "استلام الطلبات", path: "/hanger/scan" },
     { icon: <FaCube />, name: "إخراج الطلبات", path: "/hanger/release-orders" },
-    { icon: <FaWarehouse />, name: "المخزون", path: "/hanger/inventory" },
+    { icon: <FaWarehouse />, name: "المخزون", path: "/hanger/warehouseList" },
     { icon: <FaHistory />, name: "العمليات", path: "/hanger/operations" },
     { icon: <FaDollarSign />, name: "الخزنة", path: "/hanger/treasury" },
     { icon: <FaSignOutAlt />, name: 'تسجيل الخروج', path: '/hanger/sign-in' },

@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import './css/Topbar.css';
-import { FaBell, FaPlus, FaTruck, FaUndo } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
-import useUserStore from '../../Store/UserStore/userStore';
-import useLanguageStore from '../../Store/LanguageStore/languageStore';
+import React, { useEffect, useState } from "react";
+import "./css/Topbar.css";
+import { FaBell, FaPlus, FaTruck, FaUndo } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import useUserStore from "../../Store/UserStore/userStore";
+import useLanguageStore from "../../Store/LanguageStore/languageStore";
 
 const TopBar = () => {
   const user = useUserStore((state) => state.user);
+  const Setuser = useUserStore((state) => state.SetUser);
   const [showActions, setShowActions] = useState(false);
   const navigate = useNavigate();
   const { lang, toggleLang } = useLanguageStore();
@@ -16,19 +17,17 @@ const TopBar = () => {
   };
 
   useEffect(() => {
-    if (user) {
-      console.log('user info =', user);
-    } else {
-      console.log('no user info');
-    }
+    console.log('from store',user)
+   
+
   }, [user]);
 
   const goToPage = (type) => {
     setShowActions(false);
-    if (type === 'shipping') {
-      navigate('/shipping');
-    } else if (type === 'return') {
-      navigate('/return');
+    if (type === "shipping") {
+      navigate("/shipping");
+    } else if (type === "return") {
+      navigate("/return");
     }
   };
 
@@ -37,17 +36,29 @@ const TopBar = () => {
       <div className="left-icons">
         <div className="create-dropdown">
           <button className="icon-button" onClick={handleCreateClick}>
-            <FaPlus /> <span>{lang === 'ar' ? 'إنشاء' : 'Create'}</span>
+            <FaPlus /> <span>{lang === "ar" ? "إنشاء" : "Create"}</span>
           </button>
 
           {showActions && (
-            <div className="dropdown-menu">
-              <div className="dropdown-item" onClick={() => goToPage('shipping')}>
-                <FaTruck /> {lang === 'ar' ? 'طلب إنشاء' : 'New Shipping'}
-              </div>
-              <div className="dropdown-item" onClick={() => goToPage('return')}>
-                <FaUndo /> {lang === 'ar' ? 'طلب استرجاع' : 'Return Request'}
-              </div>
+            <div
+              className="dropdown-menu dropdown-menu-end show"
+              style={{ position: "absolute" }}
+            >
+              <button
+                type="button"
+                className="dropdown-item"
+                onClick={() => goToPage("shipping")}
+              >
+                <FaTruck /> {lang === "ar" ? "طلب إنشاء" : "New Shipping"}
+              </button>
+
+              <button
+                type="button"
+                className="dropdown-item"
+                onClick={() => goToPage("return")}
+              >
+                <FaUndo /> {lang === "ar" ? "طلب استرجاع" : "Return Request"}
+              </button>
             </div>
           )}
         </div>
@@ -66,7 +77,11 @@ const TopBar = () => {
       {/* 👤 بيانات المستخدم */}
       <div className="user-info">
         <img src="hassan.jpg" alt="User" className="user-img" />
-        <span className="user-name">{user?.userName || user?.firstName}</span>
+        <div>
+
+        <span className="user-name">{user?.firstName }</span>
+        <span className="">{user?.country+","+user?.city }</span>
+        </div>
       </div>
     </div>
   );

@@ -8,100 +8,11 @@ import { toast } from "sonner";
 import useUserStore from "../../Store/UserStore/userStore";
 import LoadingOverlay from "../components/LoadingOverlay";
 import DeleteModal from "../../Components/DeleteModal";
-export const fallbackOrderDetails = {
-  2: {
-    id: 842,
-    status: "تم التوصيل",
-    type: "سريع",
-    name: "أحمد محمد علي",
-    phone: "+201234567890",
-    address: "الرياض، حي الزهري",
-    date: "2024-01-15",
-    time: "14:30",
-    price: 45,
-    packageContent: "ملابس: 3 قطع، إكسسوارات",
-    barcode: "1234567890123",
-    shipping: 10,
-extras: [
-    { label: "تغليف إضافي", value: 5 },
-    { label: "خدمة سريعة", value: 2 }
-  ],
-  tracking: [
-    { status: "تم استلام الطلب", location: "الرياض", date: "2024-01-14", time: "10:00" },
-    { status: "جاري التوصيل", location: "الطريق السريع", date: "2024-01-15", time: "12:00" },
-    { status: "تم التوصيل", location: "الرياض، حي الزهري", date: "2024-01-15", time: "14:30" }
-  ]
-  },
-  841: {
-    id: 841,
-    status: "منتج للعميل",
-    type: "عادي",
-    name: "فاطمة علي",
-    phone: "0559876543",
-    address: "جدة، حي الأزهراء",
-    date: "2024-01-15",
-    time: "12:15",
-    price: 35,
-    packageContent: "كتب: 2، أقلام: 5",
-    barcode: "4567890123456",
-    shipping: 10,
-  extras: [
-    { label: "تغليف إضافي", value: 5 },
-    { label: "خدمة سريعة", value: 2 }
-  ],
-  tracking: [
-    { status: "تم استلام الطلب", location: "الرياض", date: "2024-01-14", time: "10:00" },
-    { status: "جاري التوصيل", location: "الطريق السريع", date: "2024-01-15", time: "12:00" },
-    { status: "تم التوصيل", location: "الرياض، حي الزهري", date: "2024-01-15", time: "14:30" }
-  ]
-  },
-  840: {
-    id: 840,
-    status: "قيد التنفيذ",
-    type: "سريع",
-    name: "محمد سالم",
-    phone: "0551112233",
-    address: "الدمام، حي الفيصلية",
-    date: "2024-01-15",
-    time: "10:45",
-    price: 25,
-    packageContent: "إلكترونيات: 1، شاحن: 1",
-    barcode: "7890123456789",
-    shipping: 10,
-  extras: [
-    { label: "تغليف إضافي", value: 5 },
-    { label: "خدمة سريعة", value: 2 }
-  ],
-  tracking: [
-    { status: "تم استلام الطلب", location: "الرياض", date: "2024-01-14", time: "10:00" },
-    { status: "جاري التوصيل", location: "الطريق السريع", date: "2024-01-15", time: "12:00" },
-    { status: "تم التوصيل", location: "الرياض، حي الزهري", date: "2024-01-15", time: "14:30" }
-  ]
-  },
-  839: {
-    id: 839,
-    status: "انتظار القرار",
-    type: "عادي",
-    name: "نورا أحمد",
-    phone: "0554445556",
-    address: "مكة، حي العزيزية",
-    date: "2024-01-14",
-    time: "16:20",
-    price: 50,
-    packageContent: "مستحضرات تجميل: 4",
-    barcode: "0123456789012",
-    shipping: 10,
-  extras: [
-    { label: "تغليف إضافي", value: 5 },
-    { label: "خدمة سريعة", value: 2 }
-  ],
-  tracking: [
-    { status: "تم استلام الطلب", location: "الرياض", date: "2024-01-14", time: "10:00" },
-    { status: "جاري التوصيل", location: "الطريق السريع", date: "2024-01-15", time: "12:00" },
-    { status: "تم التوصيل", location: "الرياض، حي الزهري", date: "2024-01-15", time: "14:30" }
-  ]
-  },
-};
+import EditOrderModal from "../components/OrderEditSidebar";
+import ConfirmUpdateModal from "../../Components/ConfirmUpdateModal";
+import { Ship } from "lucide-react";
+
+
 
 export const OrderDetails = () => {
   const { orderId } = useParams();
@@ -113,33 +24,52 @@ export const OrderDetails = () => {
   const Shipments = useShipmentsStore((state) => state.shipments);
   const user=useUserStore((state)=>state.user);
   const [showdeleteModal, setShowDeleteModal] = useState(false);
+  const [showEditOrder, setShowEditOrder] = useState(false);
+
   useEffect(() => {
-    setLoading(true);
-    const findShipment=Shipments?.find(s=>s.id===parseInt(orderId));
+    const fetchShipmentDetails=async()=>{
+      setLoading(true);
+      console.log("Fetching details for orderId:",orderId );
+        try{
+       const res=await fetch(`https://stakeexpress.runasp.net/api/Shipments/getShipmentById/${orderId}`,{
+        method:"Get",
+        headers:{
+          'Content-Type': 'application/json',
+          'X-Client-Key': 'web API',
+        Authorization: `Bearer ${user?.token}`
+        }
+      
+      });
+        if(res.ok===true){
+
+          const data=await res.json();
+          console.log("Fetched Shipment Details:",data);
+          SetShipment(data.data);
+          
+        }
+
+        }catch(err){
+          console.log("Error fetching shipment details:",err );
+        }finally{
+          setLoading(false);
+        }
+      }
+
+   
     
-    if(findShipment){   
-    SetShipment(findShipment);
-    setLoading(false);
+  
 
-    }
-console.log("found hipment:",findShipment );
-  setLoading(false);
-
-  }, [orderId]);
+    fetchShipmentDetails();
+  }, []);
 
   if (loading) {
     return (
-      <div className="order-details-container">جاري تحميل تفاصيل الطلب...</div>
+      <LoadingOverlay loading={loading} message="please wait..." color="#fff" size={44} />
+
+
     );
   }
 
-  // if (error) {
-  //   return (
-  //     <div className="order-details-container" style={{ color: "red" }}>
-  //       خطأ: {error}
-  //     </div>
-  //   );
-  // }
 
   if (Shipment===null) {
     return (
@@ -148,9 +78,6 @@ console.log("found hipment:",findShipment );
       </div>
     );
   }
-
-// const totalExtras = orderDetails.extras.reduce((acc, e) => acc + e.value, 0);
-const supplyValue = Shipment.collectionAmount ;
 
 
 
@@ -189,6 +116,42 @@ console.log("Deleting Shipment:",orderId );
     setLoading(false);
   }
 }
+const handleSaveOnEdit=async(updatedorder)=>{
+
+
+try{
+  console.log("Saving updated order:",updatedorder );
+  setLoading(true);
+  const res=await fetch(`https://stakeexpress.runasp.net/api/Shipments/updateShipment/${Shipment.id}`,{
+    method:"PUT",
+    headers:{
+      'Content-Type': 'application/json',
+      'X-Client-Key': 'web API',
+      Authorization: `Bearer ${user?.token}`
+  },
+  body:JSON.stringify(updatedorder)
+   });
+   if(res.ok===true){
+
+    const data=await res.json();
+
+    console.log("Update Response Data:",data);
+      SetShipment(data.data);
+    toast.success("تم تحديث الطلب بنجاح");
+   }
+   else if(res.ok===false){
+    const errorData=await res.json();
+    console.log("Update Error Data:",errorData);
+    toast.error("حدث خطأ أثناء تحديث الطلب: " + (errorData.message || "خطأ غير معروف"));
+   }
+
+}catch(err){
+console.log("Error updating order:",err );
+} finally{
+  setLoading(false);
+}
+
+}
 
   return (
     <>
@@ -198,7 +161,19 @@ console.log("Deleting Shipment:",orderId );
     onConfirm={DeleteShipment}
     loading={loading}
     />
+    
+
       <TopBar />
+    
+      <EditOrderModal 
+      open={showEditOrder}
+      onClose={()=>setShowEditOrder(false)}
+      order={Shipment}
+      onSave={handleSaveOnEdit}
+      
+      />
+    
+
       <div className="order-details-page">
         <div className="order-details-header">
           <h2>تفاصيل الطلب</h2>
@@ -210,7 +185,7 @@ console.log("Deleting Shipment:",orderId );
             إلغاء الطلب
             <i class="fa-solid fa-xmark"></i>
           </button>
-          <button className="edit-button">
+          <button className="edit-button"   onClick={()=>{setShowEditOrder(true);}}>
             تعديل الطلب
             <i class="fa-solid fa-pen-to-square"></i>
           </button>
@@ -232,8 +207,8 @@ console.log("Deleting Shipment:",orderId );
           <div className="order-info-grid">
             <div className="info-item1">
               <span className="info-label">حالة الطلب</span>
-              <div className={`status-badge ${Shipment.status}`}>
-                {Shipment.status}
+              <div className={`status-badge ${Shipment.status} text-black`}>
+                {Shipment.shipmentStatuses[0].status}
               </div>
             </div>
             <div className="info-item2">
@@ -270,7 +245,14 @@ console.log("Deleting Shipment:",orderId );
               </div>
               <div className="info-item">
                 <span className="info-label">العنوان الكامل</span>
-                <i className="fas fa-map-marker-alt"></i> {Shipment.receiverAddress}
+                <i className="fas fa-map-marker-alt"></i> {
+              Shipment.receiverAddress.country +
+              " - " +
+              Shipment.receiverAddress.city +
+              " - " +
+              Shipment.receiverAddress.street +
+              " - " +
+              Shipment.receiverAddress.details}
               </div>
               <div className="info-item">
                 <span className="info-label">محتوى الطرد</span>
@@ -284,15 +266,15 @@ console.log("Deleting Shipment:",orderId );
             <h3>المعلومات المالية</h3>
             <div className="finance-box">
               <div className="finance-row"><span>قيمة التحصيل</span><strong>{Shipment.collectionAmount} جنيه</strong></div>
-              <div className="finance-row"><span>قيمة الشحن</span><strong>{10} جنيه</strong></div>
+              <div className="finance-row"><span>قيمة الشحن</span><strong>{Shipment.shippingCost} جنيه</strong></div>
               <div className="finance-row"><span>المبالغ الإضافية</span>
                 <div>
                   
-                    <div  className="extra-item">{"وزن زائد"}: {15} جنيه</div>
+                    <div  className="extra-item">{"وزن زائد"}: {Shipment.additionalWeightCost} جنيه</div>
                 
                 </div>
               </div>
-              <div className="finance-total">قيمة التوريد: {supplyValue} جنيه</div>
+              <div className="finance-total">قيمة التوريد: {Shipment.collectionAmount-Shipment.shippingCost-Shipment.additionalWeightCost} جنيه</div>
             </div>
           </div>
 
@@ -317,6 +299,7 @@ console.log("Deleting Shipment:",orderId );
           </button>
         </div>
       </div>
+  
     </>
   );
 

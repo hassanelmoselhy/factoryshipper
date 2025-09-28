@@ -120,7 +120,7 @@ const ShippingPage = () => {
       "receiverEmail",
       "receiverPhone",
       "street",
-      "addressDetails",
+      
       "city",
       "shipmentDescription",
       "quantity",
@@ -289,7 +289,7 @@ const ShippingPage = () => {
         <button className="save-btn" type="button">
           حفظ كمسودة
         </button>
-        <button className="cancel-btn" type="button">
+        <button className="cancel-btn" type="button" onClick={() => navigate(-1)}>
           إلغاء
         </button>
       </div>

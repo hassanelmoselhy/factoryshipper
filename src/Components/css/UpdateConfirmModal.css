@@ -1,0 +1,29 @@
+/* ensure backdrop is above page content */
+.ucm-backdrop {
+  z-index: 1050;
+}
+
+/* tweak modal content for small viewports */
+@media (max-width: 575.98px) {
+  .modal-dialog {
+    margin: 1rem;
+  }
+}
+
+/* optional: slightly larger modal-content radius */
+.modal-content {
+  border-radius: 0.75rem;
+}
+
+/* keep modal body readable when device has small width */
+.modal-body {
+  max-width: 100%;
+}
+
+/* improve the icon circle sizing on very small screens */
+@media (max-width: 400px) {
+  .modal-body .rounded-circle {
+    min-width: 48px !important;
+    min-height: 48px !important;
+  }
+}

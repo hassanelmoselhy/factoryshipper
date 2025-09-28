@@ -3,6 +3,7 @@ import "./css/Actions.css";
 import { FaFilter } from "react-icons/fa";
 import useLanguageStore from "../../Store/LanguageStore/languageStore";
 import translations from "../../Store/LanguageStore/translations";
+import { Link } from "react-router-dom";
 const fallbackData = [
   {
     id: "T-001",
@@ -109,7 +110,7 @@ const Actions = () => {
   return (
 <div className={`actions-container ${lang === "ar" ? "rtl" : "ltr"}`}>
       <div className="header-actions">
-        <a href="/new-request" className="new-request">{t.newRequest}</a>
+        <Link to="/Pickuporder" className="new-request">{t.newRequest}</Link>
       </div>
 
       <div className="filter-search">

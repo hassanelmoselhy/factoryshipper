@@ -7,7 +7,7 @@ import useUserStore from "../../../Store/UserStore/userStore";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import LoadingOverlay from "../../components/LoadingOverlay";
 const Signup = () => {
-  const Setuser = useUserStore((state) => state.Setuser);
+  const SetUser=useUserStore((state)=>state.SetUser)
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -90,11 +90,7 @@ const [loading,setLoading]=useState(false)
       email: formData.email.trim(),
       phoneNumber: formData.phoneNumber.trim(),
       companyName: formData.companyName.trim(),
-      companyLink: formData.companyLink
-        ? formData.companyLink.match(/^https?:\/\//)
-          ? formData.companyLink
-          : `https://${formData.companyLink}`
-        : "",
+      companyLink: formData.companyLink?formData.companyLink :null,
       city: formData.city.trim(),
       street: formData.street.trim(),
       country: formData.country.trim(),
@@ -117,16 +113,17 @@ const [loading,setLoading]=useState(false)
             "X-Client-Key": "web API",
           },
           body: JSON.stringify(payload),
+        credentials:'include'
         }
       );
 
       if (response.ok) {
         const data = await response.json();
-        Setuser(data.data);
         sessionStorage.setItem("user", JSON.stringify(data));
-        // alert('✅ تم إنشاء الحساب بنجاح');
+        SetUser(data.data);
+       
         toast.success("Account created successfuly ");
-
+        console.log("✅ Signup successful:", data);
         navigate("/home");
       } else {
         const rawError = await response.text();

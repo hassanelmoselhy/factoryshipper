@@ -8,6 +8,8 @@ import Home from './Sender/pages/Home';
 import TopBar from './Sender/components/Topbar';
 import Signup from './Sender/auth/pages/Signup';
 import Login from './Sender/auth/pages/Login';
+import PickupOrder from './Sender/pages/PickupOrder';
+
 import Sidebar from './Hanger/components/Sidebar';
 import Header from './Hanger/components/Header';
 import ShipmentUpdate from './Hanger/pages/ShipmentUpdate';
@@ -30,8 +32,8 @@ import Print from './Sender/pages/Print'
 import { scheduleRefreshToken } from "./utils/auth";
 import HangerOrders from './Hanger/pages/Orders';
 import PageNotFound from './Components/PageNotFound';
-
-
+import WarehouseList from './Hanger/pages/WarehouseList';
+import OrdersPage from './Hanger/pages/OrdersPage';
 // لو عندك فانكشن اسمها shceduleRefreshToken لازم تكون مستوردة
 // import { shceduleRefreshToken } from "./utils/auth"; 
 
@@ -69,7 +71,7 @@ const HangerLayout = () => {
       <Sidebar />
       <div className="main-layout">
         <Header />
-        <main className="content-area">
+        <main className="content-area" >
           <Outlet />
         </main>
       </div>
@@ -80,14 +82,13 @@ const HangerLayout = () => {
 const App = () => {
   const user = useUserStore((state) => state.user);
 
-  useEffect(() => {
-    if (!user) return;
+//   useEffect(() => {
 
-    // استدعاء الفانكشن اللي بتعمل refresh للـ token
-   if (typeof scheduleRefreshToken === "function") {
-  scheduleRefreshToken(user.expiresOn);
-}
-}, [user]);
+//     // استدعاء الفانكشن اللي بتعمل refresh للـ token
+//    if (typeof scheduleRefreshToken === "function") {
+//   scheduleRefreshToken(user.expiresOn);
+// }
+// }, [user]);
 
   return (
     <>
@@ -105,6 +106,11 @@ const App = () => {
           <Route path="/hanger/sign-in" element={<SignIn />} />
           <Route path="/shipping" element={<ShippingPage />} />
           <Route path="/new-request" element={<NewRequestPage />} />
+          
+            
+            
+            
+            <Route path="/Pickuporder" element={<PickupOrder />} />
 
           {/* Sender Layout */}
           <Route element={<SenderLayout />}>
@@ -125,6 +131,8 @@ const App = () => {
             <Route path="scan" element={<Scan />} />
             <Route path="attendance" element={<HangerAttendance />} />
             <Route path="schedule" element={<DeliverySchedule />} />
+            <Route path="warehouseList" element={<WarehouseList />} />
+            <Route path="operations" element={<OrdersPage />} />
           </Route>
 
           {/* Reciver */}
@@ -132,7 +140,7 @@ const App = () => {
           <Route path="/reciver" element={<Reciver />} />
           
           
-          <Route path="/a" element={<PageNotFound />} />
+          <Route path="*" element={<PageNotFound />} />
         
         
         </Routes>

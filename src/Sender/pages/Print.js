@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import "./css/Print.css";
 import useShipmentsStore from "../../Store/UserStore/ShipmentsStore";
@@ -8,9 +8,11 @@ const Print = () => {
   const Shipments = useShipmentsStore((state) => state.shipments);
   const order = Shipments?.find((s) => s.id === parseInt(orderId));
 
+ 
   if (!order) {
     return <div>لم يتم العثور على بيانات الطرد</div>;
   }
+
 
   return (
     <div className="print-page">
@@ -25,7 +27,15 @@ const Print = () => {
         <div className="print-box">
           <div className="print-box-top">
             <div className="print-location">
-              <p><span className="bold">العنوان :</span> {order.receiverAddress}</p>
+              <p className="d-flex"><span className="bold" >العنوان :</span> {
+                order.receiverAddress.country +
+              " - " +
+              order.receiverAddress.city +
+              " - " +
+              order.receiverAddress.street +
+              " - " +
+              order.receiverAddress.details
+              }</p>
             </div>
             <div className="print-logo">
               <img
@@ -63,7 +73,16 @@ const Print = () => {
 
         {/* Address & Contact */}
         <div className="print-address">
-          <p><span className="bold">العنوان :</span> {order.receiverAddress}</p>
+          <p><span className="bold">العنوان :</span> {
+
+                  order.receiverAddress.country +
+              " - " +
+              order.receiverAddress.city +
+              " - " +
+              order.receiverAddress.street +
+              " - " +
+              order.receiverAddress.details
+              }</p>
           <p><span className="bold">محتوي الباكدج :</span> {order.shipmentDescription}</p>
           <p><span className="bold">التليفون :</span> {order.receiverPhone}</p>
         </div>
