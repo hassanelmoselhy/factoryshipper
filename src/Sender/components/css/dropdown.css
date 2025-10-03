@@ -1,0 +1,52 @@
+.actions-btns {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-toggle {
+  background: #e2e3e5;
+  color: #333;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-top: 6px;
+  min-width: 160px;
+  list-style: none;
+  padding: 5px 0;
+  z-index: 9999;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  display: none;
+}
+
+.actions-btns.open .dropdown-menu {
+  display: block;
+}
+
+.dropdown-menu li {
+  padding: 8px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dropdown-menu li:hover {
+  background: #f1f1f1;
+}
+
+.dropdown-menu .cancel-item {
+  color: #dc3545;
+  font-weight: bold;
+}

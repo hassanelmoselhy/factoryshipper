@@ -72,24 +72,22 @@
   display: flex;
   gap: 20px;
   margin-bottom: 15px;
-  flex-wrap: nowrap;          /* ما تكسرش العناصر */
-  overflow-x: auto;           /* Scroll أفقي */
-  scrollbar-width: none;      /* إخفاء في فايرفوكس */
-  -ms-overflow-style: none;   /* إخفاء في IE/Edge */
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   padding-bottom: 4px;
 }
 
-.tabs::-webkit-scrollbar { display: none; } /* إخفاء كروم/سفاري */
-.tabs::-webkit-scrollbar-thumb {
-  background: #bbb;
-  border-radius: 2px;
+.tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .tabs span {
   cursor: pointer;
   color: #555;
   white-space: nowrap;
-  flex-shrink: 0;             /* امنع التصغير */
+  flex-shrink: 0;
   padding: 6px 10px;
   border-radius: 6px;
   position: relative;
@@ -115,18 +113,19 @@
 /* جدول المهام */
 .tasks-wrapper {
   width: 100%;
-  overflow-x: auto; /* scroll في الموبايل */
+  overflow-x: auto;
 }
 
 .tasks-table {
   width: 100%;
   border-collapse: collapse;
   background: #fff;
-  min-width: 800px; /* علشان يفضل يعمل scroll مش يكسر */
+  min-width: 800px;
 }
 
 .tasks-table th,
 .tasks-table td {
+  position: relative;
   border-bottom: 1px solid #ddd;
   padding: 10px;
   text-align: center;
@@ -164,44 +163,59 @@
 .status.purple { background: #6f42c1; }
 .status.red { background: #dc3545; }
 
-/* أزرار الإجراءات */
+/* ✅ Dropdown Actions */
 .actions-btns {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  flex-wrap: wrap;
+  position: relative;
+  display: inline-block;
 }
 
-.actions-btns button {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 13px;
-  padding: 5px 10px;
+.dropdown-toggle {
+  background: #e2e3e5;
+  color: #333;
   border: none;
+  padding: 6px 12px;
   border-radius: 6px;
   cursor: pointer;
-  transition: 0.2s;
-  white-space: nowrap;
+  font-size: 14px;
 }
 
-.actions-btns button i {
-  font-size: 12px;
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-top: 6px;
+  min-width: 160px;
+  list-style: none;
+  padding: 5px 0;
+  z-index: 9999;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  display: none; /* مخفي افتراضي */
 }
 
-.actions-container.rtl .actions-btns button {
-  flex-direction: row-reverse;
+.actions-btns.open .dropdown-menu {
+  display: block; /* يظهر عند الفتح */
 }
 
-/* ألوان الأزرار */
-.cancel { background: #f8d7da; color: #dc3545; }
-.cancel:hover { background: #f5c6cb; }
+.dropdown-menu li {
+  padding: 8px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
 
-.edit { background: #e2e3e5; color: #333; }
-.edit:hover { background: #d6d8db; }
+.dropdown-menu li:hover {
+  background: #f1f1f1;
+}
 
-.details { background: #e2e3e5; color: #333; }
-.details:hover { background: #d6d8db; }
+.dropdown-menu .cancel-item {
+  color: #dc3545;
+  font-weight: bold;
+}
 
 /* 📱 Responsive */
 @media (max-width: 992px) {
@@ -222,79 +236,4 @@
   .filter-btn { padding: 6px 10px; font-size: 13px; }
   .tabs span { font-size: 13px; }
   .status { font-size: 11px; padding: 4px 8px; }
-  .actions-btns button { font-size: 12px; padding: 4px 8px; }
-}
-/* 📱 Table to Cards (Responsive Mode) */
-@media (max-width: 768px) {
-  .tasks-wrapper {
-    overflow-x: hidden; /* منع الـ scroll لما يبقى Cards */
-  }
-
-  .tasks-table {
-    min-width: unset;   /* إلغاء الشرط بتاع 800px */
-    border: 0;
-  }
-
-  .tasks-table,
-  .tasks-table thead,
-  .tasks-table tbody,
-  .tasks-table th,
-  .tasks-table td,
-  .tasks-table tr {
-    display: block;
-    width: 100%;
-  }
-
-  /* نخفي الـ thead */
-  .tasks-table thead {
-    display: none;
-  }
-
-  .tasks-table tr {
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 10px;
-    background: #fff;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  }
-
-  .tasks-table td {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px;
-    font-size: 13px;
-    border: none;
-    border-bottom: 1px solid #eee;
-  }
-
-  .tasks-table td:last-child {
-    border-bottom: none;
-  }
-
-  .tasks-table td::before {
-    content: attr(data-label);
-    font-weight: bold;
-    color: #333;
-    flex: 1;
-    text-align: start;
-  }
-
-  .tasks-table td span,
-  .tasks-table td div {
-    flex: 2;
-    text-align: end;
-  }
-
-  /* الأزرار تاخد عرض كامل تحت بعض */
-  .actions-btns {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 6px;
-  }
-
-  .actions-btns button {
-    justify-content: center;
-    width: 100%;
-  }
 }

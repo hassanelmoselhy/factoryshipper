@@ -160,9 +160,10 @@ const Order = () => {
               <Link to={`/order-details/${order.id}`} key={order.id} className="order-card">
                 <div className="order-card-header">
                   <span className="order-id">#{order.id}</span>
-                  <span className={`status-badge Shipmentstatuscolor`}>
-                    {order.shipmentStatuses[0].status}
-                  </span>
+                 <span className={`status-badge Shipmentstatuscolor`}>
+  {order.shipmentStatuses?.[0]?.status || "No Status"}
+</span>
+
                   <span className={`type-badge Shipmentstatuscolor`}>
                     {order.expressDeliveryEnabled === false ? "Normal" : "Fast"}
                   </span>
