@@ -1,0 +1,131 @@
+.dollarcard{
+      background-color: #16a34a;
+
+  /* left-to-right gradient */
+  background-image: linear-gradient(90deg, #16a34a 0%, #15803d 100%);
+
+  /* keep text readable */
+  color: #ffffff;
+}
+.importantbtn{
+
+background-color: #030213;
+color: white;
+transition: ease;
+}
+.importantbtn:hover{
+  background-color: #030213;
+  color: white;
+  scale: 1.1;
+
+}
+
+
+
+/* make the export button wider */
+.export-btn {
+  background: #fff;
+  border: 1px solid #e8e8ea;
+  color: #111827;
+  padding: 8px 14px;
+  border-radius: 12px;
+  box-shadow: 0 1px 0 rgba(16,24,40,0.03);
+  min-height: 44px;
+  font-weight: 600;
+  font-size: 1rem;
+   /* <-- wider */
+}
+
+/* optional: slightly larger padding for very wide look */
+.export-btn.wide {
+  padding: 10px 22px;
+  /* min-width: 260px; even wider */
+}
+
+/* responsive full-width on small screens */
+@media (max-width: 576px) {
+  .export-btn.full {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+
+
+.safefilterbar{
+
+  width: 100%;
+ 
+  background-color: #ECECF0;
+color: black;
+}
+
+.filterbtn{
+
+  width: 100%;
+  border: none;
+height: 100%;
+}
+.filterbtn:focus{
+  background-color: white;
+  color: black;
+ 
+}
+
+
+
+/* design tweaks */
+.fw-medium { font-weight: 500 !important; }
+
+/* soft rounded, slightly-gray input */
+.custom-input {
+  background: #f5f5f7;
+  border: 1px solid transparent;
+  border-radius: 0.75rem; /* rounded-xl */
+  padding: 0.75rem 1rem;
+  height: auto;
+  box-shadow: none;
+}
+.custom-input:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: #e6e6ea;
+  background: #fff;
+}
+
+/* textarea with visible soft border and rounded corners */
+.custom-textarea {
+  border-radius: 0.75rem;
+  border: 1.5px solid #dcdde0;
+  padding: 0.85rem 1rem;
+  min-height: 110px;
+  resize: vertical;
+  background: #fff;
+  box-shadow: none;
+}
+.custom-textarea:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: #cfcfd3;
+}
+
+/* dark primary button full width */
+.primary-dark-btn {
+  background: #060611;
+  color: #fff;
+  border: 0;
+  border-radius: 0.75rem;
+  padding: 0.85rem 1rem;
+  font-weight: 600;
+  font-size: 1rem;
+}
+.primary-dark-btn:hover {
+  background: #0a0a12;
+  color: #fff;
+}
+
+/* small helper for subtle placeholder color */
+.custom-input::placeholder,
+.custom-textarea::placeholder {
+  color: #9aa0a6;
+}

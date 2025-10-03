@@ -18,7 +18,7 @@ const Signup = () => {
     companyLink: "",
     city: "",
     street: "",
-    country: "",
+    governorate: "",
     details: "",
     password: "",
     confirmPassword: "",
@@ -49,7 +49,7 @@ const [loading,setLoading]=useState(false)
       !formData.companyName ||
       !formData.city ||
       !formData.street ||
-      !formData.country ||
+      !formData.governorate ||
       !formData.password ||
       !formData.confirmPassword ||
       !formData.typeOfProduction
@@ -93,7 +93,7 @@ const [loading,setLoading]=useState(false)
       companyLink: formData.companyLink?formData.companyLink :null,
       city: formData.city.trim(),
       street: formData.street.trim(),
-      country: formData.country.trim(),
+      governorate: formData.governorate.trim(),
       details: formData.details.trim(),
       typeOfProduction: formData.typeOfProduction,
       password: formData.password,
@@ -149,6 +149,168 @@ const [loading,setLoading]=useState(false)
       setLoading(false)
     }
   };
+
+
+  
+   const egypt_governorates= [
+    {
+      "id": 1,
+      "name": "Cairo",
+      "name_arabic": "القاهرة",
+    },
+    {
+      "id": 2,
+      "name": "Alexandria",
+      "name_arabic": "الإسكندرية",
+      "capital": "Alexandria",
+      
+    },
+    {
+      "id": 3,
+      "name": "Port Said",
+      "name_arabic": "بورسعيد",
+      
+    },
+    {
+      "id": 4,
+      "name": "Suez",
+      "name_arabic": "السويس",
+
+    },
+    {
+      "id": 5,
+      "name": "Luxor",
+      "name_arabic": "الأقصر",
+     
+    },
+    {
+      "id": 6,
+      "name": "Dakahlia",
+      "name_arabic": "الدقهلية",
+ 
+    },
+    {
+      "id": 7,
+      "name": "Sharqia",
+      "name_arabic": "الشرقية",
+     
+    },
+    {
+      "id": 8,
+      "name": "Qalyubia",
+      "name_arabic": "القليوبية",
+      
+    },
+    {
+      "id": 9,
+      "name": "Damietta",
+      "name_arabic": "دمياط",
+  
+    },
+    {
+      "id": 10,
+      "name": "Beheira",
+      "name_arabic": "البحيرة",
+      
+    },
+    {
+      "id": 11,
+      "name": "Gharbia",
+      "name_arabic": "الغربية",
+     
+    },
+    {
+      "id": 12,
+      "name": "Monufia",
+      "name_arabic": "المنوفية",
+     
+    },
+    {
+      "id": 13,
+      "name": "Kafr El Sheikh",
+      "name_arabic": "كفر الشيخ",
+    
+    },
+    {
+      "id": 14,
+      "name": "Giza",
+      "name_arabic": "الجيزة",
+      
+    },
+    {
+      "id": 15,
+      "name": "Faiyum",
+      "name_arabic": "الفيوم",
+      
+    },
+    {
+      "id": 16,
+      "name": "Beni Suef",
+      "name_arabic": "بني سويف",
+      
+    },
+    {
+      "id": 17,
+      "name": "Minya",
+      "name_arabic": "المنيا",
+    
+    },
+    {
+      "id": 18,
+      "name": "Asyut",
+      "name_arabic": "أسيوط",
+   
+    },
+    {
+      "id": 19,
+      "name": "Sohag",
+      "name_arabic": "سوهاج",
+    
+    },
+    {
+      "id": 20,
+      "name": "Qena",
+      "name_arabic": "قنا",
+      
+    },
+    {
+      "id": 21,
+      "name": "Aswan",
+      "name_arabic": "أسوان",
+   
+    },
+    {
+      "id": 22,
+      "name": "Red Sea",
+      "name_arabic": "البحر الأحمر",
+  
+    },
+    {
+      "id": 23,
+      "name": "New Valley",
+      "name_arabic": "الوادي الجديد",
+   
+    },
+    {
+      "id": 24,
+      "name": "Matrouh",
+      "name_arabic": "مطروح",
+     
+    },
+    {
+      "id": 25,
+      "name": "North Sinai",
+      "name_arabic": "شمال سيناء",
+   
+    },
+    {
+      "id": 26,
+      "name": "South Sinai",
+      "name_arabic": "جنوب سيناء",
+   
+    }
+  ];
+
 
   return (
     <>
@@ -291,13 +453,13 @@ const [loading,setLoading]=useState(false)
                   value={formData.street}
                   onChange={handleChange}
                 />
-                <input
-                  type="text"
-                  name="country"
-                  placeholder="Country *"
-                  value={formData.country}
-                  onChange={handleChange}
-                />
+                <select name="governorate" value={formData.governorate} onChange={handleChange} >
+                  <option value="" disabled selected >اختر المحافظه</option>
+                      {egypt_governorates.map((gov)=>(
+
+                        <option key={gov.id} value={gov.name_arabic}>{gov.name_arabic}</option>
+                      ))}
+                </select>
                 <input
                   type="text"
                   name="details"

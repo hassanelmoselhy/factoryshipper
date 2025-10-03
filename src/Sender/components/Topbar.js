@@ -80,7 +80,7 @@ const TopBar = () => {
         <div>
 
         <span className="user-name">{user?.firstName }</span>
-        <span className="">{user?.country+","+user?.city }</span>
+        <span className="">{user?.governorate+" "+user?.city }</span>
         </div>
       </div>
     </div>

@@ -1,12 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './css/Home.css';
 import { FaWallet, FaCheckCircle, FaClock, FaGift, FaExclamationCircle } from 'react-icons/fa';
 import useLanguageStore from '../../Store/LanguageStore/languageStore';
 import translations from '../../Store/LanguageStore/translations';
+import soundUrl from "../../Sounds/videoplayback.mp3"; 
 
 const Home = () => {
   const { lang } = useLanguageStore();
   const t = translations[lang];
+
+
+
+useEffect(()=>{
+
+  const audio = new Audio(soundUrl).play();
+},[])
 
   // تنسيق الأرقام حسب اللغة (اختياري لكن جميل)
   const amountNumber = 15420.5;

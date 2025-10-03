@@ -2,12 +2,6 @@ import React from "react";
 import { User,SquarePen,MapPin,Search   } from "lucide-react";
 import './css/WarehouseList.css';
 
-// Sample component that reproduces the provided design (RTL / Arabic)
-// Requirements:
-// 1) Install: npm i react-icons bootstrap
-// 2) Import bootstrap in your index.js or index.html: import 'bootstrap/dist/css/bootstrap.min.css'
-// 3) Create the accompanying CSS file `Warehouse.css` (content below) next to this component.
-
 const orders = [
   {
     id: 1,

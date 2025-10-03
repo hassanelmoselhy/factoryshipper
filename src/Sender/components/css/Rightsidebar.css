@@ -75,8 +75,8 @@ body {
 }
 
 .nav-link.active {
-  background-color: #5f82a8 !important;
-  color: black !important;
+  background-color: #030213 !important;
+  color: white !important;
   box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2) !important;
 }
 

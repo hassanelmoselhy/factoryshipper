@@ -62,6 +62,10 @@ export const OrderDetails = () => {
     fetchShipmentDetails();
   }, []);
 
+
+
+
+  
   if (loading) {
     return (
       <LoadingOverlay loading={loading} message="please wait..." color="#fff" size={44} />
@@ -246,7 +250,7 @@ console.log("Error updating order:",err );
               <div className="info-item">
                 <span className="info-label">العنوان الكامل</span>
                 <i className="fas fa-map-marker-alt"></i> {
-              Shipment.receiverAddress.country +
+              Shipment.receiverAddress.governorate +
               " - " +
               Shipment.receiverAddress.city +
               " - " +

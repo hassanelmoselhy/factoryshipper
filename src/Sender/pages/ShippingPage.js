@@ -286,9 +286,9 @@ const ShippingPage = () => {
         >
           {loading ? "جاري الإرسال..." : "إنشاء الطلب"}
         </button>
-        <button className="save-btn" type="button">
+        {/* <button className="save-btn" type="button">
           حفظ كمسودة
-        </button>
+        </button> */}
         <button className="cancel-btn" type="button" onClick={() => navigate(-1)}>
           إلغاء
         </button>

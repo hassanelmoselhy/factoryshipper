@@ -13,11 +13,11 @@ import PickupOrder from './Sender/pages/PickupOrder';
 import Sidebar from './Hanger/components/Sidebar';
 import Header from './Hanger/components/Header';
 import ShipmentUpdate from './Hanger/pages/ShipmentUpdate';
-import EmployeeMang from './Hanger/pages/EmployeeMang';
+// import EmployeeMang from './Hanger/pages/EmployeeMang';
 import Scan from './Hanger/pages/Scan';
-import HangerAttendance from './Hanger/pages/HangerAttendance';
+// import HangerAttendance from './Hanger/pages/HangerAttendance';
 import './App.css';
-import DeliverySchedule from './Hanger/pages/DeliverySchedule';
+// import DeliverySchedule from './Hanger/pages/DeliverySchedule';
 import Reciver from './reciver/pages/reciver'; 
 import SignUp from './Hanger/auth/pages/HangerSignup';
 import SignIn from './Hanger/auth/pages/HangerSignin';
@@ -34,6 +34,10 @@ import HangerOrders from './Hanger/pages/Orders';
 import PageNotFound from './Components/PageNotFound';
 import WarehouseList from './Hanger/pages/WarehouseList';
 import OrdersPage from './Hanger/pages/OrdersPage';
+import OrderRelease from './Hanger/pages/OrdersRelease';
+import Safe from './Hanger/pages/Safe';
+
+
 // لو عندك فانكشن اسمها shceduleRefreshToken لازم تكون مستوردة
 // import { shceduleRefreshToken } from "./utils/auth"; 
 
@@ -52,7 +56,7 @@ const SelectRole = () => {
 
 const SenderLayout = () => {
   return (
-    <div className="row">
+    <div className="row ">
       <div className="col-10">
         <TopBar />
         <Outlet />
@@ -67,28 +71,21 @@ const SenderLayout = () => {
 // Layout للـ Hanger
 const HangerLayout = () => {
   return (
-    <div className="app-container">
-      <Sidebar />
-      <div className="main-layout">
+    <div className="row p-0 m-0">
+      <div className="col-10 m-0">
         <Header />
-        <main className="content-area" >
-          <Outlet />
-        </main>
+        <Outlet />
+        </div>
+        <div className="col-2">
+        <Sidebar />
+        </div>
       </div>
-    </div>
   );
 };
 
 const App = () => {
   const user = useUserStore((state) => state.user);
 
-//   useEffect(() => {
-
-//     // استدعاء الفانكشن اللي بتعمل refresh للـ token
-//    if (typeof scheduleRefreshToken === "function") {
-//   scheduleRefreshToken(user.expiresOn);
-// }
-// }, [user]);
 
   return (
     <>
@@ -127,12 +124,18 @@ const App = () => {
           <Route path="/hanger" element={<HangerLayout />}>
             <Route path="orders" element={<HangerOrders />} /> 
             <Route path="update" element={<ShipmentUpdate />} />
-            <Route path="employees" element={<EmployeeMang />} />
+            {/* <Route path="employees" element={<EmployeeMang />} /> */}
             <Route path="scan" element={<Scan />} />
-            <Route path="attendance" element={<HangerAttendance />} />
-            <Route path="schedule" element={<DeliverySchedule />} />
+            {/* <Route path="attendance" element={<HangerAttendance />} /> */}
+            {/* <Route path="schedule" element={<DeliverySchedule />} /> */}
             <Route path="warehouseList" element={<WarehouseList />} />
             <Route path="operations" element={<OrdersPage />} />
+            <Route path="Safe" element={<Safe />} />
+
+
+            {/* <Route path="attendance" element={<HangerAttendance />} />
+            <Route path="schedule" element={<DeliverySchedule />} /> */}
+            <Route path="release-orders" element={<OrderRelease />} />
           </Route>
 
           {/* Reciver */}

@@ -265,3 +265,162 @@
   .options-arrow.left { left: 10px; }
   .options-arrow.right { right: 10px; }
 }
+/* Filter and Search Container */
+.filter-search-container {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+
+.status-filter {
+  padding: 10px 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  font-size: 14px;
+  min-width: 200px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.status-filter:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.status-filter:hover {
+  border-color: #007bff;
+}
+
+/* Order Search */
+.order-search {
+  padding: 10px 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  min-width: 250px;
+  transition: all 0.3s ease;
+}
+
+.order-search:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Orders Info */
+.orders-info {
+  margin: 16px 0;
+  padding: 12px 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #007bff;
+}
+
+.orders-info p {
+  margin: 0;
+  color: #495057;
+  font-size: 14px;
+}
+
+/* Status Badges */
+.status-delivered {
+  background: #28a745;
+  color: white;
+}
+
+.status-pending, .status-watingforpickup {
+  background: #ffc107;
+  color: #212529;
+}
+
+.status-canceled, .status-lost, .status-damaged {
+  background: #dc3545;
+  color: white;
+}
+
+.status-pickedup, .status-inwarehouse {
+  background: #17a2b8;
+  color: white;
+}
+
+.status-outfordelivery {
+  background: #fd7e14;
+  color: white;
+}
+
+.status-faileddelivery, .status-onhold {
+  background: #6f42c1;
+  color: white;
+}
+
+.status-returningtowarehouse, .status-returningtoshipper, .status-returned {
+  background: #e83e8c;
+  color: white;
+}
+
+.status-default {
+  background: #6c757d;
+  color: white;
+}
+
+
+.type-fast {
+  background: #dc3545;
+  color: white;
+}
+
+.type-normal {
+  background: #28a745;
+  color: white;
+}
+
+
+.no-orders {
+  text-align: center;
+  margin-top: 50px;
+  color: #6c757d;
+}
+
+.no-orders p {
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+
+.clear-filters {
+  padding: 8px 16px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s ease;
+}
+
+.clear-filters:hover {
+  background: #0056b3;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .filter-search-container {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .status-filter,
+  .order-search {
+    min-width: 100%;
+    width: 100%;
+  }
+  
+  .order-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+}

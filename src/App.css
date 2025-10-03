@@ -1,3 +1,17 @@
+:root{
+  --latn: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --arab: "Cairo", "Noto Sans Arabic", Tahoma, sans-serif;
+}
+
+html[lang="ar"] { font-family: var(--arab); direction: rtl; }
+html:not([lang="ar"]) { font-family: var(--latn); }
+
+body {
+  /* font-size: 15px; */
+  line-height: 1.45;
+  font-variant-numeric: tabular-nums; 
+}
+
 .app-container {
 display: flex;
 min-height: 100vh;
@@ -88,3 +102,7 @@ max-width: 16.666667%;
     text-align: center;
   }
 }
+
+
+/*animation css*/
+

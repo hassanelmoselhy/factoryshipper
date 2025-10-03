@@ -1,149 +1,29 @@
-.scan-page {
-  direction: rtl;
-  font-family: "Cairo", sans-serif;
-  background-color: #f9f9f9; 
-  min-height: 100vh;
-  padding: 20px;
-}
-
-.scan-container {
-  display: flex;
-  justify-content: center;
-}
-
-.scan-card {
-  width: 1000px; 
-  height: 80vh;
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.scan-header {
-  text-align: right;
-  font-weight: bold;
-  margin-bottom: 20px;
-  font-size: 18px;
-}
-
-.scan-box {
-  background-color: #f0f7ff;
-  border-radius: 8px;
+.orders-container {
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
   padding: 30px;
-  text-align: center;
+  background: #fff;
 }
 
-.scan-area {
-  width: 80px;
-  height: 80px;
-  border: 2px dashed #ccc;
-  border-radius: 8px;
-  margin: 0 auto 15px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 24px;
-  color: #888;
-}
-
-.scan-text {
-  margin-bottom: 15px;
-  color: #555;
-}
-
-.scan-input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  margin-bottom: 15px;
-  outline: none;
-  text-align: right;
-}
-
-.scan-button {
-  background-color: #007bff;
-  color: #fff;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.scan-button:hover {
-  background-color: #0056b3;
-}
-
-.scan-divider {
-  margin: 20px 0;
-}
-
-.scan-subtitle {
-  text-align: right;
-  margin-bottom: 15px;
-}
-
-.parcel-row {
+.orders-header  {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
-  background-color: #eaffea;
-  margin-bottom: 10px;
-  border-radius: 6px;
-  animation: fadeIn 0.4s ease-in-out;
+  margin-bottom: 20px;
 }
-
-.parcel-row:hover {
-  background-color: #dfffdc;
-}
-
-.status {
-  background-color: #b2f0b2;
-  padding: 3px 10px;
+.empty-orders {
+  padding: 60px 20px;
+  border: 1px dashed #ccc;
   border-radius: 12px;
-  font-size: 12px;
+  background: #fafafa;
 }
 
-.delete-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  color: red;
-  transition: transform 0.2s ease;
+.icon-box {
+  font-size: 50px;
 }
 
-.delete-btn:hover {
-  transform: scale(1.2);
-}
-
-.empty-list {
-  text-align: center;
-  color: #777;
-  margin-top: 15px;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Responsive */
-@media (max-width: 600px) {
-  .scan-card {
-    width: 100%;
-    padding: 15px;
-  }
-  .scan-box {
-    padding: 20px;
-  }
+.order-card {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  background: #fff;
 }

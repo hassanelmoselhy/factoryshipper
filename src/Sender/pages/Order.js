@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import "./css/Order.css";
 import { Link } from "react-router-dom";
 import useLanguageStore from "../../Store/LanguageStore/languageStore";
@@ -8,22 +8,24 @@ import { toast } from "sonner";
 import useShipmentsStore from "../../Store/UserStore/ShipmentsStore";
 import LoadingOverlay from "../components/LoadingOverlay";
 
-// 🎨 ألوان الـ Status (للـ fallback فقط)
-const statusColors = {
-  delivered: "green",
-  customerProduct: "blue",
-  inProgress: "yellow",
-  waitingDecision: "orange",
-};
-
-// 🎨 ألوان نوع الطلب (للـ fallback فقط)
-const typeColors = {
-  fast: "purple",
-  normal: "gray",
-};
-
-// ✅ Tabs الأساسية (للـ fallback)
-const tabKeys = ["all", "delivered", "customerProduct", "inProgress", "waitingDecision"];
+//  Status Options
+const statusOptions = [
+  "All",
+  "Pending",
+  "Canceled",
+  "WatingForPickup",
+  "PickedUp",
+  "InWarehouse",
+  "OnHold",
+  "OutForDelivery",
+  "FailedDelivery",
+  "ReturningToWarehouse",
+  "ReturningToShipper",
+  "Delivered",
+  "Returned",
+  "Lost",
+  "Damaged"
+];
 
 const Order = () => {
   const { lang } = useLanguageStore();
@@ -31,7 +33,7 @@ const Order = () => {
 
   const [orders, setOrders] = useState([]);
   const [Shipments, setShipments] = useState([]);
-  const [activeTab, setActiveTab] = useState("all");
+  const [selectedStatus, setSelectedStatus] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -58,16 +60,13 @@ const Order = () => {
           },
         });
 
-        if (res.ok===true ) {
+        if (res.ok === true) {
           const data = await res.json();
-          
-
           setShipments(data.data);
           SetShipmentsStore(data.data);
         }
       } catch (error) {
         console.log("Using fallback orders due to error:", error.message);
-        
       } finally {
         setLoading(false);
       }
@@ -76,55 +75,78 @@ const Order = () => {
     fetchOrders();
   }, [user]);
 
-    const filteredShipments = useMemo(() => {
+  // Helper function to get count for each status
+  const getStatusCount = (status) => {
+    if (status === "All") return Shipments.length;
+    return Shipments.filter(shipment => shipment.latestShipmentStatus?.status === status).length;
+  };
+
+  const filteredShipments = useMemo(() => {
     let list = Shipments || [];
 
+    // Filter by selected status
+    if (selectedStatus !== "All") {
+      list = list.filter((shipment) => {
+        const status = shipment.latestShipmentStatus?.status || "";
+        return status === selectedStatus;
+      });
+    }
 
-    
+    // Filter by search term
     const q = searchTerm.trim().toLowerCase();
     if (q !== "") {
       list = list.filter((o) => {
-        const idMatch = String(o.id).includes(q); 
+        const idMatch = String(o.id).includes(q);
         const nameMatch = (o.receiverName || "").toLowerCase().includes(q);
         const phoneMatch = (o.receiverPhone || "").toLowerCase().includes(q);
-        
         const priceMatch = String(o.collectionAmount).includes(q);
         return idMatch || nameMatch || phoneMatch || priceMatch;
       });
     }
 
     return list;
-  }, [Shipments, searchTerm]);
+  }, [Shipments, selectedStatus, searchTerm]);
 
   return (
     <>
       <LoadingOverlay loading={loading} message="please wait..." color="#fff" size={44} />
       <div className="order-page" dir={lang === "ar" ? "rtl" : "ltr"}>
-        {/* ✅ العنوان والبحث */}
+        {/* ✅ Header with Dropdown Filter and Search */}
         <div className="order-header">
           <h2>{t.orders}</h2>
-          <input
-            type="text"
-            placeholder={t.searchOrder}
-            className="order-search"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+          
+          <div className="filter-search-container">
+            {/* 🔽 Status Filter Dropdown */}
+            <select 
+              value={selectedStatus} 
+              onChange={(e) => setSelectedStatus(e.target.value)}
+              className="status-filter"
+            >
+              {statusOptions.map((key) => (
+                <option key={key} value={key}>
+                  {t[key] || key} ({getStatusCount(key)})
+                </option>
+              ))}
+            </select>
+
+            {/* 🔍 Search Input */}
+            <input
+              type="text"
+              placeholder={t.searchOrder}
+              className="order-search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
         </div>
 
-        {/* ✅ Tabs */}
-        <div className="order-tabs">
-          {tabKeys.map((key) => (
-            <button
-              key={key}
-              className={`tab ${activeTab === key ? "active" : ""}`}
-              onClick={() => setActiveTab(key)}
-            >
-              {t[key]} (
-                {orders.filter((o) => (key === "all" ? true : o.statusKey === key)).length}
-              )
-            </button>
-          ))}
+        {/* ✅ Orders Count Info */}
+        <div className="orders-info">
+          <p>
+            Showing {filteredShipments.length} of {Shipments.length} orders
+            {selectedStatus !== "All" && ` • Filtered by: ${selectedStatus}`}
+            {searchTerm && ` • Searching: "${searchTerm}"`}
+          </p>
         </div>
 
         {/* ✅ قائمة الأوردرات */}
@@ -134,38 +156,47 @@ const Order = () => {
               <Link to={`/order-details/${order.id}`} key={order.id} className="order-card">
                 <div className="order-card-header">
                   <span className="order-id">#{order.id}</span>
-                  <span className={`status-badge Shipmentstatuscolor`}>
-                    {order.shipmentStatuses[0].status}
+                  <span className={`status-badge status-${order.latestShipmentStatus?.status?.toLowerCase() || 'default'}`}>
+                    {order.latestShipmentStatus?.status}
                   </span>
-                  <span className={`type-badge Shipmentstatuscolor`}>
-                    {order.expressDeliveryEnabled === false ? "Normal" : "Fast"}
+                  <span className={`type-badge ${order.expressDeliveryEnabled ? 'type-fast' : 'type-normal'}`}>
+                    {order.expressDeliveryEnabled ? "Fast" : "Normal"}
                   </span>
                 </div>
                 <div className="order-info">
                   <p>العميل: {order.receiverName}</p>
                   <p>الهاتف: {order.receiverPhone}</p>
                   <p>العنوان: {
-              order.receiverAddress.country +
-              " - " +
-              order.receiverAddress.city +
-              " - " +
-              order.receiverAddress.street +
-              " - " +
-              order.receiverAddress.details}</p>
-                  <p>التاريخ: {order.createdAt}</p>
+                    order.receiverAddress?.governorate +
+                    " - " +
+                    order.receiverAddress?.city +
+                    " - " +
+                    order.receiverAddress?.street +
+                    " - " +
+                    order.receiverAddress?.details
+                  }</p>
+                  <p>التاريخ: {new Date(order.createdAt).toLocaleDateString()}</p>
                 </div>
                 <div className="order-footer">
                   <span className="order-price">{order.collectionAmount} ر.س</span>
-
-                 
                 </div>
               </Link>
             ))
-          ) 
-           : (
-            <p style={{ textAlign: "center", marginTop: "30px", color: "#888" }}>
-              {t.noOrders}
-            </p>
+          ) : (
+            <div className="no-orders">
+              <p>{t.noOrders}</p>
+              {(selectedStatus !== "All" || searchTerm) && (
+                <button 
+                  className="clear-filters"
+                  onClick={() => {
+                    setSelectedStatus("All");
+                    setSearchTerm("");
+                  }}
+                >
+                  Clear Filters
+                </button>
+              )}
+            </div>
           )}
         </div>
       </div>
