@@ -53,14 +53,21 @@ const translations = {
     },
 
 
-    // Actions
+     // Actions
     newRequest: "طلب استلام جديد",
     advancedFilter: "فلترة متقدمة",
     searchTask: "البحث برقم المهمة، اسم المرسل، رقم الهاتف أو العنوان...",
     tasks: "المهام",
+
+    // Missions Table
+    missionId: "رقم المهمة",
+    missionName: "اسم المهمة",
+    createDate: "تاريخ الإنشاء",
+    lastUpdate: "آخر تحديث",
+    ordersCount: "عدد الطلبات",
+
     taskId: "رقم المهمة",
     senderName: "اسم المرسل",
-    ordersCount: "عدد الطلبات",
     pickupDateTime: "تاريخ ووقت الاستلام",
     pickupAddress: "عنوان الاستلام",
     phoneNumber: "رقم الهاتف",
@@ -71,6 +78,8 @@ const translations = {
     editTask: "تعديل الموعد",
     details: "تفاصيل",
     undefinedDelegate: "غير محدد",
+     requestId: "معرّف الطلب",
+    requestName: "اسم الطلب",
   },
 
   en: {
@@ -125,14 +134,23 @@ const translations = {
       normal: { ar: "عادي", en: "Normal" },
     },
 
-    // Actions
+   // Actions
     newRequest: "New Pickup Request",
     advancedFilter: "Advanced Filter",
     searchTask: "Search by task ID, sender name, phone, or address...",
     tasks: "Tasks",
+
+    // Missions Table
+    missionId: "Mission ID",
+    missionName: "Mission Name",
+    createDate: "Create Date",
+    lastUpdate: "Last Update",
+    ordersCount: "Orders Count",
+
     taskId: "Task ID",
     senderName: "Sender",
-    ordersCount: "Orders Count",
+       requestId: "Request ID",
+    requestName: "Request Name",
     pickupDateTime: "Pickup Date & Time",
     pickupAddress: "Pickup Address",
     phoneNumber: "Phone Number",
