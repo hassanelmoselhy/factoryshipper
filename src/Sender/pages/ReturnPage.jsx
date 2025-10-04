@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import LoadingOverlay from '../components/LoadingOverlay'; 
 import { toast } from "sonner";
-export default function PickupRequestManagement() {
+export default function ReturnPage() {
   const navigate = useNavigate();
   const [selectedOrders, setSelectedOrders] = useState([]);
   const user = useUserStore((state) => state.user);
@@ -36,29 +36,6 @@ export default function PickupRequestManagement() {
     contactPhone:"",
     shipmentIds:[]
   });
-  // dummy data for the pending orders table
-  const pending = [
-    {
-      id: "ORD-1001",
-      receiver: "Sarah Johnson",
-      phone: "+201112223334",
-      desc: "Premium T-shirt Collection",
-      qty: 2,
-      weight: "0.3kg",
-      cod: "$250.00",
-      status: "Yes"
-    },
-    {
-      id: "ORD-1002",
-      receiver: "Omar Ali",
-      phone: "+201098765432",
-      desc: "Sneakers - Running",
-      qty: 1,
-      weight: "0.8kg",
-      cod: "$120.00",
-      status: "No"
-    }
-  ];
 
    const egypt_governorates= [
     {
@@ -339,23 +316,97 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
     <div className="container my-4">
       <div className="prm-header">
         <h1>
-          <Truck size={24}  /> Pickup Request Management
+          <Truck size={24}  />  Order return Request Management
         </h1>
-        <button className="btn add-manual-btn d-flex align-items-center gap-2">
+        {/* <button className="btn add-manual-btn d-flex align-items-center gap-2">
           <Plus size={16} /> Add Manual Order
-        </button>
+        </button> */}
       </div>
 
       {/* Pickup Details card */}
       <div className="card-section mb-4">
         <h4 className="mb-3" style={{ fontWeight: 700 }}>
-          <MapPin size={24} className="me-2" color="#3182ed"/> Pickup Details
+          <MapPin size={24} className="me-2" color="#3182ed"/> Costomer  Details
         </h4>
 
         <div className="row input-row-gap">
           <div className="col-lg-4 mb-3">
             <label className="form-label-icon">
-              <Calendar size={16} /> Pickup Date
+              <Calendar size={16} /> return pickup date
+            </label>
+            <input type="date" name="pickupDate" value={PickupDetails.pickupDate}  onChange={handleChange} className="form-control form-control-custom" placeholder="mm/dd/yyyy" />
+          </div>
+
+          <div className="col-lg-4 mb-3">
+            <label className="form-label-icon">
+              <Clock size={16} /> Window Start
+            </label>
+            <input type="time"  name="windowStart"  value={PickupDetails.windowStart} onChange={handleChange}       className="form-control form-control-custom" placeholder="--:-- --" />
+          </div>
+
+          <div className="col-lg-4 mb-3">
+            <label className="form-label-icon">
+              <Clock size={16} /> Window End
+            </label>
+            <input type="time" name="windowEnd" value={PickupDetails.windowEnd} onChange={handleChange}    className="form-control form-control-custom" placeholder="--:-- --" />
+          </div>
+
+          <div className="col-lg-3 mb-3">
+            <label className="form-label-icon">Street Address</label>
+            <input className="form-control form-control-custom" name="street"  value={PickupDetails.street}  onChange={handleChange}  placeholder="123 Main Street" />
+          </div>
+          <div className="col-lg-3 mb-3">
+            <label className="form-label-icon">City</label>
+            <input className="form-control form-control-custom" name="city" value={PickupDetails.city} onChange={handleChange} placeholder="" />
+          </div>
+          <div className="col-lg-3 mb-3">
+            <label className="form-label-icon">governorate</label>
+            <select className="form-select form-control-custom" 
+            value={PickupDetails.governorate} onChange={handleChange} name="governorate"
+            
+            >
+              <option value="" disabled>Select governorate</option>
+              {egypt_governorates.map((gov) => (
+                <option key={gov.id} value={gov.name}>{gov.name}</option>
+              ))}
+            </select>
+          </div>
+          <div className="col-lg-3 mb-3">
+            <label className="form-label-icon">address Details</label>
+            <input className="form-control form-control-custom" name="details" value={PickupDetails.details} onChange={handleChange} placeholder="details" />
+          </div>
+
+          <div className="col-lg-6 mb-3">
+            <label className="form-label-icon">
+              <User size={16} /> Contact Name
+            </label>
+            <input className="form-control form-control-custom" placeholder="Contact person name" 
+            name="contactName" value={PickupDetails.contactName} onChange={handleChange} 
+            
+            />
+          </div>
+
+          <div className="col-lg-6 mb-3">
+            <label className="form-label-icon">
+              <Phone size={16} /> Contact Phone <span style={{ color: "#6c757d" }}>*</span>
+            </label>
+            <input className="form-control form-control-custom" placeholder="+20123456789"
+            name="contactPhone" value={PickupDetails.contactPhone} onChange={handleChange}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/** shipper */}
+      <div className="card-section mb-4">
+        <h4 className="mb-3" style={{ fontWeight: 700 }}>
+          <MapPin size={24} className="me-2" color="#3182ed"/> Shipper  Details
+        </h4>
+
+        <div className="row input-row-gap">
+          <div className="col-lg-4 mb-3">
+            <label className="form-label-icon">
+              <Calendar size={16} /> Return Date
             </label>
             <input type="date" name="pickupDate" value={PickupDetails.pickupDate}  onChange={handleChange} className="form-control form-control-custom" placeholder="mm/dd/yyyy" />
           </div>
@@ -435,12 +486,12 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
               strokeLinecap="round"
               strokeLinejoin="round"
               className="me-2"
-              style={{ color: "#f97415" }}
+              style={{ color: "cyan" }}
             >
               <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
               <path d="M3 9h18"></path>
             </svg>
-            Pending Orders
+            Delivered  Orders
           </h4>
 
           <div className="d-flex align-items-center gap-2">
@@ -490,7 +541,7 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
                 <th>Description</th>
                 <th>Qty</th>
                 <th>Weight</th>
-                <th>COD</th>
+                <th>ٌRefund</th>
                 <th>Fast shipping</th>
               </tr>
             </thead>
@@ -538,7 +589,7 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
           <MoveLeft size={14} className="backmove__icon" />
           <span className="backmove__label">Back</span>
         </button>
-        <button className="submit-pickup" onClick={HandleSubmit}>Submit Pickup</button>
+        <button className="submit-pickup" onClick={HandleSubmit}> Confirm</button>
       </div>
     </div>
     </>

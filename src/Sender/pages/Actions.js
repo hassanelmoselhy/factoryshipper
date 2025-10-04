@@ -5,42 +5,65 @@ import useLanguageStore from "../../Store/LanguageStore/languageStore";
 import translations from "../../Store/LanguageStore/translations";
 import { Link } from "react-router-dom";
 import ActionsDropdown from './../components/dropdown';
+import useUserStore from "../../Store/UserStore/userStore";
+import LoadingOverlay from "../components/LoadingOverlay";
 
-const fallbackData = [
-  { id: "M-001", name: "توصيل طرود", createdAt: "2024-01-12", updatedAt: "2024-01-15", orders: 12 },
-  { id: "M-002", name: "إرجاع منتجات", createdAt: "2024-01-13", updatedAt: "2024-01-16", orders: 8 },
-  { id: "M-003", name: "طلب تسليم عاجل", createdAt: "2024-01-14", updatedAt: "2024-01-16", orders: 25 },
-];
 
-const API_URL = "https://example.com/api/missions";
 
 const Actions = () => {
   const { lang } = useLanguageStore();
   const t = translations[lang];
-  const [data, setData] = useState([]);
-  // const [openMenu, setOpenMenu] = useState(null); // state لتحديد أي Dropdown مفتوح
-
-  useEffect(() => {
-    const fetchMissions = async () => {
-      try {
-        const res = await fetch(API_URL);
-        if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
-        const missions = await res.json();
-
-        setData(Array.isArray(missions) && missions.length > 0 ? missions : fallbackData);
-      } catch (error) {
-        console.warn("API Error:", error.message, "— Using fallback data.");
-        setData(fallbackData);
-      }
-    };
-
-    fetchMissions();
-  }, []);
-
+  const [Resquests, setResquests] = useState([]);
+  const user=useUserStore((state)=>state.user)
+  const [loading,setloading]=useState(false)
  
+ 
+  useEffect(()=>{
+
+ const fetchRequests=async()=>{
+setloading(true)
+  try{
+const res=await fetch('https://stakeexpress.runasp.net/api/Shipments/getAllRequests',{
+
+  method:'GET',
+  headers:{
+    'X-Client-Key':'web api',
+    Authorization:`Bearer ${user.token}`
+  }
+})
+
+  if(res.ok===true){
+    const data=await res.json();
+    console.log('fetching requests sucessfully',data)
+    setResquests(data.data)
+  }else{
+     const data=await res.json();
+    console.log('fetching requests failed',data)
+  }
+
+  }catch(err){
+
+    console.log('Error',err)
+  }finally{
+
+    setloading(false)
+  }
+
+
+
+
+ }
+
+fetchRequests();
+
+
+ },[])
 
   return (
-    <div className={`actions-container ${lang === "ar" ? "rtl" : "ltr"}`}>
+    <>
+     <LoadingOverlay loading={loading} message="please wait..." color="#fff" size={44} />
+    
+<div className={`actions-container ${lang === "ar" ? "rtl" : "ltr"}`}>
       {/* زر إضافة جديد */}
       <div className="header-actions">
         <Link to="/Pickuporder" className="new-request">{t.newRequest}</Link>
@@ -58,9 +81,10 @@ const Actions = () => {
       <div className="tabs">
         <span>{t.today} (0)</span>
         <span>{t.week} (0)</span>
-        <span className="active">{t.all} ({data.length})</span>
+        <span className="active">{t.all} ({Resquests.length})</span>
       </div>
 
+     
       {/* جدول المهام */}
      <table className="tasks-table">
   <thead>
@@ -74,22 +98,25 @@ const Actions = () => {
     </tr>
   </thead>
   <tbody>
-    {data.map((request) => (
+    {Resquests.map((request) => (
       <tr key={request.id}>
         <td>{request.id}</td>
-        <td>{request.name}</td>
-        <td>{request.createdAt}</td>
+        <td>{String(request.requestType).replace("Request"," Request") }</td>
+        <td> {request.createdAt}</td>
         <td>{request.updatedAt}</td>
-        <td><span className="orders-count">{request.orders}</span></td>
+        <td><span className="orders-count">{request.shipmentsCount}</span></td>
         <td>
           <ActionsDropdown taskId={request.id} />
         </td>
       </tr>
     ))}
   </tbody>
-</table>
+      </table>
 
     </div>
+   
+    
+    </>
   );
 };
 

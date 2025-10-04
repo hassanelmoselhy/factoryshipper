@@ -55,9 +55,9 @@ const TopBar = () => {
               <button
                 type="button"
                 className="dropdown-item"
-                onClick={() => goToPage("return")}
+                onClick={() => navigate("/return")}
               >
-                <FaUndo /> {lang === "ar" ? "طلب استرجاع" : "Return Request"}
+                <FaUndo /> {lang === "ar" ? "طلب استرجاع" : "Return  Request"}
               </button>
             </div>
           )}

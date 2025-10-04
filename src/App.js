@@ -36,6 +36,7 @@ import WarehouseList from './Hanger/pages/WarehouseList';
 import OrdersPage from './Hanger/pages/OrdersPage';
 import OrderRelease from './Hanger/pages/OrdersRelease';
 import Safe from './Hanger/pages/Safe';
+import ReturnPage from './Sender/pages/ReturnPage';
 
 
 // لو عندك فانكشن اسمها shceduleRefreshToken لازم تكون مستوردة
@@ -108,6 +109,7 @@ const App = () => {
             
             
             <Route path="/Pickuporder" element={<PickupOrder />} />
+            <Route path="/return" element={<ReturnPage />} />
 
           {/* Sender Layout */}
           <Route element={<SenderLayout />}>
