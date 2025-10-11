@@ -304,7 +304,7 @@ const res=await fetch('https://stakeexpress.runasp.net/api/Shipments/pickupReque
   method:'POST',
   headers:{
     'Content-Type':'application/json',
-    'X-Client-Key':'web api',
+    'X-Client-Key': 'web API',
     Authorization: 'Bearer '+ user?.token
   },
   body: JSON.stringify(payload)
@@ -511,7 +511,7 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
                   <td>
                     <Link className="order-link" to={`/order-details/${p.id}`} title="Go To Order Details">{p.id}</Link>
                   </td>
-                  <td>{p.contactName}</td>
+                  <td>{p.customerName}</td>
                   <td>{p.customerPhone}</td>
                   <td>{p.shipmentDescription}</td>
                   <td>{p.quantity}</td>

@@ -6,6 +6,7 @@ import useUserStore from "../../Store/UserStore/userStore";
 import { toast } from "sonner";
 import useShipmentsStore from "../../Store/UserStore/ShipmentsStore";
 import LoadingOverlay from "../components/LoadingOverlay";
+import ShipmentCancelModal from "../../Components/ShipmentCancelModal";
 import "./css/Order.css";
 
 //  Status Options
@@ -36,7 +37,7 @@ const Order = () => {
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const[opencancelShipment,setopencancelShipment]=useState(false)
   const user = useUserStore((state) => state.user);
   const SetShipmentsStore = useShipmentsStore((state) => state.SetShipments);
 
@@ -112,6 +113,8 @@ const Order = () => {
   return (
     <>
       <LoadingOverlay loading={loading} message="please wait..." color="#fff" size={44} />
+    
+      <ShipmentCancelModal show={opencancelShipment} onClose={()=>{setopencancelShipment(false)}}/>
       <div className="order-page" dir={lang === "ar" ? "rtl" : "ltr"}>
         {/* ✅ Header with Dropdown Filter and Search */}
         <div className="order-header">

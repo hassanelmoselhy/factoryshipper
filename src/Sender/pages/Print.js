@@ -1,17 +1,44 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "./css/Print.css";
 import useShipmentsStore from "../../Store/UserStore/ShipmentsStore";
-
+import useUserStore from "../../Store/UserStore/userStore";
 const Print = () => {
   const { orderId } = useParams();
-  const Shipments = useShipmentsStore((state) => state.shipments);
-  const order = Shipments?.find((s) => s.id === parseInt(orderId));
-
+  const [order,SetOrder] = useState();
+  const [loading, setLoading] = useState(true);
+  const user=useUserStore((state)=>state.user);
  useEffect(()=>{
+const fetchShipmentDetails=async()=>{
+      setLoading(true);
+      console.log("Fetching details for orderId:",orderId );
+        try{
+       const res=await fetch(`https://stakeexpress.runasp.net/api/Shipments/getShipmentById/${orderId}`,{
+        method:"Get",
+        headers:{
+          'Content-Type': 'application/json',
+          'X-Client-Key': 'web API',
+        Authorization: `Bearer ${user?.token}`
+        }
+      
+      });
+        if(res.ok===true){
 
+          const data=await res.json();
+          console.log("Fetched Shipment Details:",data);
+          SetOrder(data.data);
+          
+        }
+
+        }catch(err){
+          console.log("Error fetching shipment details:",err );
+        }finally{
+          setLoading(false);
+        }
+      }
+fetchShipmentDetails();
 window.print();
-  
+
 },[])
 
   if (!order) {
@@ -65,12 +92,43 @@ window.print();
         {/* Details */}
         <div className="print-details">
           <div>
-            <p><span className="bold">المرسل :</span> urban skate store</p>
-            <p><span className="bold">المستلم :</span> {order.customerName}</p>
+            <p className="d-flex justify-content-between"><span className="bold">المرسل :</span> {user?.firstName+" "+user?.lastName}</p>
+            <p className="d-flex justify-content-between"><span className="bold">المستلم :</span> {order.customerName}</p>
           </div>
           <div>
-            <p><span className="bold">القيمة :</span> {order.collectionAmount} جنيه</p>
-            <p><span className="bold">الشحن :</span> 10 جنيه</p>
+              
+              <div className="d-flex justify-content-between">
+                <strong>{order.collectionAmount} جنيه</strong>
+                <span>قيمة التحصيل</span>
+                </div>
+           
+              <div className="finance-row d-flex justify-content-between">
+                
+                <strong>{order.shippingCost} جنيه</strong>
+                <span>قيمة الشحن</span>
+                </div>
+              
+              <div className="finance-row d-flex justify-content-between">
+                <strong>{order.additionalCost} جنيه</strong>
+                <span>رسوم اضافيه</span>
+                </div>
+              
+              {/* <div className="finance-row"><span>المبالغ الإضافية</span>
+                <div>
+                  
+                    <div  className="extra-item">{"وزن زائد"}: {Shipment.additionalWeightCost} جنيه</div>
+                
+                </div>
+              </div> */}
+             <div className="finance-row d-flex justify-content-between">
+              <strong>{order?.totalCost} جنيه</strong>
+              <span>المبلغ الكلي</span>
+              
+              
+              </div>
+
+
+              <div className="finance-total">قيمة التوريد: {order?.netPayout} جنيه</div>
           </div>
         </div>
 
