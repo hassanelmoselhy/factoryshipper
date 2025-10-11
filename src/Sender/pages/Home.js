@@ -18,7 +18,7 @@ import {
 import useLanguageStore from '../../Store/LanguageStore/languageStore';
 import translations from '../../Store/LanguageStore/translations';
 import soundUrl from "../../Sounds/videoplayback.mp3"; 
-import StatusBarChartECharts from '../../Components/StatusBarChartRecharts';
+
 import useUserStore from '../../Store/UserStore/userStore';
 
 const Home = () => {

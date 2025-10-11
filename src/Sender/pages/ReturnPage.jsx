@@ -385,15 +385,15 @@ SetShipperDetails((prev)=>({...prev,[name]:value}));
           </div>
           <div className="col-lg-3 mb-3">
             <label className="form-label-icon">City</label>
-            <input className="form-control form-control-custom" name="customerCity" value={CustomerDetails.customerCity} onChange={CustomerhandleChange} placeholder="" />
+            <input className="form-control form-control-custom" placeholder="المعادي" name="customerCity" value={CustomerDetails.customerCity} onChange={CustomerhandleChange}  />
           </div>
           <div className="col-lg-3 mb-3">
-            <label className="form-label-icon">customerGovernorate</label>
+            <label className="form-label-icon">Governorate</label>
             <select className="form-select form-control-custom" 
             value={CustomerDetails.customerGovernorate} onChange={CustomerhandleChange} name="customerGovernorate"
             
             >
-              <option value="" disabled>Select customerGovernorate</option>
+              <option value="" disabled>Select Governorate</option>
               {egypt_governorates.map((gov) => (
                 <option key={gov.id} value={gov.name}>{gov.name}</option>
               ))}
@@ -401,7 +401,7 @@ SetShipperDetails((prev)=>({...prev,[name]:value}));
           </div>
           <div className="col-lg-3 mb-3">
             <label className="form-label-icon">address Details</label>
-            <input className="form-control form-control-custom" name="customerAddressDetails" value={CustomerDetails.customerAddressDetails} onChange={CustomerhandleChange} placeholder="customerAddressDetails" />
+            <input className="form-control form-control-custom" name="customerAddressDetails" value={CustomerDetails.customerAddressDetails} onChange={CustomerhandleChange} placeholder="Address Details" />
           </div>
 
           <div className="col-lg-6 mb-3">
@@ -472,7 +472,7 @@ SetShipperDetails((prev)=>({...prev,[name]:value}));
             value={ShipperDetails.shipperGovernorate} onChange={ShipperhandleChange} name="shipperGovernorate"
             
             >
-              <option value="" disabled>Select customerGovernorate</option>
+              <option value="" disabled>Select Governorate</option>
               {egypt_governorates.map((gov) => (
                 <option key={gov.id} value={gov.name}>{gov.name}</option>
               ))}
@@ -480,7 +480,7 @@ SetShipperDetails((prev)=>({...prev,[name]:value}));
           </div>
           <div className="col-lg-3 mb-3">
             <label className="form-label-icon">address Details</label>
-            <input className="form-control form-control-custom" name="ShipperDetails" value={ShipperDetails.ShipperDetails} onChange={ShipperhandleChange} placeholder="customerAddressDetails" />
+            <input className="form-control form-control-custom" name="ShipperDetails" value={ShipperDetails.ShipperDetails} onChange={ShipperhandleChange} placeholder="Address Details" />
           </div>
 
           <div className="col-lg-6 mb-3">

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Barcode from "react-barcode";
-import "./css/OrderDetails.css";
 import TopBar from "../components/Topbar";
 import useShipmentsStore from '../../Store/UserStore/ShipmentsStore';
 import { toast } from "sonner";
@@ -9,8 +8,7 @@ import useUserStore from "../../Store/UserStore/userStore";
 import LoadingOverlay from "../components/LoadingOverlay";
 import DeleteModal from "../../Components/DeleteModal";
 import EditOrderModal from "../components/OrderEditSidebar";
-import ConfirmUpdateModal from "../../Components/ConfirmUpdateModal";
-import { Ship } from "lucide-react";
+import "./css/OrderDetails.css";
 
 
 
@@ -271,14 +269,19 @@ console.log("Error updating order:",err );
             <div className="finance-box">
               <div className="finance-row"><span>قيمة التحصيل</span><strong>{Shipment.collectionAmount} جنيه</strong></div>
               <div className="finance-row"><span>قيمة الشحن</span><strong>{Shipment.shippingCost} جنيه</strong></div>
-              <div className="finance-row"><span>المبالغ الإضافية</span>
+              <div className="finance-row"><span>رسوم اضافيه</span><strong>{Shipment.additionalCost} جنيه</strong></div>
+              
+              {/* <div className="finance-row"><span>المبالغ الإضافية</span>
                 <div>
                   
                     <div  className="extra-item">{"وزن زائد"}: {Shipment.additionalWeightCost} جنيه</div>
                 
                 </div>
-              </div>
-              <div className="finance-total">قيمة التوريد: {Shipment.collectionAmount-Shipment.shippingCost-Shipment.additionalWeightCost} جنيه</div>
+              </div> */}
+                                <div className="finance-row"><span>المبلغ الكلي</span><strong>{Shipment?.totalCost} جنيه</strong></div>
+
+
+              <div className="finance-total">قيمة التوريد: {Shipment?.netPayout} جنيه</div>
             </div>
           </div>
 
