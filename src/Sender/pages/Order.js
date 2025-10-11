@@ -62,6 +62,7 @@ const Order = () => {
 
         if (res.ok === true) {
           const data = await res.json();
+          console.log(data.data);
           setShipments(data.data);
           SetShipmentsStore(data.data);
         }
@@ -70,6 +71,7 @@ const Order = () => {
       } finally {
         setLoading(false);
       }
+
     };
 
     fetchOrders();
@@ -164,16 +166,16 @@ const Order = () => {
                   </span>
                 </div>
                 <div className="order-info">
-                  <p>العميل: {order.receiverName}</p>
-                  <p>الهاتف: {order.receiverPhone}</p>
+                  <p>العميل: {order.customerName}</p>
+                  <p>الهاتف: {order.customerPhone}</p>
                   <p>العنوان: {
-                    order.receiverAddress?.governorate +
+                    order.customerAddress?.governorate +
                     " - " +
-                    order.receiverAddress?.city +
+                    order.customerAddress?.city +
                     " - " +
-                    order.receiverAddress?.street +
+                    order.customerAddress?.street +
                     " - " +
-                    order.receiverAddress?.details
+                    order.customerAddress?.details
                   }</p>
                   <p>التاريخ: {new Date(order.createdAt).toLocaleDateString()}</p>
                 </div>

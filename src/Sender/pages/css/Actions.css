@@ -98,7 +98,7 @@
   font-weight: bold;
   color: #000;
 }
-.tabs .active::after {
+/* .tabs .active::after {
   content: "";
   position: absolute;
   bottom: -4px;
@@ -108,7 +108,7 @@
   background: #007bff;
   border-radius: 2px;
   transition: all 0.3s ease;
-}
+} */
 
 /* جدول المهام */
 .tasks-wrapper {

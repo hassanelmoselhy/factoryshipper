@@ -7,13 +7,13 @@ import LoadingOverlay from "../components/LoadingOverlay";
 const ShippingPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    receiverName: "",
-    receiverPhone: "",
-    receiverEmail: "",
+    customerName: "",
+    customerPhone: "",
+    customerEmail: "",
     street: "",
-    addressDetails: "",
     city: "",
     governorate: "",
+    addressDetails: "",
     quantity: "",
     shipmentWeight: "",
     shipmentLength: "",
@@ -217,7 +217,7 @@ const ShippingPage = () => {
   const validateField = (name, value, currentForm = formData) => {
     // We use currentForm to allow cross-field checks if needed
     switch (name) {
-      case "receiverName":
+      case "customerName":
       case "street":
       case "addressDetails":
       case "city":
@@ -225,12 +225,12 @@ const ShippingPage = () => {
         if (!value || String(value).trim() === "") return messages.required;
         return null;
 
-      case "receiverEmail":
+      case "customerEmail":
         if (!value || String(value).trim() === "") return messages.required;
         if (!emailRegex.test(String(value))) return messages.invalidEmail;
         return null;
 
-      case "receiverPhone":
+      case "customerPhone":
         if (!value || String(value).trim() === "") return messages.required;
         return null;
 
@@ -274,9 +274,9 @@ const ShippingPage = () => {
 
     // required fields
     [
-      "receiverName",
-      "receiverEmail",
-      "receiverPhone",
+      "customerName",
+      "customerEmail",
+      "customerPhone",
       "street",
       "governorate",
       "city",
@@ -405,9 +405,9 @@ const ShippingPage = () => {
         <h3>ملخص الطلب</h3>
         <div className="summary-item">
           <strong>المستلم</strong>
-          <p>{formData.receiverName}</p>
-          <p>{formData.receiverPhone}</p>
-          <p>{formData.receiverEmail}</p>
+          <p>{formData.customerName}</p>
+          <p>{formData.customerPhone}</p>
+          <p>{formData.customerEmail}</p>
         </div>
 
         <div className="summary-item">
@@ -461,33 +461,33 @@ const ShippingPage = () => {
             <label>اسم المستلم </label>
             <input
               type="text"
-              name="receiverName"
-              value={formData.receiverName}
+              name="customerName"
+              value={formData.customerName}
               onChange={handleChange}
             />
-            {errors.receiverName && <p className="text-danger">{errors.receiverName}</p>}
+            {errors.customerName && <p className="text-danger">{errors.customerName}</p>}
           </div>
 
           <div className="form-group">
             <label>البريد الالكتروني </label>
             <input
               type="email"
-              name="receiverEmail"
-              value={formData.receiverEmail}
+              name="customerEmail"
+              value={formData.customerEmail}
               onChange={handleChange}
             />
-            {errors.receiverEmail && <p className="text-danger">{errors.receiverEmail}</p>}
+            {errors.customerEmail && <p className="text-danger">{errors.customerEmail}</p>}
           </div>
 
           <div className="form-group">
             <label>رقم الهاتف </label>
             <input
               type="text"
-              name="receiverPhone"
-              value={formData.receiverPhone}
+              name="customerPhone"
+              value={formData.customerPhone}
               onChange={handleChange}
             />
-            {errors.receiverPhone && <p className="error">{errors.receiverPhone}</p>}
+            {errors.customerPhone && <p className="error">{errors.customerPhone}</p>}
           </div>
 
           <div className="form-group">
@@ -578,7 +578,7 @@ const ShippingPage = () => {
               onChange={handleChange}
               min={LIMITS.weightMin}
               max={LIMITS.weightMax}
-              step="0.01"
+              step="0.5"
             />
             {errors.shipmentWeight && (
               <p className="text-danger">{errors.shipmentWeight}</p>

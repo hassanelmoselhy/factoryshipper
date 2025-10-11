@@ -11,13 +11,13 @@ export default function OrderEditSidebar({ open, onClose, order = {}, onSave }) 
     // Clone order to local form state
     
     setForm({
-      receiverName: order.receiverName ?? "",
-      receiverPhone: order.receiverPhone ?? "",
-      receiverEmail: order.receiverEmail ?? "",
-      street: order.receiverAddress.street ?? "",
-      city: order.receiverAddress.city ?? "",
-      country: order.receiverAddress.country ?? "",
-      addressDetails: order.receiverAddress.details ?? "",
+      customerName: order.customerName ?? "",
+      customerPhone: order.customerPhone ?? "",
+      customerEmail: order.customerEmail ?? "",
+      street: order.customerAddress.street ?? "",
+      city: order.customerAddress.city ?? "",
+      governorate: order.customerAddress.governorate ?? "",
+      addressDetails: order.customerAddress.details ?? "",
       shipmentDescription: order.shipmentDescription ?? "",
       shipmentWeight: order.shipmentWeight ?? "",
       shipmentLength: order.shipmentLength ?? "",
@@ -58,11 +58,11 @@ export default function OrderEditSidebar({ open, onClose, order = {}, onSave }) 
 
   function validate() {
     const err = {};
-    if (!form.receiverName || !String(form.receiverName).trim()) err.receiverName = "مطلوب";
-    if (form.receiverEmail && !/^\S+@\S+\.\S+$/.test(form.receiverEmail)) err.receiverEmail = "بريد إلكتروني غير صالح";
-    if (form.receiverPhone && !/^[0-9+()\-\s]{6,}$/.test(String(form.receiverPhone))) err.receiverPhone = "رقم هاتف غير صالح";
+    if (!form.customerName || !String(form.customerName).trim()) err.customerName = "مطلوب";
+    if (form.customerEmail && !/^\S+@\S+\.\S+$/.test(form.customerEmail)) err.customerEmail = "بريد إلكتروني غير صالح";
+    if (form.customerPhone && !/^[0-9+()\-\s]{6,}$/.test(String(form.customerPhone))) err.customerPhone = "رقم هاتف غير صالح";
     if (!form.city) err.city = "مطلوب";
-    if (!form.country) err.country = "مطلوب";
+    if (!form.governorate) err.governorate = "مطلوب";
 
     const positiveNum = (v) => v !== "" && v !== null && v !== undefined && !isNaN(v) && Number(v) >= 0;
     if (!positiveNum(form.shipmentWeight)) err.shipmentWeight = "أدخل رقم (≥ 0)";
@@ -141,20 +141,20 @@ export default function OrderEditSidebar({ open, onClose, order = {}, onSave }) 
             <div className="row g-3">
               <div className="col-12 col-md-6">
                 <label className="form-label small">اسم المستلم *</label>
-                <input className={`form-control ${errors.receiverName ? 'is-invalid' : ''}`} value={form.receiverName} onChange={e => updateField('receiverName', e.target.value)} />
-                <div className="invalid-feedback">{errors.receiverName}</div>
+                <input className={`form-control ${errors.customerName ? 'is-invalid' : ''}`} value={form.customerName} onChange={e => updateField('customerName', e.target.value)} />
+                <div className="invalid-feedback">{errors.customerName}</div>
               </div>
 
               <div className="col-12 col-md-6">
                 <label className="form-label small">البريد الإلكتروني</label>
-                <input className={`form-control ${errors.receiverEmail ? 'is-invalid' : ''}`} value={form.receiverEmail} onChange={e => updateField('receiverEmail', e.target.value)} />
-                <div className="invalid-feedback">{errors.receiverEmail}</div>
+                <input className={`form-control ${errors.customerEmail ? 'is-invalid' : ''}`} value={form.customerEmail} onChange={e => updateField('customerEmail', e.target.value)} />
+                <div className="invalid-feedback">{errors.customerEmail}</div>
               </div>
 
               <div className="col-12 col-md-6">
                 <label className="form-label small">رقم الهاتف</label>
-                <input className={`form-control ${errors.receiverPhone ? 'is-invalid' : ''}`} value={form.receiverPhone} onChange={e => updateField('receiverPhone', e.target.value)} />
-                <div className="invalid-feedback">{errors.receiverPhone}</div>
+                <input className={`form-control ${errors.customerPhone ? 'is-invalid' : ''}`} value={form.customerPhone} onChange={e => updateField('customerPhone', e.target.value)} />
+                <div className="invalid-feedback">{errors.customerPhone}</div>
               </div>
 
               <div className="col-12 col-md-6">
@@ -174,9 +174,9 @@ export default function OrderEditSidebar({ open, onClose, order = {}, onSave }) 
               </div>
 
               <div className="col-12 col-md-6">
-                <label className="form-label small">البلد *</label>
-                <input className={`form-control ${errors.country ? 'is-invalid' : ''}`} value={form.country} onChange={e => updateField('country', e.target.value)} />
-                <div className="invalid-feedback">{errors.country}</div>
+                <label className="form-label small">المحافظه*</label>
+                <input className={`form-control ${errors.governorate ? 'is-invalid' : ''}`} value={form.governorate} onChange={e => updateField('country', e.target.value)} />
+                <div className="invalid-feedback">{errors.governorate}</div>
               </div>
             </div>
           </section>

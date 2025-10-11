@@ -22,20 +22,31 @@ export default function ReturnPage() {
   const navigate = useNavigate();
   const [selectedOrders, setSelectedOrders] = useState([]);
   const user = useUserStore((state) => state.user);
-  const [PendingOrders, setPendingOrders] = useState([]);
+  const [ReturnOrders, SetReturnOrders] = useState([]);
   const [loading, setLoading] = useState(false);  
-  const [PickupDetails, setPickupDetails] = useState({
-    pickupDate:"",
-    windowStart:"",
-    windowEnd:"",
-    street:"",
-    city:"",
-    governorate:"",
-    details:"",
-    contactName:"",
-    contactPhone:"",
-    shipmentIds:[]
+  const [CustomerDetails, SetCostomerDetails] = useState({
+    returnPickupDate:"",
+    returnPickupWindowStart:"",
+    returnPickupWindowEnd:"",
+    customerStreet:"",
+    customerCity:"",
+    customerGovernorate:"",
+    customerAddressDetails:"",
+    customerContactName:"",
+    customerContactPhone:"",
   });
+
+   const [ShipperDetails,SetShipperDetails]=useState({
+    returnDate:"",
+    returnWindowStart:"",
+    returnWindowEnd:"",
+    shipperStreet:"",
+    shipperCity:"",
+    shipperGovernorate:"",
+    shipperAddressDetails:"",
+    shipperContactName:"",
+    shipperContactPhone:""
+   }); 
 
    const egypt_governorates= [
     {
@@ -198,7 +209,7 @@ export default function ReturnPage() {
 
   // Select All functionality
   const handleSelectAll = () => {
-    const allOrderIds = PendingOrders.map(order => order.id);
+    const allOrderIds = ReturnOrders.map(order => order.id);
     setSelectedOrders(allOrderIds);
   };
 
@@ -227,10 +238,10 @@ export default function ReturnPage() {
 
   useEffect( ()=>{
 
-      const fetchPendingOrders= async()=>{
+      const fetchReturnOrders= async()=>{
       try{
         setLoading(true);
-        const res=await fetch('https://stakeexpress.runasp.net/api/Shipments/getPendingShipments',{
+        const res=await fetch('https://stakeexpress.runasp.net/api/Shipments/getShipmentsToReturn',{
           method: 'GET',
           headers:{
             'X-Client-Key':'web api',
@@ -240,60 +251,73 @@ export default function ReturnPage() {
         if(res.ok===true){
 
           const data= await res.json();
-          console.log("Pending orders data:", data.data);
-          setPendingOrders(data.data);
+          console.log("return orders data:", data.data);
+          SetReturnOrders(data.data);
         }
         else{
-          console.error("Failed to fetch pending orders. Status:", res.status);
+          console.error("Failed to fetch Return orders. Status:", res.status);
         }
 
       }catch(err){
-        console.error("Error in fetching pending orderes:", err);
+        console.error("Error in fetching return orderes:", err);
 
       }finally{setLoading(false);}
     }
-    fetchPendingOrders();
+    fetchReturnOrders();
 
   },[])
 
  const HandleSubmit=async ()=>{
-PickupDetails.shipmentIds=selectedOrders;
-console.log("Pickup details:", PickupDetails);
-const payload={
-    pickupDate:PickupDetails.pickupDate,
-    windowStart:PickupDetails.windowStart+":00",
-    windowEnd:PickupDetails.windowEnd+":00",
-    street:PickupDetails.street,
-    city:PickupDetails.city,
-    governorate:PickupDetails.governorate,
-    details:PickupDetails.details,
-    contactName:PickupDetails.contactName,
-    contactPhone:PickupDetails.contactPhone,
-    shipmentIds:selectedOrders
+// CustomerDetails.shipmentIds=selectedOrders;
 
+const payload={
+    returnPickupDate:CustomerDetails.returnPickupDate,
+    returnPickupWindowStart:CustomerDetails.returnPickupWindowStart+":00",
+    returnPickupWindowEnd:CustomerDetails.returnPickupWindowEnd+":00",
+    customerStreet:CustomerDetails.customerStreet,
+    customerCity:CustomerDetails.customerCity,
+    customerGovernorate:CustomerDetails.customerGovernorate,
+    customerAddressDetails:CustomerDetails.customerAddressDetails,
+    customerGoogleMapAddressLink:"https://www.google.com/maps",
+    customerContactName:CustomerDetails.customerContactName,
+    customerContactPhone:CustomerDetails.customerContactPhone,
+    returnDate:ShipperDetails.returnDate,
+    returnWindowStart:ShipperDetails.returnWindowStart+":00",
+    returnWindowEnd:ShipperDetails.returnWindowEnd+":00",
+    shipperStreet:ShipperDetails.shipperStreet,
+    shipperCity:ShipperDetails.shipperCity,
+    shipperGovernorate:ShipperDetails.shipperGovernorate,
+    shipperAddressDetails:ShipperDetails.shipperAddressDetails,
+    shipperGoogleMapAddressLink:"https://www.google.com/maps",
+    shipperContactName:ShipperDetails.shipperContactName,
+    shipperContactPhone:ShipperDetails.shipperContactPhone,
+    shipmentIds:selectedOrders
 }
+console.log('payload',payload)
 try{
 setLoading(true);
-const res=await fetch('https://stakeexpress.runasp.net/api/Shipments/pickupRequest',{
+const res=await fetch('https://stakeexpress.runasp.net/api/Shipments/returnRequest',{
   method:'POST',
   headers:{
     'Content-Type':'application/json',
     'X-Client-Key':'web api',
     Authorization: 'Bearer '+ user?.token
+    
   },
+  credentials: 'include',
   body: JSON.stringify(payload)
 })
 
 const data=await res.json();
 if(res.ok===true){
-  console.log("Pickup request submitted successfully:", data);
-  toast.success("Pickup request submitted successfully");
+  console.log("return request submitted successfully:", data);
+  toast.success("Return request submitted successfully");
   navigate('/home');
 }
-else{
+else {
 
-  console.log("Failed to submit pickup request. Status:", res.status, "Message:", data);
-  toast.error(`Failed to submit pickup request: ${data.message}`);
+  console.log("Failed to submit Return request. Status:", res.status, "Message:", data);
+  toast.error(`Failed to submit Return request: ${data.message}`);
 }
 
 
@@ -305,9 +329,13 @@ console.error("Error in submitting pickup request:", err);
 
  }
 
- const handleChange=(e)=>{
+ const CustomerhandleChange=(e)=>{
 const {name,value}=e.target;
-setPickupDetails((prev)=>({...prev,[name]:value}));
+SetCostomerDetails((prev)=>({...prev,[name]:value}));
+ }
+ const ShipperhandleChange=(e)=>{
+const {name,value}=e.target;
+SetShipperDetails((prev)=>({...prev,[name]:value}));
  }
   return (
 
@@ -334,38 +362,38 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
             <label className="form-label-icon">
               <Calendar size={16} /> return pickup date
             </label>
-            <input type="date" name="pickupDate" value={PickupDetails.pickupDate}  onChange={handleChange} className="form-control form-control-custom" placeholder="mm/dd/yyyy" />
+            <input type="date" name="returnPickupDate" value={CustomerDetails.returnPickupDate}  onChange={CustomerhandleChange} className="form-control form-control-custom" placeholder="mm/dd/yyyy" />
           </div>
 
           <div className="col-lg-4 mb-3">
             <label className="form-label-icon">
               <Clock size={16} /> Window Start
             </label>
-            <input type="time"  name="windowStart"  value={PickupDetails.windowStart} onChange={handleChange}       className="form-control form-control-custom" placeholder="--:-- --" />
+            <input type="time"  name="returnPickupWindowStart"  value={CustomerDetails.returnPickupWindowStart} onChange={CustomerhandleChange}       className="form-control form-control-custom" placeholder="--:-- --" />
           </div>
 
           <div className="col-lg-4 mb-3">
             <label className="form-label-icon">
               <Clock size={16} /> Window End
             </label>
-            <input type="time" name="windowEnd" value={PickupDetails.windowEnd} onChange={handleChange}    className="form-control form-control-custom" placeholder="--:-- --" />
+            <input type="time" name="returnPickupWindowEnd" value={CustomerDetails.returnPickupWindowEnd} onChange={CustomerhandleChange}    className="form-control form-control-custom" placeholder="--:-- --" />
           </div>
 
           <div className="col-lg-3 mb-3">
             <label className="form-label-icon">Street Address</label>
-            <input className="form-control form-control-custom" name="street"  value={PickupDetails.street}  onChange={handleChange}  placeholder="123 Main Street" />
+            <input className="form-control form-control-custom" name="customerStreet"  value={CustomerDetails.customerStreet}  onChange={CustomerhandleChange}  placeholder="123 Main Street" />
           </div>
           <div className="col-lg-3 mb-3">
             <label className="form-label-icon">City</label>
-            <input className="form-control form-control-custom" name="city" value={PickupDetails.city} onChange={handleChange} placeholder="" />
+            <input className="form-control form-control-custom" name="customerCity" value={CustomerDetails.customerCity} onChange={CustomerhandleChange} placeholder="" />
           </div>
           <div className="col-lg-3 mb-3">
-            <label className="form-label-icon">governorate</label>
+            <label className="form-label-icon">customerGovernorate</label>
             <select className="form-select form-control-custom" 
-            value={PickupDetails.governorate} onChange={handleChange} name="governorate"
+            value={CustomerDetails.customerGovernorate} onChange={CustomerhandleChange} name="customerGovernorate"
             
             >
-              <option value="" disabled>Select governorate</option>
+              <option value="" disabled>Select customerGovernorate</option>
               {egypt_governorates.map((gov) => (
                 <option key={gov.id} value={gov.name}>{gov.name}</option>
               ))}
@@ -373,7 +401,7 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
           </div>
           <div className="col-lg-3 mb-3">
             <label className="form-label-icon">address Details</label>
-            <input className="form-control form-control-custom" name="details" value={PickupDetails.details} onChange={handleChange} placeholder="details" />
+            <input className="form-control form-control-custom" name="customerAddressDetails" value={CustomerDetails.customerAddressDetails} onChange={CustomerhandleChange} placeholder="customerAddressDetails" />
           </div>
 
           <div className="col-lg-6 mb-3">
@@ -381,7 +409,7 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
               <User size={16} /> Contact Name
             </label>
             <input className="form-control form-control-custom" placeholder="Contact person name" 
-            name="contactName" value={PickupDetails.contactName} onChange={handleChange} 
+            name="customerContactName" value={CustomerDetails.customerContactName} onChange={CustomerhandleChange} 
             
             />
           </div>
@@ -391,11 +419,16 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
               <Phone size={16} /> Contact Phone <span style={{ color: "#6c757d" }}>*</span>
             </label>
             <input className="form-control form-control-custom" placeholder="+20123456789"
-            name="contactPhone" value={PickupDetails.contactPhone} onChange={handleChange}
+            name="customerContactPhone" value={CustomerDetails.customerContactPhone} onChange={CustomerhandleChange}
             />
           </div>
         </div>
       </div>
+
+
+
+
+
 
       {/** shipper */}
       <div className="card-section mb-4">
@@ -408,38 +441,38 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
             <label className="form-label-icon">
               <Calendar size={16} /> Return Date
             </label>
-            <input type="date" name="pickupDate" value={PickupDetails.pickupDate}  onChange={handleChange} className="form-control form-control-custom" placeholder="mm/dd/yyyy" />
+            <input type="date" name="returnDate" value={ShipperDetails.returnDate}  onChange={ShipperhandleChange} className="form-control form-control-custom" placeholder="mm/dd/yyyy" />
           </div>
 
           <div className="col-lg-4 mb-3">
             <label className="form-label-icon">
               <Clock size={16} /> Window Start
             </label>
-            <input type="time"  name="windowStart"  value={PickupDetails.windowStart} onChange={handleChange}       className="form-control form-control-custom" placeholder="--:-- --" />
+            <input type="time"  name="returnWindowStart"  value={ShipperDetails.returnWindowStart} onChange={ShipperhandleChange}       className="form-control form-control-custom" placeholder="--:-- --" />
           </div>
 
           <div className="col-lg-4 mb-3">
             <label className="form-label-icon">
               <Clock size={16} /> Window End
             </label>
-            <input type="time" name="windowEnd" value={PickupDetails.windowEnd} onChange={handleChange}    className="form-control form-control-custom" placeholder="--:-- --" />
+            <input type="time" name="returnWindowEnd" value={ShipperDetails.returnWindowEnd} onChange={ShipperhandleChange}    className="form-control form-control-custom" placeholder="--:-- --" />
           </div>
 
           <div className="col-lg-3 mb-3">
             <label className="form-label-icon">Street Address</label>
-            <input className="form-control form-control-custom" name="street"  value={PickupDetails.street}  onChange={handleChange}  placeholder="123 Main Street" />
+            <input className="form-control form-control-custom" name="shipperStreet"  value={ShipperDetails.shipperStreet}  onChange={ShipperhandleChange}  placeholder="123 Main Street" />
           </div>
           <div className="col-lg-3 mb-3">
             <label className="form-label-icon">City</label>
-            <input className="form-control form-control-custom" name="city" value={PickupDetails.city} onChange={handleChange} placeholder="" />
+            <input className="form-control form-control-custom" name="shipperCity" value={ShipperDetails.shipperCity} onChange={ShipperhandleChange} placeholder="" />
           </div>
           <div className="col-lg-3 mb-3">
-            <label className="form-label-icon">governorate</label>
+            <label className="form-label-icon">Governorate</label>
             <select className="form-select form-control-custom" 
-            value={PickupDetails.governorate} onChange={handleChange} name="governorate"
+            value={ShipperDetails.shipperGovernorate} onChange={ShipperhandleChange} name="shipperGovernorate"
             
             >
-              <option value="" disabled>Select governorate</option>
+              <option value="" disabled>Select customerGovernorate</option>
               {egypt_governorates.map((gov) => (
                 <option key={gov.id} value={gov.name}>{gov.name}</option>
               ))}
@@ -447,7 +480,7 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
           </div>
           <div className="col-lg-3 mb-3">
             <label className="form-label-icon">address Details</label>
-            <input className="form-control form-control-custom" name="details" value={PickupDetails.details} onChange={handleChange} placeholder="details" />
+            <input className="form-control form-control-custom" name="ShipperDetails" value={ShipperDetails.ShipperDetails} onChange={ShipperhandleChange} placeholder="customerAddressDetails" />
           </div>
 
           <div className="col-lg-6 mb-3">
@@ -455,7 +488,7 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
               <User size={16} /> Contact Name
             </label>
             <input className="form-control form-control-custom" placeholder="Contact person name" 
-            name="contactName" value={PickupDetails.contactName} onChange={handleChange} 
+            name="shipperContactName" value={ShipperDetails.shipperContactName} onChange={ShipperhandleChange} 
             
             />
           </div>
@@ -465,7 +498,7 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
               <Phone size={16} /> Contact Phone <span style={{ color: "#6c757d" }}>*</span>
             </label>
             <input className="form-control form-control-custom" placeholder="+20123456789"
-            name="contactPhone" value={PickupDetails.contactPhone} onChange={handleChange}
+            name="shipperContactPhone" value={ShipperDetails.shipperContactPhone} onChange={ShipperhandleChange}
             />
           </div>
         </div>
@@ -536,7 +569,7 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
                 <th>#</th>
                 <th>Select</th>
                 <th>Order ID</th>
-                <th>Receiver</th>
+                <th>customer Name</th>
                 <th>Phone</th>
                 <th>Description</th>
                 <th>Qty</th>
@@ -546,7 +579,7 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
               </tr>
             </thead>
             <tbody>
-              {PendingOrders.map((p, idx) => (
+              {ReturnOrders.map((p, idx) => (
                 <tr key={p.id}>
                   <td>{idx + 1}</td>
                   <td>
@@ -557,10 +590,10 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
                     />
                   </td>
                   <td>
-                    <Link className="order-link" to={`/order-details/${p.id}`} title="Go To Order Details">{p.id}</Link>
+                    <Link className="order-link" to={`/order-customerAddressDetails/${p.id}`} title="Go To Order Details">{p.id}</Link>
                   </td>
-                  <td>{p.receiverName}</td>
-                  <td>{p.receiverPhone}</td>
+                  <td>{p.customerName}</td>
+                  <td>{p.customerPhone}</td>
                   <td>{p.shipmentDescription}</td>
                   <td>{p.quantity}</td>
                   <td>{p.shipmentWeight}</td>

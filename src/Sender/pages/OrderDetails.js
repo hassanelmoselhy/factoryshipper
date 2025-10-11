@@ -186,7 +186,7 @@ console.log("Error updating order:",err );
 
         <div className="order-actions-bar">
           <button className="cancel-button"      onClick={()=>setShowDeleteModal((prev)=>!prev)} >
-            إلغاء الطلب
+            حذف الطلب
             <i class="fa-solid fa-xmark"></i>
           </button>
           <button className="edit-button"   onClick={()=>{setShowEditOrder(true);}}>
@@ -220,7 +220,7 @@ console.log("Error updating order:",err );
             <div className="order-info">
             <span className="info-label">رقم الطلب</span>
             <div className="order-id-display">
-                <i className="fa-regular fa-copy"></i> {Shipment.id}
+                <i className="fa-regular fa-copy"></i> {orderId}
               </div>
             </div>
             {/* 2 */}
@@ -241,22 +241,22 @@ console.log("Error updating order:",err );
             <div className="customer-info-grid">
               <div className="info-item">
                 <span className="info-label">اسم العميل</span>
-                <i className="fas fa-user"></i> {Shipment.receiverName}
+                <i className="fas fa-user"></i> {Shipment.customerName}
               </div>
               <div className="info-item">
                 <span className="info-label">رقم الهاتف</span>
-                <i className="fas fa-phone"></i> {Shipment.receiverPhone}
+                <i className="fas fa-phone"></i> {Shipment.customerPhone}
               </div>
               <div className="info-item">
                 <span className="info-label">العنوان الكامل</span>
                 <i className="fas fa-map-marker-alt"></i> {
-              Shipment.receiverAddress.governorate +
+              Shipment.customerAddress.governorate +
               " - " +
-              Shipment.receiverAddress.city +
+              Shipment.customerAddress.city +
               " - " +
-              Shipment.receiverAddress.street +
+              Shipment.customerAddress.street +
               " - " +
-              Shipment.receiverAddress.details}
+              Shipment.customerAddress.details}
               </div>
               <div className="info-item">
                 <span className="info-label">محتوى الطرد</span>

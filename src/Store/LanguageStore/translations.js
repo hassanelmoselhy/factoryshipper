@@ -80,6 +80,21 @@ const translations = {
     undefinedDelegate: "غير محدد",
      requestId: "معرّف الطلب",
     requestName: "اسم الطلب",
+
+  Pending: "قيد الانتظار",
+  Canceled: "ملغي",
+  WaitingforPickup: "في انتظار الاستلام",
+  PickedUp: "تم الاستلام",
+  InWarehouse: "في المستودع",
+  OnHold: "معلق",
+  OutforDelivery: "خارج للتسليم",
+  FailedDelivery:"فشل في التسليم",
+  ReturningtoWarehouse: "في طريق العودة إلى المستودع",
+  ReturningtoShipper: "في طريق العودة إلى الشاحن",
+  Returned: "تم الإرجاع",
+  Delivered:'تم التوصيل',
+  Lost: "مفقود",
+  Damaged:"متلف"
   },
 
   en: {
@@ -161,6 +176,25 @@ const translations = {
     editTask: "Edit Schedule",
     details: "Details",
     undefinedDelegate: "Undefined",
+
+
+    
+  
+     Pending: "Pending",
+  Canceled: "Canceled",
+  WaitingforPickup:"Waiting for Pickup" ,
+  PickedUp: "PickedUp",
+  InWarehouse:"InWarehouse" ,
+  OnHold:"OnHold" ,
+  OutforDelivery:"Out for Delivery",
+  FailedDelivery:"Failed Delivery",
+  ReturningtoWarehouse:"Returning to Warehouse",
+  ReturningtoShipper:"Returning to Shipper" ,
+  Returned: "Returned",
+  Delivered:"Delivered",
+  Lost: "Lost",
+  Damaged:"Damaged"
+
   },
 };
 

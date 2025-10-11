@@ -31,7 +31,8 @@ export default function PickupRequestManagement() {
     street:"",
     city:"",
     governorate:"",
-    details:"",
+    addressDetails:"",
+    googleMapAddressLink: "",
     contactName:"",
     contactPhone:"",
     shipmentIds:[]
@@ -253,7 +254,7 @@ export default function PickupRequestManagement() {
       const fetchPendingOrders= async()=>{
       try{
         setLoading(true);
-        const res=await fetch('https://stakeexpress.runasp.net/api/Shipments/getPendingShipments',{
+        const res=await fetch('https://stakeexpress.runasp.net/api/Shipments/getShipmentsToPickup',{
           method: 'GET',
           headers:{
             'X-Client-Key':'web api',
@@ -289,14 +290,16 @@ const payload={
     street:PickupDetails.street,
     city:PickupDetails.city,
     governorate:PickupDetails.governorate,
-    details:PickupDetails.details,
+    addressDetails:PickupDetails.addressDetails,
+    // googleMapAddressLink: PickupDetails.googleMapAddressLink,
     contactName:PickupDetails.contactName,
-    contactPhone:PickupDetails.contactPhone,
+    contactPhone:PickupDetails?.contactPhone,
     shipmentIds:selectedOrders
 
 }
 try{
 setLoading(true);
+console.log('payload',payload);
 const res=await fetch('https://stakeexpress.runasp.net/api/Shipments/pickupRequest',{
   method:'POST',
   headers:{
@@ -485,7 +488,7 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
                 <th>#</th>
                 <th>Select</th>
                 <th>Order ID</th>
-                <th>Receiver</th>
+                <th>customer</th>
                 <th>Phone</th>
                 <th>Description</th>
                 <th>Qty</th>
@@ -508,8 +511,8 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
                   <td>
                     <Link className="order-link" to={`/order-details/${p.id}`} title="Go To Order Details">{p.id}</Link>
                   </td>
-                  <td>{p.receiverName}</td>
-                  <td>{p.receiverPhone}</td>
+                  <td>{p.contactName}</td>
+                  <td>{p.customerPhone}</td>
                   <td>{p.shipmentDescription}</td>
                   <td>{p.quantity}</td>
                   <td>{p.shipmentWeight}</td>

@@ -93,6 +93,7 @@ fetchRequests();
       <th>{t.requestName || "Request Name"}</th>
       <th>{t.createDate || "Create Date"}</th>
       <th>{t.lastUpdate || "Last Update"}</th>
+      <th>{t.status || "ٍStatus"}</th>
       <th>{t.ordersCount || "Orders Count"}</th>
       <th>{t.actions || "Actions"}</th>
     </tr>
@@ -104,6 +105,7 @@ fetchRequests();
         <td>{String(request.requestType).replace("Request"," Request") }</td>
         <td> {request.createdAt}</td>
         <td>{request.updatedAt}</td>
+        <td>{request.status}</td>
         <td><span className="orders-count">{request.shipmentsCount}</span></td>
         <td>
           <ActionsDropdown taskId={request.id} />
