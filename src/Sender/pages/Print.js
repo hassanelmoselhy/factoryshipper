@@ -3,9 +3,10 @@ import { useParams } from "react-router-dom";
 import "./css/Print.css";
 import useShipmentsStore from "../../Store/UserStore/ShipmentsStore";
 import useUserStore from "../../Store/UserStore/userStore";
+import LoadingOverlay from "../components/LoadingOverlay";
 const Print = () => {
   const { orderId } = useParams();
-  const [order,SetOrder] = useState();
+  const [order,SetOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const user=useUserStore((state)=>state.user);
  useEffect(()=>{
@@ -37,20 +38,29 @@ const fetchShipmentDetails=async()=>{
         }
       }
 fetchShipmentDetails();
-window.print();
+
+setTimeout(() => {
+  window.print();
+}, 2000);
+
 
 },[])
 
-  if (!order) {
-    return <div>لم يتم العثور على بيانات الطرد</div>;
-  }
+
+
+
+  // if (!order) {
+  //   return <div>لم يتم العثور على بيانات الطرد</div>;
+  // }
 
   return (
+    <>
+          <LoadingOverlay loading={loading} message="please wait..." color="#fff" size={44} />
     <div className="print-page">
       <div className="print-container">
         {/* Header */}
         <div className="print-header">
-          <span>{order.time} {order.date}</span>
+          <span>{order?.time} {order?.date}</span>
           <h2>stakeexpress</h2>
         </div>
 
@@ -60,11 +70,11 @@ window.print();
             <div className="print-location">
               <p className="d-flex"><span className="bold" >العنوان :</span> {
               
-              order.customerAddress.city +
+              order?.customerAddress.city +
               " - " +
-              order.customerAddress.street +
+              order?.customerAddress.street +
              
-              order.customerAddress.details
+              order?.customerAddress.details
               }</p>
             </div>
             <div className="print-logo">
@@ -93,23 +103,23 @@ window.print();
         <div className="print-details">
           <div>
             <p className="d-flex justify-content-between"><span className="bold">المرسل :</span> {user?.firstName+" "+user?.lastName}</p>
-            <p className="d-flex justify-content-between"><span className="bold">المستلم :</span> {order.customerName}</p>
+            <p className="d-flex justify-content-between"><span className="bold">المستلم :</span> {order?.customerName}</p>
           </div>
           <div>
               
               <div className="d-flex justify-content-between">
-                <strong>{order.collectionAmount} جنيه</strong>
+                <strong>{order?.collectionAmount} جنيه</strong>
                 <span>قيمة التحصيل</span>
                 </div>
            
               <div className="finance-row d-flex justify-content-between">
                 
-                <strong>{order.shippingCost} جنيه</strong>
+                <strong>{order?.shippingCost} جنيه</strong>
                 <span>قيمة الشحن</span>
                 </div>
               
               <div className="finance-row d-flex justify-content-between">
-                <strong>{order.additionalCost} جنيه</strong>
+                <strong>{order?.additionalCost} جنيه</strong>
                 <span>رسوم اضافيه</span>
                 </div>
               
@@ -138,19 +148,21 @@ window.print();
 
                   
               
-              order.customerAddress.city +
+              order?.customerAddress.city +
               " - " +
-              order.customerAddress.street +
+              order?.customerAddress.street +
              
-              order.customerAddress.details
+              order?.customerAddress.details
               }</p>
-          <p><span className="bold">محتوي الطرد :</span> {order.shipmentDescription}</p>
-          <p><span className="bold">التليفون :</span> {order.customerPhone
+          <p><span className="bold">محتوي الطرد :</span> {order?.shipmentDescription}</p>
+          <p><span className="bold">التليفون :</span> {order?.customerPhone
 }</p>
         </div>
       </div>
     </div>
-  );
+    </>
+  
+);
 };
 
 export default Print;

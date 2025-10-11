@@ -37,7 +37,7 @@
   transition: background-color 0.3s ease;
   white-space: nowrap;
   flex-shrink: 0;
-  min-width: 60px;
+  
 }
 
 .icon-button:hover {
