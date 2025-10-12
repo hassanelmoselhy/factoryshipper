@@ -1,0 +1,142 @@
+.admin-sidebar {
+width: 280px;
+background: #fafafa;
+height: 100vh;
+position: fixed; 
+top: 0;
+right: 0;
+left: auto;
+transition: width 0.3s ease;
+overflow-x: hidden;
+box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+z-index: 1000;
+direction: rtl;
+}
+
+.admin-sidebar.closed {
+width: 60px;
+}
+
+.admin-sidebar.rtl {
+text-align: right;
+}
+
+.sidebar-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 15px;
+min-height: 60px;
+border-bottom: 1px solid #344052;
+}
+
+.sidebar-header .toggle-btn {
+background: none;
+border: none;
+color: black;
+font-size: 1.5rem;
+cursor: pointer;
+padding: 5px;
+display: flex;
+align-items: center;
+justify-content: center;
+margin-left: 10px;
+}
+
+.sidebar-header .logo-container {
+color: black;
+display: flex;
+align-items: center;
+gap: 5px;
+margin-bottom: 20px;
+}
+.sidebar-header .logo-container h3 {
+font-size: 1.2rem;
+color: black;
+margin: 0;
+}
+
+.sidebar-header .logo-container .logo-icon {
+font-size: 1.8rem;
+color: black;
+margin-left: 10px;
+}
+.sidebar-menu {
+list-style: none;
+padding: 0;
+margin: 10px 0;
+}
+
+.sidebar-menu li {
+margin-bottom: 0px;
+}
+
+.sidebar-menu li .sidebar-item {
+display: flex;
+align-items: center;
+padding: 10px 15px;
+color: black;
+text-decoration: none;
+font-size: 0.95rem;
+white-space: nowrap;
+transition: background-color 0.2s ease, color 0.2s ease;
+margin-right: 10px;
+margin-left: 10px;
+border-radius: 8px;
+}
+
+.admin-sidebar.closed .sidebar-menu li .sidebar-item {
+justify-content: center;
+}
+
+
+.sidebar-menu li .sidebar-item:hover {
+background: #f4f4f4;
+}
+
+.sidebar-menu li .sidebar-item.active {
+background: black;
+color: #fff;
+}
+.sidebar-menu li .sidebar-item.active .icon{
+color: #fff;
+}
+
+.sidebar-menu .icon {
+color: black;
+margin-left: 15px;
+margin-right: 0; 
+font-size: 1.2rem;
+min-width: 24px;
+text-align: center;
+}
+
+.admin-sidebar.closed .sidebar-menu .icon {
+color: black;
+margin-left: 0;
+width: 100%;
+}
+
+.admin-sidebar.closed .sidebar-menu li .sidebar-item span {
+display: none;
+}
+
+.admin-page-container {
+display: flex;
+min-height: 100vh;
+width: 100%;
+flex-direction: row-reverse;
+}
+
+.admin-content-area {
+flex-grow: 1;
+padding: 20px;
+background-color: #f0f2f5;
+overflow-y: auto;
+transition: margin-right 0.3s ease;
+margin-right: 280px;
+}
+
+.admin-content-area.sidebar-closed {
+margin-right: 60px;
+}
