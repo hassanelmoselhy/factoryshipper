@@ -1,0 +1,288 @@
+.admin-navbar-container {
+display: flex;
+justify-content: space-between;
+align-items: center;
+background-color: #ffff; 
+color: #333;
+padding: 20px;
+height: 70px;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+direction: rtl;
+flex-wrap: nowrap;
+width: 83%;
+}
+
+.navbar-left-section {
+display: flex;
+align-items: center;
+flex-shrink: 0;
+}
+
+.user-profile {
+display: flex;
+align-items: center;
+gap: 10px;
+}
+
+.user-avatar {
+width: 40px;
+height: 40px;
+border-radius: 50%;
+object-fit: cover;
+border: 1px solid #ddd;
+}
+
+.user-info {
+display: flex;
+flex-direction: column;
+text-align: right;
+font-size: 0.95rem;
+white-space: nowrap; 
+}
+
+.user-greeting {
+font-weight: bold;
+color: #333;
+}
+
+.user-location {
+font-size: 0.8rem;
+color: #666;
+display: flex;
+align-items: center;
+gap: 5px;
+}
+
+.dropdown-icon {
+font-size: 0.7rem;
+color: #999;
+}
+
+
+.navbar-center-section {
+display: flex;
+margin-left: 50px;
+align-items: center;
+gap: 10px;
+flex-shrink: 0; 
+}
+
+.navbar-icon-btn {
+background-color: transparent;
+border: none;
+color: #666;
+font-size: 1.2rem;
+cursor: pointer;
+padding: 8px;
+border-radius: 50%;
+transition: background-color 0.2s ease;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.navbar-icon-btn:hover {
+background-color: #eee;
+}
+
+.create-btn {
+background-color: #007bff;
+color: #ffffff;
+border-radius: 8px;
+padding: 8px 15px;
+font-size: 0.9rem;
+font-weight: bold;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 5px;
+}
+
+.create-btn:hover {
+background-color: #0056b3;
+}
+
+.create-btn .btn-icon {
+font-size: 1rem;
+}
+
+
+.navbar-right-section {
+display: flex;
+align-items: center;
+flex-grow: 1;
+margin-top: 20px;
+justify-content: flex-start;
+}
+
+.search-bar {
+display: flex;
+align-items: center;
+background-color: #f3f3f5; 
+border-radius: 8px;
+padding: 5px 15px;
+width: 100%;
+max-width: 400px;
+}
+
+.search-icon {
+color: #a9a9b4;
+margin-left: 10px;
+flex-shrink: 0;
+}
+
+.search-bar .search-input {
+border: none;
+background-color: #f3f3f5; 
+outline: none;
+font-size: 0.9rem;
+color: #333;
+width: 100%;
+padding: 5px 0;
+text-align: right;
+}
+
+.search-input::placeholder {
+color: #999;
+}
+
+
+/* --- Media Queries for Responsiveness --- */
+
+/* Tablet and Smaller Desktops (e.g., 1024px to 769px) */
+@media (max-width: 1024px) {
+.admin-navbar-container {
+width: 95%;
+padding: 8px 15px;
+}
+
+.search-bar {
+max-width: 300px;
+}
+
+.user-info {
+font-size: 0.9rem;
+}
+
+.user-location {
+font-size: 0.75rem;
+}
+
+.create-btn {
+padding: 7px 12px;
+font-size: 0.85rem;
+}
+
+.navbar-icon-btn {
+font-size: 1.1rem;
+padding: 6px;
+}
+}
+
+/* Mobile Devices (e.g., 768px and below) */
+@media (max-width: 768px) {
+.admin-navbar-container {
+width: 100%;
+padding: 10px;
+height: auto; 
+flex-direction: row;
+flex-wrap: wrap;
+justify-content: center;
+gap: 10px;
+}
+
+.navbar-left-section,
+.navbar-center-section,
+.navbar-right-section {
+flex-basis: 100%;
+justify-content: center;
+margin: 5px 0;
+}
+
+.user-profile {
+justify-content: center;
+width: 100%;
+}
+
+.user-info {
+text-align: center;
+align-items: center;
+}
+
+.navbar-center-section {
+order: 3;
+}
+
+.navbar-right-section {
+order: 2; 
+}
+
+.search-bar {
+max-width: 90%;
+width: auto;
+padding: 8px 10px;
+margin: 0 auto;
+}
+
+.search-input {
+font-size: 0.85rem;
+}
+
+.create-btn {
+font-size: 0.8rem;
+padding: 6px 10px;
+}
+
+.navbar-icon-btn {
+font-size: 1rem;
+padding: 5px;
+}
+
+.notification-badge {
+top: -2px;
+right: -2px;
+padding: 1px 4px;
+min-width: 16px;
+font-size: 0.65rem;
+}
+
+
+@media (max-width: 480px) {
+.navbar-icon-btn:not(.notification-btn) {
+display: none;
+}
+}
+}
+
+/* Small Mobile Devices (e.g., 480px and below) */
+@media (max-width: 480px) {
+.user-profile {
+gap: 5px;
+}
+.user-avatar {
+width: 35px;
+height: 35px;
+}
+.user-greeting {
+font-size: 0.9rem;
+}
+.user-location {
+font-size: 0.7rem;
+}
+
+.create-btn {
+padding: 5px 8px;
+font-size: 0.75rem;
+gap: 3px;
+}
+
+.navbar-icon-btn {
+font-size: 0.9rem;
+padding: 4px;
+}
+
+.search-input {
+font-size: 0.8rem;
+padding: 4px 0;
+}
+}

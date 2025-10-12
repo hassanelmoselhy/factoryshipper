@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState  } from 'react';
 import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
 import Rightsidebar from './Sender/components/Rightsidebar';
 import Order from './Sender/pages/Order';
@@ -37,6 +37,10 @@ import OrdersPage from './Hanger/pages/OrdersPage';
 import OrderRelease from './Hanger/pages/OrdersRelease';
 import Safe from './Hanger/pages/Safe';
 import ReturnPage from './Sender/pages/ReturnPage';
+
+// Admin Components
+import AdminSidebar from './Admin/components/AdminSidebar';
+import AdminNavbar from './Admin/components/AdminNavbar'; 
 
 
 // لو عندك فانكشن اسمها shceduleRefreshToken لازم تكون مستوردة
@@ -84,10 +88,26 @@ const HangerLayout = () => {
   );
 };
 
+// Admin Layout
+const AdminLayout = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true); 
+  const toggleAdminSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+    return (
+    <div>
+      <AdminNavbar />
+      <AdminSidebar isOpen={isSidebarOpen} toggleSidebar={toggleAdminSidebar} />
+      <div className={` ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
+        <Outlet />
+      </div>
+    </div>
+  );
+};
+
+
 const App = () => {
   const user = useUserStore((state) => state.user);
-
-
   return (
     <>
       <Toaster position="top-right" richColors />
@@ -105,9 +125,6 @@ const App = () => {
           <Route path="/shipping" element={<ShippingPage />} />
           <Route path="/new-request" element={<NewRequestPage />} />
           
-            
-            
-            
             <Route path="/Pickuporder" element={<PickupOrder />} />
             <Route path="/return" element={<ReturnPage />} />
 
@@ -139,6 +156,11 @@ const App = () => {
             <Route path="schedule" element={<DeliverySchedule />} /> */}
             <Route path="release-orders" element={<OrderRelease />} />
           </Route>
+
+          {/* Admin Layout */}
+          <Route path="/admin" element={<AdminLayout />}>
+          </Route>
+
 
           {/* Reciver */}
         
