@@ -1,0 +1,128 @@
+
+.resched-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(13, 16, 24, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  /* add vertical padding so the modal will always have space from top & bottom */
+  padding: 40px 16px;
+}
+.resched-modal {
+   /* ensures at least 40px space top and bottom */
+  width: 700px;
+  max-width: calc(100% - 32px);
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 20px 40px rgba(9, 10, 11, 0.15);
+  overflow: auto; /* internal scrolling */
+}
+.resched-header {
+  padding: 28px 32px;
+  border-bottom: 1px solid #f1f3f5;
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+}
+.resched-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0b1720;
+}
+.resched-sub {
+  color: #6b7280;
+  margin-top: 6px;
+}
+.resched-body {
+  padding: 22px 32px;
+  max-height: calc(100vh - 240px); /* keep header/footer visible, body scrolls */
+  overflow: auto;
+}
+.info-card {
+  background: #fbfdff;
+  border: 1px solid #eef6ff;
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+.type-pill {
+  background: #0b63d9;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 14px;
+}
+.order-id {
+  margin-left: auto;
+  font-weight: 700;
+  color: #0b1720;
+}
+.original-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #374151;
+  font-size: 14px;
+  margin-top: 10px;
+}
+.form-control-custom {
+  height: 46px;
+  border-radius: 10px;
+  border: 1px solid #e6e9ef;
+  padding: 10px 14px;
+}
+.textarea-custom {
+  min-height: 120px;
+  border-radius: 10px;
+  border: 1px solid #e6e9ef;
+  padding: 12px;
+}
+.notify-pill {
+  background: #eef6fb;
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.notify-pill .check {
+  background: #0b63d9;
+  color: white;
+  border-radius: 999px;
+  padding: 6px;
+}
+.note-box {
+  background: #fff7ed;
+  border: 1px solid #fde5c9;
+  padding: 14px;
+  border-radius: 8px;
+  margin-top: 16px;
+  color: #92400e;
+}
+.resched-footer {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 22px 32px;
+  border-top: 1px solid #f3f4f6;
+}
+.btn-orange {
+  background: linear-gradient(90deg, #f59f00, #fb923c);
+  border: none;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 8px;
+}
+.btn-cancel {
+  background: white;
+  border: 1px solid #e6e9ef;
+  padding: 8px 14px;
+  border-radius: 8px;
+}
+

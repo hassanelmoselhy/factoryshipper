@@ -8,6 +8,7 @@ import useUserStore from "../../Store/UserStore/userStore";
 import LoadingOverlay from "../components/LoadingOverlay";
 import DeleteModal from "../../Components/DeleteModal";
 import EditOrderModal from "../components/OrderEditSidebar";
+import ShipmentCancelModal from "../../Components/ShipmentCancelModal";
 import "./css/OrderDetails.css";
 
 
@@ -23,7 +24,7 @@ export const OrderDetails = () => {
   const user=useUserStore((state)=>state.user);
   const [showdeleteModal, setShowDeleteModal] = useState(false);
   const [showEditOrder, setShowEditOrder] = useState(false);
-
+  const [showCancelRequest, setshowCancelRequest] = useState(false);
   useEffect(() => {
     const fetchShipmentDetails=async()=>{
       setLoading(true);
@@ -175,7 +176,7 @@ console.log("Error updating order:",err );
       
       />
     
-
+      <ShipmentCancelModal show={showCancelRequest} onClose={()=>{setshowCancelRequest(false)}}/>
       <div className="order-details-page">
         <div className="order-details-header">
           <h2>تفاصيل الطلب</h2>
@@ -187,6 +188,17 @@ console.log("Error updating order:",err );
             حذف الطلب
             <i class="fa-solid fa-xmark"></i>
           </button>
+          {(Shipment?.shipmentStatuses[0].status==="InWarehouse"||Shipment.shipmentStatuses[0].status==="Delivered")&&(
+
+             <button className="cancel-button"      onClick={()=>{setshowCancelRequest(true)}} >
+            طلب الغاء
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+          )}
+         
+
+
+
           <button className="edit-button"   onClick={()=>{setShowEditOrder(true);}}>
             تعديل الطلب
             <i class="fa-solid fa-pen-to-square"></i>

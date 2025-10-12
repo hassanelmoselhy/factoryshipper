@@ -3,7 +3,7 @@ import { FaTimesCircle, FaEdit, FaInfoCircle } from "react-icons/fa";
 import './css/dropdown.css';
 
 
-const ActionsDropdown = ({ taskId }) => {
+const ActionsDropdown = ({ taskId,handleopenSchedule }) => {
   const [open, setOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -21,7 +21,7 @@ const ActionsDropdown = ({ taskId }) => {
         <li className="cancel-item">
           <FaTimesCircle /> Cancel
         </li>
-        <li>
+        <li onClick={handleopenSchedule}>
           <FaEdit /> Edit Schedule
         </li>
         <li>
