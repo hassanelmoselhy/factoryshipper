@@ -14,10 +14,10 @@ const ActionsDropdown = ({ taskId,handleopenSchedule }) => {
   return (
     <div className={`actions-btns ${open ? "open" : ""}`}>
       <button className="dropdown-toggle" onClick={toggleMenu}>
-        Actions ▾
+        Actions 
       </button>
 
-      <ul className="dropdown-menu">
+      <ul className="dropdown-menu" onClick={toggleMenu}>
         <li className="cancel-item">
           <FaTimesCircle /> Cancel
         </li>

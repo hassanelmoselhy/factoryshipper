@@ -6,8 +6,9 @@ import { toast } from "sonner";
 import useUserStore from "../../../Store/UserStore/userStore";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import LoadingOverlay from "../../components/LoadingOverlay";
+
 const Signup = () => {
-  const SetUser=useUserStore((state)=>state.SetUser)
+  const SetUser = useUserStore((state) => state.SetUser);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -27,7 +28,8 @@ const Signup = () => {
 
   const [error, setError] = useState("");
   const navigate = useNavigate();
-const [loading,setLoading]=useState(false)
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     document.body.classList.add("signup-page");
     return () => {
@@ -90,7 +92,7 @@ const [loading,setLoading]=useState(false)
       email: formData.email.trim(),
       phoneNumber: formData.phoneNumber.trim(),
       companyName: formData.companyName.trim(),
-      companyLink: formData.companyLink?formData.companyLink :null,
+      companyLink: formData.companyLink ? formData.companyLink : null,
       city: formData.city.trim(),
       street: formData.street.trim(),
       governorate: formData.governorate.trim(),
@@ -103,7 +105,7 @@ const [loading,setLoading]=useState(false)
     console.log("🚀 Payload sent:", payload);
 
     try {
-      setLoading(true)
+      setLoading(true);
       const response = await fetch(
         "https://stakeexpress.runasp.net/api/Accounts/shipperRegistration",
         {
@@ -113,7 +115,7 @@ const [loading,setLoading]=useState(false)
             "X-Client-Key": "web API",
           },
           body: JSON.stringify(payload),
-        credentials:'include'
+          credentials: 'include'
         }
       );
 
@@ -122,7 +124,7 @@ const [loading,setLoading]=useState(false)
         sessionStorage.setItem("user", JSON.stringify(data));
         SetUser(data.data);
        
-        toast.success("Account created successfuly ");
+        toast.success("Account created successfully");
         console.log("✅ Signup successful:", data);
         navigate("/home");
       } else {
@@ -145,356 +147,277 @@ const [loading,setLoading]=useState(false)
       }
     } catch (error) {
       toast.error("❌ server error, " + error.message);
-    }finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
 
-
-  
-   const egypt_governorates= [
-    {
-      "id": 1,
-      "name": "Cairo",
-      "name_arabic": "القاهرة",
-    },
-    {
-      "id": 2,
-      "name": "Alexandria",
-      "name_arabic": "الإسكندرية",
-      "capital": "Alexandria",
-      
-    },
-    {
-      "id": 3,
-      "name": "Port Said",
-      "name_arabic": "بورسعيد",
-      
-    },
-    {
-      "id": 4,
-      "name": "Suez",
-      "name_arabic": "السويس",
-
-    },
-    {
-      "id": 5,
-      "name": "Luxor",
-      "name_arabic": "الأقصر",
-     
-    },
-    {
-      "id": 6,
-      "name": "Dakahlia",
-      "name_arabic": "الدقهلية",
- 
-    },
-    {
-      "id": 7,
-      "name": "Sharqia",
-      "name_arabic": "الشرقية",
-     
-    },
-    {
-      "id": 8,
-      "name": "Qalyubia",
-      "name_arabic": "القليوبية",
-      
-    },
-    {
-      "id": 9,
-      "name": "Damietta",
-      "name_arabic": "دمياط",
-  
-    },
-    {
-      "id": 10,
-      "name": "Beheira",
-      "name_arabic": "البحيرة",
-      
-    },
-    {
-      "id": 11,
-      "name": "Gharbia",
-      "name_arabic": "الغربية",
-     
-    },
-    {
-      "id": 12,
-      "name": "Monufia",
-      "name_arabic": "المنوفية",
-     
-    },
-    {
-      "id": 13,
-      "name": "Kafr El Sheikh",
-      "name_arabic": "كفر الشيخ",
-    
-    },
-    {
-      "id": 14,
-      "name": "Giza",
-      "name_arabic": "الجيزة",
-      
-    },
-    {
-      "id": 15,
-      "name": "Faiyum",
-      "name_arabic": "الفيوم",
-      
-    },
-    {
-      "id": 16,
-      "name": "Beni Suef",
-      "name_arabic": "بني سويف",
-      
-    },
-    {
-      "id": 17,
-      "name": "Minya",
-      "name_arabic": "المنيا",
-    
-    },
-    {
-      "id": 18,
-      "name": "Asyut",
-      "name_arabic": "أسيوط",
-   
-    },
-    {
-      "id": 19,
-      "name": "Sohag",
-      "name_arabic": "سوهاج",
-    
-    },
-    {
-      "id": 20,
-      "name": "Qena",
-      "name_arabic": "قنا",
-      
-    },
-    {
-      "id": 21,
-      "name": "Aswan",
-      "name_arabic": "أسوان",
-   
-    },
-    {
-      "id": 22,
-      "name": "Red Sea",
-      "name_arabic": "البحر الأحمر",
-  
-    },
-    {
-      "id": 23,
-      "name": "New Valley",
-      "name_arabic": "الوادي الجديد",
-   
-    },
-    {
-      "id": 24,
-      "name": "Matrouh",
-      "name_arabic": "مطروح",
-     
-    },
-    {
-      "id": 25,
-      "name": "North Sinai",
-      "name_arabic": "شمال سيناء",
-   
-    },
-    {
-      "id": 26,
-      "name": "South Sinai",
-      "name_arabic": "جنوب سيناء",
-   
-    }
+  const egypt_governorates = [
+    { "id": 1, "name": "Cairo", "name_arabic": "القاهرة" },
+    { "id": 2, "name": "Alexandria", "name_arabic": "الإسكندرية" },
+    { "id": 3, "name": "Port Said", "name_arabic": "بورسعيد" },
+    { "id": 4, "name": "Suez", "name_arabic": "السويس" },
+    { "id": 5, "name": "Luxor", "name_arabic": "الأقصر" },
+    { "id": 6, "name": "Dakahlia", "name_arabic": "الدقهلية" },
+    { "id": 7, "name": "Sharqia", "name_arabic": "الشرقية" },
+    { "id": 8, "name": "Qalyubia", "name_arabic": "القليوبية" },
+    { "id": 9, "name": "Damietta", "name_arabic": "دمياط" },
+    { "id": 10, "name": "Beheira", "name_arabic": "البحيرة" },
+    { "id": 11, "name": "Gharbia", "name_arabic": "الغربية" },
+    { "id": 12, "name": "Monufia", "name_arabic": "المنوفية" },
+    { "id": 13, "name": "Kafr El Sheikh", "name_arabic": "كفر الشيخ" },
+    { "id": 14, "name": "Giza", "name_arabic": "الجيزة" },
+    { "id": 15, "name": "Faiyum", "name_arabic": "الفيوم" },
+    { "id": 16, "name": "Beni Suef", "name_arabic": "بني سويف" },
+    { "id": 17, "name": "Minya", "name_arabic": "المنيا" },
+    { "id": 18, "name": "Asyut", "name_arabic": "أسيوط" },
+    { "id": 19, "name": "Sohag", "name_arabic": "سوهاج" },
+    { "id": 20, "name": "Qena", "name_arabic": "قنا" },
+    { "id": 21, "name": "Aswan", "name_arabic": "أسوان" },
+    { "id": 22, "name": "Red Sea", "name_arabic": "البحر الأحمر" },
+    { "id": 23, "name": "New Valley", "name_arabic": "الوادي الجديد" },
+    { "id": 24, "name": "Matrouh", "name_arabic": "مطروح" },
+    { "id": 25, "name": "North Sinai", "name_arabic": "شمال سيناء" },
+    { "id": 26, "name": "South Sinai", "name_arabic": "جنوب سيناء" }
   ];
-
 
   return (
     <>
-    <LoadingOverlay loading={loading} message="please wait..." color="#fff" size={44} />
-      <div className="signup-banner">
-        <div className="signup-logo">
-          <FaShippingFast className="signup-icon" />
-          <h1 className="signup-title">Stake Express</h1>
-        </div>
-        <p className="signup-slogan">
-          Your trusted logistics partner for fast and reliable shipping
-        </p>
-      </div>
-
-      <div className="signup-container">
-        <div className="signup-form-wrapper">
-          <form onSubmit={handleSubmit}>
-            <h2 className="signup-form-title">Create Your Account</h2>
-            <p className="signup-form-subtitle">
-              Join thousands of satisfied customers who trust us with their
-              shipping needs
-            </p>
-
-            {error && (
-              <p style={{ color: "red", marginBottom: "10px" }}>{error}</p>
-            )}
-
-            {/* Personal Info */}
-            <div className="signup-section">
-              <h3 className="signup-section-title">Personal Information</h3>
-              <div className="signup-input-group">
-                <input
-                  type="text"
-                  name="firstName"
-                  placeholder="First Name *"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                />
-                <input
-                  type="text"
-                  name="lastName"
-                  placeholder="Second Name *"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Email Address *"
-                  value={formData.email}
-                  onChange={handleChange}
-                />
-                <input
-                  type="tel"
-                  name="phoneNumber"
-                  placeholder="Phone Number *"
-                  value={formData.phoneNumber}
-                  onChange={handleChange}
-                />
+      <LoadingOverlay loading={loading} message="please wait..." color="#fff" size={44} />
+      
+      <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center py-4">
+        <div className="row w-100 justify-content-center">
+          {/* Banner Section */}
+          <div className="col-12 col-lg-10 col-xl-8 mb-4">
+            <div className="signup-banner mx-auto" style={{ maxWidth: '500px' }}>
+              <div className="signup-logo">
+                <FaShippingFast className="signup-icon" />
+                <h1 className="signup-title">Stake Express</h1>
               </div>
+              <p className="signup-slogan">
+                Your trusted logistics partner for fast and reliable shipping
+              </p>
             </div>
+          </div>
 
-            {/* Password Section */}
-            <div className="signup-section">
-              <h3 className="signup-section-title">Account Security</h3>
-              <div className="signup-input-group ">
-                <div className="d-flex align-items-center position-relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    placeholder="Password *"
-                    value={formData.password}
-                    onChange={handleChange}
-                  />
-                  <button
-                    type="button"
-                    className=" btn-link p-2 text-muted password-toggle"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                  >
-                    {showPassword ? (
-                      <AiOutlineEyeInvisible size={"1.2em"} />
-                    ) : (
-                      <AiOutlineEye size={"1.2em"} />
-                    )}
-                  </button>
+          {/* Form Section */}
+          <div className="col-12 col-lg-10 col-xl-8 d-flex justify-content-center">
+            <div className="signup-form-wrapper">
+              <form onSubmit={handleSubmit} className="p-3 p-md-4">
+                <h2 className="signup-form-title">Create Your Account</h2>
+                <p className="signup-form-subtitle">
+                  Join thousands of satisfied customers who trust us with their shipping needs
+                </p>
+
+                {error && (
+                  <div className="alert alert-danger text-center" role="alert">
+                    {error}
+                  </div>
+                )}
+
+                {/* Personal Info */}
+                <div className="signup-section">
+                  <h3 className="signup-section-title">Personal Information</h3>
+                  <div className="row g-3">
+                    <div className="col-12 col-md-6">
+                      <input
+                        type="text"
+                        name="firstName"
+                        className="form-control"
+                        placeholder="First Name *"
+                        value={formData.firstName}
+                        onChange={handleChange}
+                      />
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <input
+                        type="text"
+                        name="lastName"
+                        className="form-control"
+                        placeholder="Second Name *"
+                        value={formData.lastName}
+                        onChange={handleChange}
+                      />
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <input
+                        type="email"
+                        name="email"
+                        className="form-control"
+                        placeholder="Email Address *"
+                        value={formData.email}
+                        onChange={handleChange}
+                      />
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <input
+                        type="tel"
+                        name="phoneNumber"
+                        className="form-control"
+                        placeholder="Phone Number *"
+                        value={formData.phoneNumber}
+                        onChange={handleChange}
+                      />
+                    </div>
+                  </div>
                 </div>
 
-                <div className="d-flex align-items-center position-relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="confirmPassword"
-                    placeholder="Confirm Password *"
-                    value={formData.confirmPassword}
+                {/* Password Section */}
+                <div className="signup-section">
+                  <h3 className="signup-section-title">Account Security</h3>
+                  <div className="row g-3">
+                    <div className="col-12 col-md-6">
+                      <div className="position-relative">
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          name="password"
+                          className="form-control"
+                          placeholder="Password *"
+                          value={formData.password}
+                          onChange={handleChange}
+                        />
+                        <button
+                          type="button"
+                          className="btn btn-link p-2 text-muted password-toggle"
+                          onClick={() => setShowPassword((prev) => !prev)}
+                        >
+                          {showPassword ? (
+                            <AiOutlineEyeInvisible size={"1.2em"} />
+                          ) : (
+                            <AiOutlineEye size={"1.2em"} />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <div className="position-relative">
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          name="confirmPassword"
+                          className="form-control"
+                          placeholder="Confirm Password *"
+                          value={formData.confirmPassword}
+                          onChange={handleChange}
+                        />
+                        <button
+                          type="button"
+                          className="btn btn-link p-2 text-muted password-toggle"
+                          onClick={() => setShowPassword((prev) => !prev)}
+                        >
+                          {showPassword ? (
+                            <AiOutlineEyeInvisible size={"1.2em"} />
+                          ) : (
+                            <AiOutlineEye size={"1.2em"} />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Company Info */}
+                <div className="signup-section">
+                  <h3 className="signup-section-title">Company Information</h3>
+                  <div className="row g-3">
+                    <div className="col-12 col-md-6">
+                      <input
+                        type="text"
+                        name="companyName"
+                        className="form-control"
+                        placeholder="Company Name *"
+                        value={formData.companyName}
+                        onChange={handleChange}
+                      />
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <input
+                        type="text"
+                        name="companyLink"
+                        className="form-control"
+                        placeholder="Company Website"
+                        value={formData.companyLink}
+                        onChange={handleChange}
+                      />
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <input
+                        type="text"
+                        name="city"
+                        className="form-control"
+                        placeholder="City *"
+                        value={formData.city}
+                        onChange={handleChange}
+                      />
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <input
+                        type="text"
+                        name="street"
+                        className="form-control"
+                        placeholder="Street Address *"
+                        value={formData.street}
+                        onChange={handleChange}
+                      />
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <select 
+                        name="governorate" 
+                        className="form-select"
+                        value={formData.governorate} 
+                        onChange={handleChange}
+                      >
+                        <option value="" disabled>اختر المحافظه</option>
+                        {egypt_governorates.map((gov) => (
+                          <option key={gov.id} value={gov.name_arabic}>
+                            {gov.name_arabic}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <input
+                        type="text"
+                        name="details"
+                        className="form-control"
+                        placeholder="Additional Details"
+                        value={formData.details}
+                        onChange={handleChange}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Production Info */}
+                <div className="signup-section">
+                  <h3 className="signup-section-title">Production Information</h3>
+                  <select
+                    name="typeOfProduction"
+                    className="form-select"
+                    value={formData.typeOfProduction}
                     onChange={handleChange}
-                  />
-                  <button
-                    type="button"
-                    className=" btn-link p-2 text-muted password-toggle"
-                    onClick={() => setShowPassword((prev) => !prev)}
                   >
-                    {showPassword ? (
-                      <AiOutlineEyeInvisible size={"1.2em"} />
-                    ) : (
-                      <AiOutlineEye size={"1.2em"} />
-                    )}
+                    <option value="" disabled>
+                      Select the type of products you typically ship
+                    </option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Clothing">Clothing</option>
+                    <option value="Furniture">Furniture</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                <div className="d-grid">
+                  <button type="submit" className="signup-button">
+                    Create Account & Start Shipping
                   </button>
                 </div>
-              </div>
+              </form>
+              
+              <p className="signup-login-text p-3">
+                Already have an account? <a href="/">Login here</a>
+              </p>
             </div>
-
-            {/* Company Info */}
-            <div className="signup-section">
-              <h3 className="signup-section-title">Company Information</h3>
-              <div className="signup-input-group">
-                <input
-                  type="text"
-                  name="companyName"
-                  placeholder="Company Name *"
-                  value={formData.companyName}
-                  onChange={handleChange}
-                />
-                <input
-                  type="text"
-                  name="companyLink"
-                  placeholder="Company Website"
-                  value={formData.companyLink}
-                  onChange={handleChange}
-                />
-                <input
-                  type="text"
-                  name="city"
-                  placeholder="City *"
-                  value={formData.city}
-                  onChange={handleChange}
-                />
-                <input
-                  type="text"
-                  name="street"
-                  placeholder="Street Address *"
-                  value={formData.street}
-                  onChange={handleChange}
-                />
-                <select name="governorate" value={formData.governorate} onChange={handleChange} >
-                  <option value="" disabled selected >اختر المحافظه</option>
-                      {egypt_governorates.map((gov)=>(
-
-                        <option key={gov.id} value={gov.name_arabic}>{gov.name_arabic}</option>
-                      ))}
-                </select>
-                <input
-                  type="text"
-                  name="details"
-                  placeholder="Additional Details"
-                  value={formData.details}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-
-            {/* Production Info */}
-            <div className="signup-section">
-              <h3 className="signup-section-title">Production Information</h3>
-              <select
-                name="typeOfProduction"
-                value={formData.typeOfProduction}
-                onChange={handleChange}
-              >
-                <option value="" disabled>
-                  Select the type of products you typically ship
-                </option>
-                <option value="Electronics">Electronics</option>
-                <option value="Clothing">Clothing</option>
-                <option value="Furniture">Furniture</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-
-            <button type="submit" className="signup-button">
-              Create Account & Start Shipping
-            </button>
-          </form>
-          <p className="signup-login-text">
-            Already have an account? <a href="/">Login here</a>
-          </p>
+          </div>
         </div>
       </div>
     </>

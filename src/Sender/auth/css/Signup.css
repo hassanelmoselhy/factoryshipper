@@ -4,34 +4,30 @@ body.signup-page {
   font-family: "Segoe UI", sans-serif;
   background-image: url('/public/hanger.jpg');
   background-size: cover;
-background-attachment: fixed;
-  background-position: center;
+  background-attachment: fixed;
   background-repeat: no-repeat;
   min-height: 100vh;
   height: auto;
 }
+
 .signup-banner {
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 12px;
-  padding: 10px 50px;
-    width: 500px;
+  padding: 15px 30px;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 20px;
-  margin-left: 500px;
 }
-
-
 
 .signup-logo {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-left: 10px;
+  justify-content: center;
 }
 
 .signup-icon {
@@ -53,42 +49,15 @@ background-attachment: fixed;
   margin-top: 5px;
 }
 
-.signup-container {
-  position: relative;
-  top: -20px; 
-  left: 30%;
-  width: 100%;
-  max-width: 600px;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-
 .signup-form-wrapper {
- position: relative;
-  width: 100%;
-  max-width: 500px;
-  margin: auto;
-  padding: 0;
-  border-radius: 18px;
-
-  background: rgba(255, 255, 255, 0.15); 
-  backdrop-filter: blur(15px);          
-  -webkit-backdrop-filter: blur(15px);  
-
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+  border-radius: 18px;
   overflow: hidden;
-}
-
-form {
-  position: relative;
-  z-index: 1;
-  padding: 30px;
-  padding-bottom: 50px;
+  width: 100%;
 }
 
 .signup-form-title {
@@ -116,64 +85,41 @@ form {
   color: #222;
 }
 
-.signup-input-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 15px;
-}
-
-.signup-input-group input,
-form select {
-  flex: 1 1 48%;
+.signup-input-group .form-control,
+.signup-input-group .form-select {
   padding: 12px;
-  width: 100%;
   font-size: 14px;
   border: 1px solid #ccc;
-  width: 100%;
   border-radius: 8px;
   background: #fff;
-}
-.signup-input-group div{
-  width: 48%;
+  transition: border-color 0.3s ease;
 }
 
-.signup-input-group input:focus,
-form select:focus {
+.signup-input-group .form-control:focus,
+.signup-input-group .form-select:focus {
   border-color: #333;
   outline: none;
-}
-
-form select {
-  width: 100%;
-  margin-top: 5px;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='10'%20height='10'%20viewBox='0%200%2010%2010'%3E%3Cpath%20d='M0%200l5%205%205-5z'%20fill='%23666'%2F%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 12px;
+  box-shadow: none;
 }
 
 .signup-button {
-  background: linear-gradient(to right, #111122, #333355); 
+  background: linear-gradient(to right, #111122, #333355);
   color: #fff;
   border-radius: 12px;
   font-weight: 600;
   padding: 14px;
   border: none;
   font-size: 16px;
-  transition: 0.3s ease; 
-  position: relative ;
-  left: 80px;
+  transition: 0.3s ease;
+  width: 100%;
 }
 
 .signup-button:hover {
   background: linear-gradient(to right, #00001a, #222244);
+  color: #fff;
 }
 
 .signup-login-text {
-  position: relative;
-  z-index: 2;
   text-align: center;
   margin-top: 20px;
   font-size: 14px;
@@ -192,103 +138,20 @@ form select {
   color: #333;
   text-decoration: underline;
 }
-.signup-other-input {
-  width: 100%;
-  padding: 10px;
-  margin-top: 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
-  background-color: #fff;
-  transition: border-color 0.3s ease;
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #666;
+  z-index: 10;
 }
 
-.signup-other-input:focus {
-  border-color: #007bff;
-  outline: none;
-  box-shadow: 0 0 4px rgba(0, 123, 255, 0.4);
+.position-relative .form-control {
+  padding-right: 45px;
 }
 
-
-@media (max-width: 768px) {
-  .signup-banner {
-    margin-right: 0;
-    padding: 0 15px;
-    text-align: center;
-  }
-
-  .signup-container {
-    margin-right: 0;
-    margin-top: 30px;
-    padding: 0 15px;
-    min-height: auto;
-  }
-
-  .signup-form-wrapper {
-    max-width: 100%;
-    border-radius: 12px;
-  }
-
-  form {
-    padding: 20px;
-  }
-
-  .signup-form-title {
-    font-size: 22px;
-  }
-
-  .signup-form-subtitle {
-    font-size: 13px;
-  }
-
-  .signup-input-group {
-    flex-direction: column;
-  }
-
-  .signup-input-group input,
-  form select {
-    flex: 1 1 100%;
-    width: 100%;
-  }
-
-  .signup-button {
-    font-size: 15px;
-    padding: 12px;
-  }
-
-  .signup-login-text {
-    font-size: 13px;
-    margin-top: 15px;
-  }
-}
-
-@media (max-width: 480px) {
-  .signup-form-title {
-    font-size: 20px;
-  }
-
-  .signup-form-subtitle {
-    font-size: 12px;
-  }
-
-  .signup-icon {
-    font-size: 30px;
-  }
-
-  .signup-title {
-    font-size: 20px;
-  }
-
-  .signup-slogan {
-    font-size: 13px;
-  }
-
-  .signup-button {
-    font-size: 14px;
-    padding: 10px;
-  }
-
-  .signup-login-text {
-    font-size: 12px;
-  }
-}
+/* Remove old media queries as Bootstrap handles responsiveness */

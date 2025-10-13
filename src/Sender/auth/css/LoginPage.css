@@ -4,10 +4,21 @@ body.login-page{
   font-family: "Segoe UI", sans-serif;
   background-image: url('/public/hanger.jpg');
   background-size: cover;
-  background-position: center;
   background-repeat: no-repeat;
-  height: 100vh; 
+  width: 100%;
+  height: auto;
+  
+
 }
+
+  .loginPage-container{
+    width: 100%;
+  height: 100vh;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+  }
 
 .login-banner {
   background: rgba(255, 255, 255, 0.15);
@@ -20,7 +31,7 @@ body.login-page{
   flex-direction: column;
   align-items: center;
   margin-bottom: 20px;
-  margin-left: 500px;
+  
       width: 500px;
 
 }
@@ -52,8 +63,6 @@ body.login-page{
 
 .login-container {
   position: relative;
-  top: -20px; 
-  left: 29%;
   width: 100%;
   max-width: 600px;
   display: flex;
@@ -68,7 +77,6 @@ body.login-page{
   position: relative;
   width: 100%;
   max-width: 500px;
-  margin: auto;
   padding: 0;
   border-radius: 18px;
 
@@ -82,7 +90,7 @@ body.login-page{
 
 
 
-form {
+ .loginPage-container form {
   position: relative;
   z-index: 1;
   padding: 30px;
@@ -216,9 +224,7 @@ position: absolute;
     border-radius: 12px;
   }
 
-  form {
-    padding: 20px;
-  }
+  
 
   .login-form-title {
     font-size: 22px;

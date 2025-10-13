@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Barcode from "react-barcode";
 import TopBar from "../components/Topbar";
+import { Trash2 } from "lucide-react";
 import useShipmentsStore from '../../Store/UserStore/ShipmentsStore';
 import { toast } from "sonner";
 import useUserStore from "../../Store/UserStore/userStore";
@@ -186,7 +187,8 @@ console.log("Error updating order:",err );
         <div className="order-actions-bar">
           <button className="cancel-button"      onClick={()=>setShowDeleteModal((prev)=>!prev)} >
             حذف الطلب
-            <i class="fa-solid fa-xmark"></i>
+            <Trash2 size={14} />
+            
           </button>
           {(Shipment?.shipmentStatuses[0].status==="InWarehouse"||Shipment.shipmentStatuses[0].status==="Delivered")&&(
 

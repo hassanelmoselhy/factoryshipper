@@ -1,0 +1,28 @@
+/* base avatar look (keeps sizing from previous snippet) */
+.avatar-bootstrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-weight: 500;
+  font-size: 0.75rem;
+  color: #fff;                 /* letter color */
+  border-radius: 8px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 12px rgba(8, 70, 170, 0.12);
+}
+
+
+
+/* Option 2: Blue -> Cyan (cool harmony) */
+.avatar-gradient-blue-cyan {
+  background: linear-gradient(135deg, #0846AA 0%, #00B4D8 100%);
+}
+
+/* small hover lift */
+.avatar-bootstrap:hover,
+.avatar-bootstrap:focus {
+  transform: translateY(-2px);
+  transition: transform .12s ease;
+}

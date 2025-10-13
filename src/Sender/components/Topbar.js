@@ -4,7 +4,7 @@ import { FaBell, FaPlus, FaTruck, FaUndo } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import useUserStore from "../../Store/UserStore/userStore";
 import useLanguageStore from "../../Store/LanguageStore/languageStore";
-
+import Avatar from "../../Components/Avatar";
 const TopBar = () => {
   const user = useUserStore((state) => state.user);
   const Setuser = useUserStore((state) => state.SetUser);
@@ -75,11 +75,16 @@ const TopBar = () => {
       </div>
 
       {/* 👤 بيانات المستخدم */}
-      <div className="user-info">
-        <img src="hassan.jpg" alt="User" className="user-img" />
-        <div>
+      <div className="user-info ">
+        <div className="d-flex align-items-center gap-2">
 
         <span className="user-name">{user?.firstName }</span>
+        <Avatar letter={user?.firstName[0]}/>
+        </div>
+        
+        
+        <div>
+
         <span className="">{user?.governorate+" "+user?.city }</span>
         </div>
       </div>

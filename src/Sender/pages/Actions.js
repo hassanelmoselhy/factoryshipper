@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from "react";
-import "./css/Actions.css";
 import { FaFilter } from "react-icons/fa";
 import useLanguageStore from "../../Store/LanguageStore/languageStore";
 import translations from "../../Store/LanguageStore/translations";
 import { Link } from "react-router-dom";
-import ActionsDropdown from './../components/dropdown';
 import useUserStore from "../../Store/UserStore/userStore";
 import LoadingOverlay from "../components/LoadingOverlay";
 import RescheduleModal from "../../Components/RescheduleModal";
+import Tst from "../components/tst";
+import "bootstrap/dist/js/bootstrap.bundle.min.js"; // needed for dropdown behavior
+import "./css/Actions.css";
 const Actions = () => {
   const { lang } = useLanguageStore();
   const t = translations[lang];
   const [Resquests, setResquests] = useState([]);
   const user = useUserStore((state) => state.user);
   const [loading, setloading] = useState(false);
-  const [isRescheduleOpen,SetisRescheduleOpen]=useState(true)
+  const [isRescheduleOpen,SetisRescheduleOpen]=useState(false)
   useEffect(() => {
     const fetchRequests = async () => {
       setloading(true);
@@ -44,7 +45,11 @@ const Actions = () => {
 
     fetchRequests();
   }, []);
-
+const sampleRows = [
+  { id: 1, orderId: "ORD-0001", customer: "A. Smith", date: "2025-10-13 10:00", status: "Pending" },
+  { id: 2, orderId: "ORD-0002", customer: "B. Khan", date: "2025-10-12 14:30", status: "Delivered" },
+  { id: 3, orderId: "ORD-0003", customer: "C. Lee", date: "2025-10-11 09:20", status: "On hold" },
+];
   const getStatusBadge = (status) => {
     const statusMap = {
       'pending': 'status-pending',
@@ -79,7 +84,7 @@ const Actions = () => {
     <>
       <LoadingOverlay loading={loading} message="please wait..." color="#fff" size={44} />
       <RescheduleModal show={isRescheduleOpen}onClose={()=>SetisRescheduleOpen(false)} />
-      <div className={`actions-container ${lang === "ar" ? "rtl" : "ltr"}`}>
+      <div className={`actions-container ${lang === "ar" ? "rtl" : "ltr"} px-4`}>
         {/* زر إضافة جديد */}
         <div className="header-actions">
           <Link to="/Pickuporder" className="new-request">{t.newRequest}</Link>
@@ -101,9 +106,9 @@ const Actions = () => {
         </div>
 
         {/* Modern Table Container */}
-        <div className="tasks-table-container">
-          <table className="tasks-table modern-table">
-            <thead>
+        <div className="tasks-wrapper">
+          <table className=" tasks-table modern-table " >
+            <thead className="tableheader">
               <tr>
                 <th>{t.requestId || "Request ID"}</th>
                 <th>{t.requestName || "Request Name"}</th>
@@ -130,14 +135,20 @@ const Actions = () => {
                     <span className="orders-count">{request.shipmentsCount}</span>
                   </td>
                   <td>
-                    <ActionsDropdown taskId={request.id} handleopenSchedule={()=>{SetisRescheduleOpen(true); console.log("Clicked ")}} />
+                   
+                  <Tst handleopenSchedule={()=>SetisRescheduleOpen(true)} />
                   </td>
                 </tr>
               ))}
+              
             </tbody>
           </table>
         </div>
       </div>
+
+
+
+      
     </>
   );
 };

@@ -1,0 +1,76 @@
+/* Tst.css - styles for the pretty dropdown */
+
+/* remove the default caret added by .dropdown-toggle (Bootstrap) */
+.ts-toggle::after {
+  display: none ;
+}
+
+/* small round icon button */
+.ts-toggle {
+  width: 36px;
+  height: 36px;
+  padding: 6px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color .12s ease, transform .08s ease;
+}
+
+/* hover/focus state */
+.ts-toggle:hover,
+.ts-toggle:focus {
+  background-color: rgba(13,110,253,0.06);
+  
+  transform: translateY(-1px);
+}
+
+/* dropdown menu tweaks */
+.ts-menu {
+  min-width: 220px;
+  border-radius: 8px;
+  padding: 6px 6px;
+  box-shadow: 0 6px 18px rgba(9, 10, 11, 0.08);
+}
+
+/* items */
+.ts-item {
+  padding: 10px 12px;
+  border-radius: 6px;
+  transition: background-color .12s ease;
+}
+
+/* icon spacing and sizing inside items */
+.ts-item-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+}
+
+/* hover state for items */
+.ts-item:hover,
+.ts-item:focus {
+  background-color: rgba(13,110,253,0.04);
+}
+
+
+.ts-item.text-danger .ts-item-icon,
+.ts-item.text-danger {
+  color: #dc3545 ;
+}
+
+/* optional: slightly bolder text for item labels */
+.ts-item span {
+  font-weight: 500;
+}
+
+/* small responsive tweak: make the button slightly larger on mobile */
+@media (max-width: 480px) {
+  .ts-toggle {
+    width: 40px;
+    height: 40px;
+  }
+  .ts-menu {
+    min-width: 200px;
+  }
+}

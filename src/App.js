@@ -46,19 +46,6 @@ import AdminNavbar from './Admin/components/AdminNavbar';
 // لو عندك فانكشن اسمها shceduleRefreshToken لازم تكون مستوردة
 // import { shceduleRefreshToken } from "./utils/auth"; 
 
-const SelectRole = () => {
-  return (
-    <div className="select-role-container">
-      <h1>اختر نوع المستخدم</h1>
-      <div className="role-buttons">
-        <a href="/signup" className="role-btn sender-btn">🚚 Sender</a>
-        <a href="/hanger/sign-up" className="role-btn hanger-btn">📦 Hanger</a>
-        <a href="/reciver" className="role-btn reciver-btn">📬 Reciver</a>
-      </div>
-    </div>
-  );
-};
-
 const SenderLayout = () => {
   return (
     <div className="row ">
