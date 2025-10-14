@@ -41,6 +41,7 @@ import ReturnPage from './Sender/pages/ReturnPage';
 // Admin Components
 import AdminSidebar from './Admin/components/AdminSidebar';
 import AdminNavbar from './Admin/components/AdminNavbar'; 
+import OrderPage from './Admin/pages/OrderPage';
 
 
 // لو عندك فانكشن اسمها shceduleRefreshToken لازم تكون مستوردة
@@ -81,12 +82,28 @@ const AdminLayout = () => {
   const toggleAdminSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
-    return (
-    <div>
-      <AdminNavbar />
-      <AdminSidebar isOpen={isSidebarOpen} toggleSidebar={toggleAdminSidebar} />
-      <div className={` ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
+//   return (
+//     <div className="row p-0 m-0">
+//       <div className="col-10 m-0">
+//         <AdminNavbar />
+//         <Outlet />
+//         </div>
+//         <div className="col-2">
+//         <AdminSidebar isOpen={isSidebarOpen} toggleSidebar={toggleAdminSidebar} />
+//         <div className={`${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
+//         </div>
+//         </div>
+//       </div>
+//   );
+// };
+  return (
+    <div className="row ">
+      <div className="col-10">
+        <AdminNavbar />
         <Outlet />
+      </div>
+      <div className="col-2">
+        <AdminSidebar isOpen={isSidebarOpen} toggleSidebar={toggleAdminSidebar} className={`${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}/>
       </div>
     </div>
   );
@@ -146,6 +163,7 @@ const App = () => {
 
           {/* Admin Layout */}
           <Route path="/admin" element={<AdminLayout />}>
+          <Route path="orders" element={<OrderPage />} />
           </Route>
 
 

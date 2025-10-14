@@ -1,0 +1,133 @@
+.order-status-cards-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap; 
+  direction: rtl;
+}
+
+.status-card {
+  flex: 1 1 calc(20% - 15px);
+  min-width: 160px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: right;
+  border: 1px solid #eee; 
+    justify-content: space-between;
+}
+
+.card-icon-wrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card-icon {
+  font-size: 1.2rem;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-label {
+  font-size: 0.85rem;
+  color: #666;
+  white-space: nowrap;
+}
+
+.card-count {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Responsiveness */
+@media (max-width: 1200px) {
+  .status-card {
+    flex: 1 1 calc(25% - 15px);
+  }
+}
+
+@media (max-width: 992px) {
+  .order-status-cards-container {
+    gap: 10px;
+  }
+  .status-card {
+    flex: 1 1 calc(33.33% - 10px);
+    min-width: 140px;
+    padding: 12px;
+  }
+  .card-label {
+    font-size: 0.8rem;
+  }
+  .card-count {
+    font-size: 1.2rem;
+  }
+  .card-icon-wrapper {
+    width: 35px;
+    height: 35px;
+  }
+  .card-icon {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .order-status-cards-container {
+    margin-bottom: 15px;
+    gap: 8px;
+  }
+  .status-card {
+    flex: 1 1 calc(50% - 8px);
+    min-width: unset;
+    padding: 10px;
+  }
+  .card-label {
+    font-size: 0.75rem;
+  }
+  .card-count {
+    font-size: 1.1rem;
+  }
+  .card-icon-wrapper {
+    width: 30px;
+    height: 30px;
+  }
+  .card-icon {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .order-status-cards-container {
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .status-card {
+    flex: 1 1 100%;
+    justify-content: center;
+    text-align: center;
+    gap: 15px;
+  }
+  .card-content {
+    align-items: center;
+  }
+  .card-label {
+    font-size: 0.8rem;
+  }
+  .card-count {
+    font-size: 1.2rem;
+  }
+}
