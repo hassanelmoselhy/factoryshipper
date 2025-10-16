@@ -1,0 +1,63 @@
+.branches-filter-bar {
+display: flex;
+flex-direction: row-reverse;
+align-items: center;
+justify-content: space-between;
+padding: 10px;
+border: 1px solid #e0e0e0;
+background: #ffffff;
+border-radius: 8px;
+gap: 10px;
+direction: rtl;
+margin-top: 20px;
+}
+
+.filter-search {
+flex: 1;
+display: flex;
+margin-top: 10px;
+justify-content: center;
+align-items: center;
+}
+
+.search-input-wrapper {
+position: relative;
+width: 100%;
+align-items: center;
+}
+
+.search-input-wrapper input {
+width: 100%;
+padding: 8px 40px 8px 12px;
+font-size: 14px;
+border: 1px solid #ddd;
+border-radius: 8px;
+background-color: #f3f3f5; 
+align-items: center;
+}
+
+.search-i {
+position: absolute;
+left: 12px;
+top: 50%;
+transform: translateY(-50%);
+color: #a9a9b4;
+}
+
+.filters {
+display: flex;
+gap: 10px;
+}
+
+.filters select {
+padding: 5px 10px;
+border: 1px solid #ddd;
+border-radius: 8px;
+background-color: #f3f3f5; 
+font-size: 14px;
+cursor: pointer;
+}
+
+.filters select:hover {
+border-color: #999;
+}

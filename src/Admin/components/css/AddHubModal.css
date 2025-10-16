@@ -1,0 +1,109 @@
+.modal-overlay {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0, 0, 0, 0.4);
+display: flex;
+justify-content: center;
+align-items: center;
+z-index: 999;
+}
+
+
+.modal-container {
+background: #fff;
+width: 600px;
+max-height: 90vh;
+overflow-y: auto;
+border-radius: 12px;
+padding: 20px;
+position: relative;
+direction: rtl;
+font-family: "Tajawal", sans-serif;
+}
+
+
+.modal-header h2 {
+margin: 0;
+font-size: 20px;
+font-weight: bold;
+}
+
+.modal-subtitle {
+margin: 4px 0 16px;
+color: #777;
+font-size: 14px;
+}
+
+/* زر الإغلاق */
+.close-btn {
+position: absolute;
+top: 15px;
+left: 15px;
+font-size: 22px;
+cursor: pointer;
+}
+
+/* الحقول */
+form-content{
+margin-bottom: 7px;
+}
+
+.form-content label {
+display: block;
+font-weight: 600;
+margin-bottom: 5px;
+}
+
+.form-content input,
+.form-content textarea,
+.form-content select {
+background-color: #f9f9f9;
+width: 100%;
+padding: 5px;
+border: 1px solid #ddd;
+border-radius: 6px;
+font-size: 14px;
+outline: none;
+}
+
+.form-content textarea {
+height: 40px;
+resize: none;
+}
+
+.row {
+display: flex;
+gap: 10px;
+}
+
+.half {
+flex: 1;
+}
+
+/* الفوتر */
+.modal-footer {
+display: flex;
+justify-content: flex-end;
+gap: 10px;
+margin-top: 20px;
+}
+
+.btn-add {
+background: #2563eb;
+color: #fff;
+border: none;
+padding: 10px 18px;
+border-radius: 6px;
+cursor: pointer;
+}
+
+.btn-cancel {
+background: #f1f1f1;
+border: none;
+padding: 10px 18px;
+border-radius: 6px;
+cursor: pointer;
+}

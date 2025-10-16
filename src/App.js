@@ -42,6 +42,7 @@ import ReturnPage from './Sender/pages/ReturnPage';
 import AdminSidebar from './Admin/components/AdminSidebar';
 import AdminNavbar from './Admin/components/AdminNavbar'; 
 import OrderPage from './Admin/pages/OrderPage';
+import BranchesPage from './Admin/pages/BranchesPage';
 
 
 // لو عندك فانكشن اسمها shceduleRefreshToken لازم تكون مستوردة
@@ -164,6 +165,7 @@ const App = () => {
           {/* Admin Layout */}
           <Route path="/admin" element={<AdminLayout />}>
           <Route path="orders" element={<OrderPage />} />
+          <Route path="branches" element={<BranchesPage />} />
           </Route>
 
 

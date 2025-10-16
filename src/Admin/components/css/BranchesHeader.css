@@ -1,0 +1,75 @@
+.branch-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.branch-title {
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+margin-bottom: 20px;
+}
+
+.branch-title h1 {
+font-size: 1.8rem;
+color: #333;
+margin: 0;
+font-weight: 600;
+}
+
+
+.branch-title p{
+font-size: 0.95rem;
+color: #666;
+margin: 5px 0 0 0;
+font-weight: 300;
+}
+
+.branch-title {
+font-size: 1.8rem;
+font-weight: 600;
+color: #343a40;
+margin: 0;
+}
+
+.branch-subtitle {
+font-size: 0.9rem;
+color: #6c757d;
+margin: 0;
+}
+.add-branch-btn {
+background-color: #1b73e8;
+color: #ffffff;
+border-radius: 15px;
+border: none;
+padding: 7px 10px;
+cursor: pointer;
+}
+.add-branch-btn:hover {
+background-color: #155bb5;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+.branch-header {
+margin-bottom: 15px;
+}
+.branch-header h1 {
+font-size: 1.5rem;
+}
+.branch-header p {
+font-size: 0.85rem;
+}
+}
+
+@media (max-width: 480px) {
+.branch-header {
+margin-bottom: 10px;
+}
+.branch-header h1 {
+font-size: 1.3rem;
+}
+.branch-header p {
+font-size: 0.8rem;
+}
+}
