@@ -1,0 +1,98 @@
+:root {
+  --accent: #0d6efd;
+}
+
+
+.merchant-table-container {
+  background: #fff;
+  border-radius: 10px;
+  padding: 12px;
+  box-shadow: 0 6px 18px rgba(9,10,11,0.04);
+}
+
+
+.table td .text-truncate {
+  max-width: 220px;
+}
+
+
+.merchant-name {
+  font-weight: 600;
+  color: #0d6efd;
+}
+.merchant-name:hover {
+  text-decoration: underline;
+}
+
+
+.phone-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: background-color .12s ease, transform .08s ease, border-color .12s ease;
+  color: #6c757d; 
+  border: 1px solid rgba(9,10,11,0.06);
+  background: transparent;
+}
+
+
+.phone-icon {
+  transition: color .12s ease, transform .12s ease;
+  color: inherit;
+}
+
+.phone-btn:hover,
+.phone-btn:focus {
+  background-color: rgba(13,110,253,0.06);
+  transform: translateY(-1px);
+  color: var(--accent); 
+  border-color: rgba(13,110,253,0.18);
+  outline: none;
+  box-shadow: 0 6px 14px rgba(13,110,253,0.06);
+}
+
+.phone-btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+
+.activity-badge {
+  background: transparent;
+ 
+  color: #212529;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+}
+
+
+.percent-pill {
+  background-color: #e6fbef;
+  color: #047857;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+
+.status-pill {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.status-active { background: #ecfdf5; color: #027a4b; }
+.status-inactive { background: #fff4f4; color: #b02a37; }
+
+/* responsive tweaks */
+@media (max-width: 768px) {
+  .table td .text-truncate { max-width: 140px; }
+  .merchant-table-container { padding: 8px; }
+}

@@ -5,13 +5,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { FaTimesCircle, FaEdit, FaInfoCircle } from "react-icons/fa";
 import { MoreVertical } from "lucide-react";
 
-import "./css/Tst.css"; // styles shown below
-import "../../../node_modules/bootstrap/dist/js/bootstrap.bundle"; 
+import "./css/ActionsList.css"; 
+import "bootstrap/dist/js/bootstrap.bundle"; 
 
-const Tst = ({ handleopenSchedule }) => {
+const ActionsList = ({ handleopenSchedule }) => {
   return (
     <div className="dropdown">
-      {/* icon-only toggle button (no caret) */}
+     
       <button
         className="btn btn-outline-primary btn-sm ts-toggle"
         type="button"
@@ -62,4 +62,4 @@ const Tst = ({ handleopenSchedule }) => {
   );
 };
 
-export default Tst;
+export default ActionsList;

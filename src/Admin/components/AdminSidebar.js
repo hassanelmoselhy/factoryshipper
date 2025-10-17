@@ -15,7 +15,7 @@ return (
         {isOpen && (
         <div className="logo-container">
             <FaCube className="logo-icon" />
-            <h3>Stake Express</h3>
+            <h3 className='border-0'>Stake Express</h3>
         </div>
         )}
     </div>

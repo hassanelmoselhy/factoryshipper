@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import useUserStore from "../../Store/UserStore/userStore";
 import LoadingOverlay from "../components/LoadingOverlay";
 import RescheduleModal from "../../Components/RescheduleModal";
-import Tst from "../components/tst";
+import ActionsList from "../components/ActionsList";
 import "bootstrap/dist/js/bootstrap.bundle.min.js"; // needed for dropdown behavior
 import "./css/Actions.css";
 const Actions = () => {
@@ -136,7 +136,7 @@ const sampleRows = [
                   </td>
                   <td>
                    
-                  <Tst handleopenSchedule={()=>SetisRescheduleOpen(true)} />
+                  <ActionsList handleopenSchedule={()=>SetisRescheduleOpen(true)} />
                   </td>
                 </tr>
               ))}

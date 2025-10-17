@@ -1,0 +1,22 @@
+.merchantscontainer{
+padding: 16px;
+}
+
+.colorpurple{
+    color:#9810fa !important;
+    font-weight: 600;
+}
+
+.exportbtn{
+    background-color: white;
+    color: black;
+    transition: background-color .18s ease, color .18s ease;
+}
+
+.exportbtn:hover{
+  background-color: #ddd !important;
+  color: black !important;
+ 
+  border-color: #ccc !important;
+  box-shadow: none !important;
+}

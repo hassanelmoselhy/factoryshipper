@@ -29,7 +29,6 @@ import { OrderDetails } from './Sender/pages/OrderDetails';
 import { Toaster } from "sonner";
 
 import Print from './Sender/pages/Print'
-import { scheduleRefreshToken } from "./utils/auth";
 import HangerOrders from './Hanger/pages/Orders';
 import PageNotFound from './Components/PageNotFound';
 import WarehouseList from './Hanger/pages/WarehouseList';
@@ -42,11 +41,8 @@ import ReturnPage from './Sender/pages/ReturnPage';
 import AdminSidebar from './Admin/components/AdminSidebar';
 import AdminNavbar from './Admin/components/AdminNavbar'; 
 import OrderPage from './Admin/pages/OrderPage';
-
-
-// لو عندك فانكشن اسمها shceduleRefreshToken لازم تكون مستوردة
-// import { shceduleRefreshToken } from "./utils/auth"; 
-
+import Merchants from './Admin/pages/merchants';
+import EmployeesRoles from './Admin/pages/EmployeesRoles';
 const SenderLayout = () => {
   return (
     <div className="row ">
@@ -164,6 +160,9 @@ const App = () => {
           {/* Admin Layout */}
           <Route path="/admin" element={<AdminLayout />}>
           <Route path="orders" element={<OrderPage />} />
+          <Route path="merchants" element={<Merchants />} />
+          <Route path="employees-roles" element={<EmployeesRoles />} />
+
           </Route>
 
 

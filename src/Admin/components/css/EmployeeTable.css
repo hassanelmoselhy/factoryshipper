@@ -1,0 +1,163 @@
+/* container */
+.employee-table-container {
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 6px 18px rgba(9, 10, 11, 0.04);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+
+.table thead th {
+  border-bottom: 1px solid rgba(9, 10, 11, 0.06);
+  font-weight: 600;
+  white-space: nowrap;
+  vertical-align: middle;
+  padding: 14px 12px;
+}
+
+/* smaller row padding */
+.table td {
+  padding: 12px;
+  vertical-align: middle;
+  border-top: 0;
+}
+
+/* narrow columns */
+.col-actions { width: 56px; }
+.col-status { width: 110px; }
+.col-lastlogin { width: 120px; }
+.col-units { width: 160px; }
+.col-roles { width: 180px; }
+.col-phone { width: 160px; }
+.col-email { width: 260px; }
+.col-employee { width: 220px; }
+
+/* action button (three dots) */
+.action-btn {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+/* status pills */
+/* smaller compact status pill */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;                
+  padding: 2px 8px;        
+  border-radius: 6px;      
+  font-weight: 600;
+  font-size: 0.78rem;      
+  line-height: 1;
+  min-height: 24px;        
+  height: auto;
+  white-space: nowrap;
+}
+
+.status-active {
+  background: #eef9ff; 
+  color: #0d6efd;
+  border: 1px solid rgba(13, 110, 253, 0.10);
+}
+
+.status-inactive {
+  background: #fff1f6; 
+  color: #d63384;
+  border: 1px solid rgba(214, 51, 132, 0.06);
+}
+
+.status-icon {
+  width: 14px;
+  height: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+}
+
+
+
+.unit-pill {
+  background: #f8fafc;
+  border: 1px solid rgba(9, 10, 11, 0.04);
+  padding: 6px 8px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: #222;
+  font-size: 0.85rem;
+}
+.unit-pill svg { color: #6c757d; }
+
+.role-badge {
+  background: #f3f4f6;
+  color: #222;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid rgba(9, 10, 11, 0.02);
+}
+
+.phone-icon-btn {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .08s ease, background-color .12s ease;
+}
+.phone-icon-btn:hover,
+.phone-icon-btn:focus {
+  background: rgba(13,110,253,0.06);
+  transform: translateY(-2px);
+  border-color: rgba(13,110,253,0.12);
+}
+
+.email-link {
+  color: #212529;
+  text-decoration: none;
+}
+.email-link:hover {
+  text-decoration: underline;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(9,10,11,0.04);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+}
+
+.employee-meta { text-align: start; }
+.employee-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+.employee-id { margin-top: 2px; }
+
+.small.text-muted { color: #6c757d !important; }
+
+/* responsive tweaks */
+@media (max-width: 900px) {
+  .col-email { width: 200px; }
+  .col-roles, .col-units { display: none; }
+}
+
+.table-hover tbody tr:hover {
+  background: #ffffff; 
+}

@@ -1,6 +1,4 @@
-/* Tst.css - styles for the pretty dropdown */
 
-/* remove the default caret added by .dropdown-toggle (Bootstrap) */
 .ts-toggle::after {
   display: none ;
 }

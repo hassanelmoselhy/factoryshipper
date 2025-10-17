@@ -8,7 +8,7 @@ const userLocation = "المعادي 2";
 const userAvatar = "https://via.placeholder.com/40";
 
 return (
-    <div className="admin-navbar-container">
+    <div className="admin-navbar-container w-100 ">
     <div className="navbar-right-section">
         <div className="search-bar">
         <input type="text" placeholder="البحث في الطلبات, التجار, الموظفين..." className="search-input" />
@@ -19,10 +19,10 @@ return (
 
     <div className="navbar-center-section">
         <button className="navbar-icon-btn notification-btn">
-        <Bell className="icon" />
+        <Bell className="icon text-center" />
         </button>
         <button className="create-btn">
-        <Plus />
+        <Plus  />
         <span>اجراء سريع</span>
         </button>
     </div>

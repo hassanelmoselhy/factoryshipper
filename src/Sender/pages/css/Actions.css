@@ -22,7 +22,7 @@
 }
 
 .new-request {
-  background: #007bff;
+  background: linear-gradient(135deg, #0846AA 0%, #00B4D8 100%);
   color: #fff;
   padding: 10px 18px;
   border: none;
