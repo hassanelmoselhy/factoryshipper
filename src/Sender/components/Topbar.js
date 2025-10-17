@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from "react";
 import "./css/Topbar.css";
 import { FaBell, FaPlus, FaTruck, FaUndo } from "react-icons/fa";
+import {Calendar1} from 'lucide-react'
 import { useNavigate } from "react-router-dom";
 import useUserStore from "../../Store/UserStore/userStore";
 import useLanguageStore from "../../Store/LanguageStore/languageStore";
 import Avatar from "../../Components/Avatar";
+import RescheduleModal from "../../Components/RescheduleModal";
+
 const TopBar = () => {
   const user = useUserStore((state) => state.user);
   const Setuser = useUserStore((state) => state.SetUser);
   const [showActions, setShowActions] = useState(false);
   const navigate = useNavigate();
   const { lang, toggleLang } = useLanguageStore();
-
+  const [isRescheduleOpen,SetisRescheduleOpen]=useState(false)
   const handleCreateClick = () => {
     setShowActions((prev) => !prev);
   };
@@ -32,6 +35,8 @@ const TopBar = () => {
   };
 
   return (
+    <>
+        <RescheduleModal show={isRescheduleOpen} onClose={()=>SetisRescheduleOpen(false)} />
     <div className="top-bar">
       <div className="left-icons">
         <div className="create-dropdown">
@@ -58,6 +63,14 @@ const TopBar = () => {
                 onClick={() => navigate("/return")}
               >
                 <FaUndo /> {lang === "ar" ? "طلب استرجاع" : "Return  Request"}
+              </button>
+              <button
+                type="button"
+                className="dropdown-item"
+                onClick={() => SetisRescheduleOpen(true)}
+              >
+                <Calendar1 />
+                 {lang === "ar" ? "طلب جدوله" : "reschedule  Request"}
               </button>
             </div>
           )}
@@ -89,7 +102,9 @@ const TopBar = () => {
         </div>
       </div>
     </div>
-  );
+    </>
+  
+);
 };
 
 export default TopBar;

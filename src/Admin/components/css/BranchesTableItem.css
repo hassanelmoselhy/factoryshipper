@@ -1,0 +1,76 @@
+.actions-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #999;
+  padding: 5px;
+  border-radius: 5px;
+  transition: background-color 0.2s;
+  display: flex; 
+  align-items: center;
+  justify-content: center;
+}
+
+.actions-btn:hover {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.status-badge.معطل{
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+.status-badge.نشط {
+  background-color: #dbeafe;
+  color: #3b82f6;
+}
+.no-branches {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-size: 1rem;
+}
+
+
+.details-btn {
+display: flex;
+gap:1px;
+background-color: #1b73e8;
+color: #ffff;
+border: none;
+padding: 6px;
+border-radius: 20px;
+font-size: smaller;
+}
+.details-btn .icon{
+color: #ffff;
+font-size: smaller;
+}
+.details-btn:hover {
+background-color: #6facfc;
+}
+
+@media (max-width: 768px) {
+  .actions-btn {
+    padding: 3px;
+    font-size: 0.9rem;
+  }
+
+
+  .status-badge {
+    padding: 3px 6px;
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .actions-btn {
+    font-size: 0.8rem;
+  }
+
+
+  .status-badge {
+    padding: 2px 5px;
+    font-size: 0.65rem;
+  }
+}

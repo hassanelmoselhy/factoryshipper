@@ -25,7 +25,7 @@ const OrdersTable = ({ orders, onViewDetails }) => {
               <OrdersTableItem
                 key={order.id}
                 order={order}
-                onViewDetails={onViewDetails} // <---- مرّرنا الدالة هنا
+                onViewDetails={onViewDetails} 
               />
             ))
           ) : (

@@ -115,6 +115,26 @@ max-width: 16.666667%;
   color: #007bff;
 }
 
+.layout {
+  display: flex;
+}
+
+.sidebar {
+  width: 250px;          
+  min-height: 100vh;
+  position: fixed;
+  right: 0;
+  top: 0;
+  background: #fff;     
+  border-left: 1px solid #eee;
+}
+
+.content {
+  
+ width: 84%;
+}
+
+
 @media (max-width: 768px) {
   .role-buttons {
     flex-direction: column;

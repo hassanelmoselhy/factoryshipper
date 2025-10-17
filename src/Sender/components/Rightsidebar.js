@@ -1,53 +1,21 @@
-import React from 'react';
-import './css/Rightsidebar.css';
-import { NavLink } from 'react-router-dom';
-import { FaHome, FaShoppingCart, FaTasks, FaWallet, FaSignOutAlt } from 'react-icons/fa';
+import { FaHome, FaShoppingCart, FaTasks, FaWallet, FaSignOutAlt } from "react-icons/fa";
+import Sidebar from "../../Components/Sidebar";
 
-const Rightsidebar = () => {
+export const senderSidebarData = [
+    { icon: <FaHome />, name: "الرئيسية", path: "/home" },
+    { icon: <FaShoppingCart />, name: " الطلبات", path: "/order" },
+    { icon: <FaTasks />, name: "المهام", path: "/actions" },
+    { icon: <FaWallet />, name: "المحفظة", path: "/wallet" },
+    { icon: <FaSignOutAlt />, name: "تسجيل الخروج", path: "/" },
+  ];
 
+
+export default function Rightsidebar() {
   return (
-    <>
-      <div className='top'>
-        <h1>StakeExpress</h1>
-        <p>لوحة المرسل</p>
-      </div>
-
-      <div className='bottom'>
-        <ul>
-          <li>
-            <NavLink to="/home" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
-              <span className="icon"><FaHome /></span>
-              <span className="text">الرئيسية</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/order" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
-              <span className="icon"><FaShoppingCart /></span>
-              <span className="text">الطلبات</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/actions" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
-              <span className="icon  icon2"><FaTasks /></span>
-              <span className="text">المهام</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/wallet" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
-              <span className="icon  icon3"><FaWallet /></span>
-              <span className="text">المحفظة</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
-              <span className="icon "><FaSignOutAlt /></span>
-              <span className="text">تسجيل الخروج</span>
-            </NavLink>
-          </li>
-        </ul>
-      </div>
-    </>
+    <Sidebar
+      title="Stake Express"
+      subtitle="لوحة المرسل"
+      menuItems={senderSidebarData}
+    />
   );
-};
-
-export default Rightsidebar;
+}

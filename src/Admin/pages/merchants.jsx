@@ -1,5 +1,4 @@
 import React from "react";
-import "./css/merchants.css";
 import {
   UserCheck,
   TrendingUp,
@@ -11,6 +10,7 @@ import {
 } from "lucide-react";
 import MerchantsTable from "../components/MerchantsTable";
 import DropDownList from "../../Components/DropDownList";
+import "./css/merchants.css";
 const egypt_governorates = [
      "Cairo", 
      "Alexandria", 
@@ -44,7 +44,7 @@ const egypt_governorates = [
   ]
 function Merchants() {
   return (
-    <div className="p-5 merchantscontainer">
+    <div className="p-5 container merchantscontainer">
       {/**Header */}
       <div className="mb-2">
         <h1 className="border-0 fs-3 fw-bold">إدارة التجار</h1>

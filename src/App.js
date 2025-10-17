@@ -1,6 +1,6 @@
 import React, { useEffect, useState  } from 'react';
 import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
-import Rightsidebar from './Sender/components/Rightsidebar';
+
 import Order from './Sender/pages/Order';
 import Actions from './Sender/pages/Actions';
 import Wallet from './Sender/pages/Wallet';
@@ -9,14 +9,13 @@ import TopBar from './Sender/components/Topbar';
 import Signup from './Sender/auth/pages/Signup';
 import Login from './Sender/auth/pages/Login';
 import PickupOrder from './Sender/pages/PickupOrder';
+import ReturnPage from './Sender/pages/ReturnPage';
 
-import Sidebar from './Hanger/components/Sidebar';
-import Header from './Hanger/components/Header';
-import ShipmentUpdate from './Hanger/pages/ShipmentUpdate';
+
+
 // import EmployeeMang from './Hanger/pages/EmployeeMang';
 import Scan from './Hanger/pages/Scan';
 // import HangerAttendance from './Hanger/pages/HangerAttendance';
-import './App.css';
 // import DeliverySchedule from './Hanger/pages/DeliverySchedule';
 import Reciver from './reciver/pages/reciver'; 
 import SignUp from './Hanger/auth/pages/HangerSignup';
@@ -35,71 +34,34 @@ import WarehouseList from './Hanger/pages/WarehouseList';
 import OrdersPage from './Hanger/pages/OrdersPage';
 import OrderRelease from './Hanger/pages/OrdersRelease';
 import Safe from './Hanger/pages/Safe';
-import ReturnPage from './Sender/pages/ReturnPage';
 
 // Admin Components
-import AdminSidebar from './Admin/components/AdminSidebar';
-import AdminNavbar from './Admin/components/AdminNavbar'; 
+
 import OrderPage from './Admin/pages/OrderPage';
+import BranchesPage from './Admin/pages/BranchesPage';
 import Merchants from './Admin/pages/merchants';
 import EmployeesRoles from './Admin/pages/EmployeesRoles';
-const SenderLayout = () => {
-  return (
-    <div className="row ">
-      <div className="col-10">
-        <TopBar />
-        <Outlet />
-      </div>
-      <div className="col-2">
-        <Rightsidebar />
-      </div>
-    </div>
-  );
-};
+// Global Components
+import Sidebar from './Components/Sidebar';
+import {senderSidebarData} from './Sender/components/Rightsidebar';
+import { hangerSidebarData } from './Hanger/components/Sidebar';
+import { adminSidebarData } from './Admin/components/AdminSidebar';
+import './App.css';
 
-// Layout للـ Hanger
-const HangerLayout = () => {
-  return (
-    <div className="row p-0 m-0">
-      <div className="col-10 m-0">
-        <Header />
-        <Outlet />
-        </div>
-        <div className="col-2">
-        <Sidebar />
-        </div>
-      </div>
-  );
-};
+// لو عندك فانكشن اسمها shceduleRefreshToken لازم تكون مستوردة
+// import { shceduleRefreshToken } from "./utils/auth"; 
 
-// Admin Layout
-const AdminLayout = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true); 
-  const toggleAdminSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-//   return (
-//     <div className="row p-0 m-0">
-//       <div className="col-10 m-0">
-//         <AdminNavbar />
-//         <Outlet />
-//         </div>
-//         <div className="col-2">
-//         <AdminSidebar isOpen={isSidebarOpen} toggleSidebar={toggleAdminSidebar} />
-//         <div className={`${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
-//         </div>
-//         </div>
-//       </div>
-//   );
-// };
+const MainLayout = ({ header: HeaderComponent, sidebarData }) => {
   return (
-    <div className="row ">
-      <div className="col-10">
-        <AdminNavbar />
+    <div className="layout">
+      <Sidebar
+        title="Stake Express"
+        subtitle="لوحة التحكم"
+        menuItems={sidebarData}
+      />
+      <div className="content">
+        {HeaderComponent && <HeaderComponent />}
         <Outlet />
-      </div>
-      <div className="col-2">
-        <AdminSidebar isOpen={isSidebarOpen} toggleSidebar={toggleAdminSidebar} className={`${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}/>
       </div>
     </div>
   );
@@ -108,6 +70,7 @@ const AdminLayout = () => {
 
 const App = () => {
   const user = useUserStore((state) => state.user);
+  
   return (
     <>
       <Toaster position="top-right" richColors />
@@ -128,8 +91,8 @@ const App = () => {
             <Route path="/Pickuporder" element={<PickupOrder />} />
             <Route path="/return" element={<ReturnPage />} />
 
-          {/* Sender Layout */}
-          <Route element={<SenderLayout />}>
+             {/* -------- Sender Layout -------- */}
+          <Route element={<MainLayout header={TopBar} sidebarData={senderSidebarData} />}>
             <Route path="/home" element={<Home />} />
             <Route path="/order" element={<Order />} />
             <Route path="/actions" element={<Actions />} />
@@ -139,29 +102,28 @@ const App = () => {
           <Route path="/order-details/:orderId" element={<OrderDetails />} />
           <Route path="/print/:orderId" element={<Print />} />
 
-          {/* Hanger Layout */}
-          <Route path="/hanger" element={<HangerLayout />}>
-            <Route path="orders" element={<HangerOrders />} /> 
-            <Route path="update" element={<ShipmentUpdate />} />
-            {/* <Route path="employees" element={<EmployeeMang />} /> */}
+     {/* -------- Hanger Layout -------- */}
+          <Route path="/hanger" element={<MainLayout header={TopBar} sidebarData={hangerSidebarData} />}>
+            <Route path="orders" element={<HangerOrders />} />
             <Route path="scan" element={<Scan />} />
-            {/* <Route path="attendance" element={<HangerAttendance />} /> */}
-            {/* <Route path="schedule" element={<DeliverySchedule />} /> */}
             <Route path="warehouseList" element={<WarehouseList />} />
             <Route path="operations" element={<OrdersPage />} />
-            <Route path="Safe" element={<Safe />} />
-
-
-            {/* <Route path="attendance" element={<HangerAttendance />} />
-            <Route path="schedule" element={<DeliverySchedule />} /> */}
             <Route path="release-orders" element={<OrderRelease />} />
+            <Route path="safe" element={<Safe />} />
           </Route>
 
-          {/* Admin Layout */}
-          <Route path="/admin" element={<AdminLayout />}>
-          <Route path="orders" element={<OrderPage />} />
-          <Route path="merchants" element={<Merchants />} />
-          <Route path="employees-roles" element={<EmployeesRoles />} />
+   
+          
+        
+
+      {/* -------- Admin Layout -------- */}
+          <Route path="/admin" element={<MainLayout header={TopBar} sidebarData={adminSidebarData} />}>
+            <Route path="orders" element={<OrderPage />} />
+            <Route path="branches" element={<BranchesPage />} />
+              <Route path="merchants" element={<Merchants />} />
+               <Route path="employees-roles" element={<EmployeesRoles />} />
+               {/* <Route path="merchants" element={<TestP />} /> */}
+
 
           </Route>
 
@@ -174,7 +136,7 @@ const App = () => {
           <Route path="*" element={<PageNotFound />} />
         
         
-        </Routes>
+           </Routes>
       </Router>
     </>
   );
