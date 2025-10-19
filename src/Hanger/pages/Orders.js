@@ -137,9 +137,9 @@ const HangerOrders = () => {
     <div className="dashboard container-fluid py-3">
       {/* مؤشرات الأداء */}
       <h4 className="m-3 text-end">مؤشرات الأداء</h4>
-      <div className="row g-3 mb-4">
+      <div className="row g-3 mb-4 dashboard-cards-container ">
         {/* تحتاج متابعة */}
-        <div className="col-lg-3 col-md-6 col-sm-12">
+        <div className="col-lg-3 col-md-6 col-12 dashboard-card-wrapper">
           <div className="card performance-card danger border-1 p-3 h-100">
             <div className="d-flex justify-content-between align-items-start">
               <HiArrowTrendingUp className="sparkline-icon" />
@@ -152,7 +152,7 @@ const HangerOrders = () => {
         </div>
 
         {/* طلب جديد */}
-        <div className="col-lg-3 col-md-6 col-sm-12">
+        <div className="col-lg-3 col-md-6 col-12 dashboard-card-wrapper">
           <div className="card performance-card warning p-3 h-100">
             <div className="d-flex justify-content-between align-items-start">
               <HiArrowTrendingUp className="sparkline-icon" />
@@ -165,7 +165,7 @@ const HangerOrders = () => {
         </div>
 
         {/* طلبات ناجحة */}
-        <div className="col-lg-3 col-md-6 col-sm-12">
+        <div className="col-lg-3 col-md-6 col-12 dashboard-card-wrapper">
           <div className="card performance-card success p-3 h-100">
             <div className="d-flex justify-content-between align-items-start">
               <HiArrowTrendingUp className="sparkline-icon" />
@@ -178,7 +178,7 @@ const HangerOrders = () => {
         </div>
 
         {/* طلب إجمالي */}
-        <div className="col-lg-3 col-md-6 col-sm-12">
+        <div className="col-lg-3 col-md-6 col-12 dashboard-card-wrapper">
           <div className="card performance-card primary p-3 h-100">
             <div className="d-flex justify-content-between align-items-start">
               <HiArrowTrendingUp className="sparkline-icon" />
@@ -193,8 +193,8 @@ const HangerOrders = () => {
 
       {/* حالة الطلبات */}
       <h4 className="mb-3 text-end">حالة الطلبات</h4>
-      <div className="row g-3 mb-4">
-        <div className="col-lg-3 col-md-6 col-sm-12">
+      <div className="row g-3 mb-4 dashboard-cards-container">
+        <div className="col-lg-3 col-md-6 col-12 dashboard-card-wrapper">
           <div className="card status-card orange p-3 h-100">
             <div className="d-flex justify-content-between align-items-start">
               <h2 className="mb-0">12</h2>
@@ -205,7 +205,7 @@ const HangerOrders = () => {
           </div>
         </div>
 
-        <div className="col-lg-3 col-md-6 col-sm-12">
+        <div className="col-lg-3 col-md-6 col-12 dashboard-card-wrapper">
           <div className="card status-card p-3 h-100">
             <div className="d-flex justify-content-between align-items-start">
               <h2 className="mb-0">89</h2>
@@ -216,7 +216,7 @@ const HangerOrders = () => {
           </div>
         </div>
 
-        <div className="col-lg-3 col-md-6 col-sm-12">
+        <div className="col-lg-3 col-md-6 col-12 dashboard-card-wrapper">
           <div className="card status-card purple p-3 h-100">
             <div className="d-flex justify-content-between align-items-start">
               <h2 className="mb-0">34</h2>
@@ -227,7 +227,7 @@ const HangerOrders = () => {
           </div>
         </div>
 
-        <div className="col-lg-3 col-md-6 col-sm-12">
+        <div className="col-lg-3 col-md-6 col-12 dashboard-card-wrapper">
           <div className="card status-card blue p-3 h-100">
             <div className="d-flex justify-content-between align-items-start">
               <h2 className="mb-0">15</h2>
@@ -397,3 +397,5 @@ const HangerOrders = () => {
 };
 
 export default HangerOrders;
+
+
