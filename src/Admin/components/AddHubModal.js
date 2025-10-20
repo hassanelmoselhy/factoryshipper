@@ -39,7 +39,7 @@ const AddHubModal = ({ isOpen, onClose, onAdd }) => {
 
     onAdd(newBranch);
 
-     toast.success("تم إضافة الفرع بنجاح!");
+    toast.success("تم إضافة الفرع بنجاح!");
 
     setFormData({
       type: "هـب رئيسي",
@@ -86,15 +86,6 @@ const AddHubModal = ({ isOpen, onClose, onAdd }) => {
           </div>
 
           <div className="form-content">
-            <label>العنوان</label>
-            <textarea
-              name="address"
-              placeholder="العنوان التفصيلي"
-              value={formData.address}
-              onChange={handleChange}
-            />
-          </div>
-                    <div className="form-content">
             <label>المحافظة</label>
             <textarea
               name="governorate"
@@ -126,18 +117,18 @@ const AddHubModal = ({ isOpen, onClose, onAdd }) => {
                 onChange={handleChange}
               />
             </div>
-          </div>
 
-          <div className="form-content">
-            <label>اسم المسؤول</label>
-            <input
-              type="text"
-              name="managerName"
-              placeholder="اسم المسؤول"
-              value={formData.managerName}
+              <div className="form-content">
+            <label>تفاصيل اضافية</label>
+            <textarea
+              name="address"
+              placeholder="العنوان التفصيلي"
+              value={formData.address}
               onChange={handleChange}
             />
           </div>
+          </div>
+
 
           <div className="form-content">
             <label>رقم الهاتف</label>
