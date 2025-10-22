@@ -11,7 +11,7 @@ align-items: center;
 z-index: 999;
 }
 
-.modal-content {
+.modal-overlay .modal-content {
 background: #fff;
 padding: 25px;
 width: 450px;
@@ -19,7 +19,7 @@ border-radius: 8px;
 direction: rtl;
 }
 
-.modal-content h2 {
+.modal-overlay .modal-content h2 {
 margin-bottom: 15px;
 text-align: center;
 }

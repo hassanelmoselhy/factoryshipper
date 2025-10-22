@@ -15,7 +15,7 @@
 .dd-enhanced .ts-toggle {
   --pad: 10px 12px;
   width: var(--width);
-  height: 44px;
+  max-height: 44px;
   padding: var(--pad);
   border-radius: var(--radius);
   display: inline-flex;
@@ -27,6 +27,7 @@
   transition: transform .12s ease, box-shadow .12s ease, background-color .12s ease;
   text-align: left; 
   color: #222;
+
 }
 
 

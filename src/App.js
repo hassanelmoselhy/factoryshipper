@@ -41,6 +41,7 @@ import OrderPage from './Admin/pages/OrderPage';
 import BranchesPage from './Admin/pages/BranchesPage';
 import Merchants from './Admin/pages/merchants';
 import EmployeesRoles from './Admin/pages/EmployeesRoles';
+import ShippingPricing from './Admin/pages/ShippingPricing';
 // Global Components
 import Sidebar from './Components/Sidebar';
 import {senderSidebarData} from './Sender/components/Rightsidebar';
@@ -69,7 +70,6 @@ const MainLayout = ({ header: HeaderComponent, sidebarData }) => {
 
 
 const App = () => {
-  const user = useUserStore((state) => state.user);
   
   return (
     <>
@@ -122,6 +122,7 @@ const App = () => {
             <Route path="branches" element={<BranchesPage />} />
               <Route path="merchants" element={<Merchants />} />
                <Route path="employees-roles" element={<EmployeesRoles />} />
+               <Route path="shipping-pricing" element={<ShippingPricing />} />
                {/* <Route path="merchants" element={<TestP />} /> */}
 
 

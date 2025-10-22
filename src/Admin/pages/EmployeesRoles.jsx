@@ -1,13 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import { Plus, Search } from "lucide-react";
 import DropDownList from "../../Components/DropDownList";
 import EmployeeTable from "../components/EmployeeTable";
+import AddEmployeeModal from "../components/AddEmployeeModal";
 export default function EmployeesRoles() {
+  const [isAddmodalopen,SetisAddmodalopen]=useState(false);
   return (
+    <>
+    <AddEmployeeModal show={isAddmodalopen} onClose={()=>SetisAddmodalopen(false)}/>
     <div className="p-5 container d-flex flex-column gap-5">
       {/** Header */}
       <div className="d-flex justify-content-between w-100">
-        <button className="btn btn-primary rounded-4 btn-sm d-flex align-items-center  gap-3">
+        <button className="btn btn-primary rounded-4 btn-sm d-flex align-items-center  gap-3"
+        
+        onClick={()=>SetisAddmodalopen(true)}
+        >
           <span className="fs-6" style={{ fontWeight: 900 }}>
             إضافة موظف
           </span>
@@ -59,5 +66,7 @@ export default function EmployeesRoles() {
 
       </div>
     </div>
+    </>
+    
   );
 }
