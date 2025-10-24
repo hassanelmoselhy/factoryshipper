@@ -1,37 +1,26 @@
-import React from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-
-// icons
+import { useNavigate } from "react-router-dom";
+import { MoreVertical } from "react-feather";
 import { FaTimesCircle, FaEdit, FaInfoCircle } from "react-icons/fa";
-import { MoreVertical } from "lucide-react";
 
-import "./css/ActionsList.css"; 
-import "bootstrap/dist/js/bootstrap.bundle"; 
+const ActionsList = ({ handleopenSchedule, requestId }) => {
+  const navigate = useNavigate();
 
-const ActionsList = ({ handleopenSchedule }) => {
+  const goToDetails = () => {
+    navigate(`/request/${requestId}`);
+  };
+
   return (
     <div className="dropdown">
-     
       <button
         className="btn btn-outline-primary btn-sm ts-toggle"
-        type="button"
-        id="actionsDropdown"
         data-bs-toggle="dropdown"
-        aria-expanded="false"
-        aria-label="More actions"
       >
         <MoreVertical size={18} />
       </button>
 
-      <ul
-        className="dropdown-menu dropdown-menu-end ts-menu"
-        aria-labelledby="actionsDropdown"
-      >
+      <ul className="dropdown-menu dropdown-menu-end ts-menu">
         <li>
-          <button
-            type="button"
-            className="dropdown-item d-flex align-items-center gap-2 ts-item text-danger"
-          >
+          <button className="dropdown-item d-flex align-items-center gap-2 ts-item">
             <FaTimesCircle className="ts-item-icon" />
             <span>Cancel</span>
           </button>
@@ -39,7 +28,6 @@ const ActionsList = ({ handleopenSchedule }) => {
 
         <li>
           <button
-            type="button"
             className="dropdown-item d-flex align-items-center gap-2 ts-item"
             onClick={handleopenSchedule}
           >
@@ -50,8 +38,8 @@ const ActionsList = ({ handleopenSchedule }) => {
 
         <li>
           <button
-            type="button"
             className="dropdown-item d-flex align-items-center gap-2 ts-item"
+            onClick={goToDetails}
           >
             <FaInfoCircle className="ts-item-icon text-muted" />
             <span>Details</span>

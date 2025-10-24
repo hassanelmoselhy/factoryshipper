@@ -136,7 +136,11 @@ const sampleRows = [
                   </td>
                   <td>
                    
-                  <ActionsList handleopenSchedule={()=>SetisRescheduleOpen(true)} />
+                <ActionsList 
+  handleopenSchedule={() => SetisRescheduleOpen(true)}
+  requestId={request.id}
+/>
+
                   </td>
                 </tr>
               ))}
