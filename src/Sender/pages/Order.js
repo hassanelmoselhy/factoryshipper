@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import useShipmentsStore from "../../Store/UserStore/ShipmentsStore";
 import LoadingOverlay from "../components/LoadingOverlay";
 import ShipmentCancelModal from "../../Components/ShipmentCancelModal";
+import CancelRequestsModal from "../components/CancelRequestsModal";
 import "./css/Order.css";
 
 //  Status Options
@@ -32,7 +33,7 @@ const Order = () => {
   const { lang } = useLanguageStore();
   const t = translations[lang];
 
-  const [orders, setOrders] = useState([]);
+ 
   const [Shipments, setShipments] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
@@ -40,6 +41,7 @@ const Order = () => {
   const[opencancelShipment,setopencancelShipment]=useState(false)
   const user = useUserStore((state) => state.user);
   const SetShipmentsStore = useShipmentsStore((state) => state.SetShipments);
+  const [iscancelModalOpen,setiscancelModalOpen]=useState(true)
 
   useEffect(() => {
     console.log("User in Orders page ", user);
@@ -113,7 +115,7 @@ const Order = () => {
   return (
     <>
       <LoadingOverlay loading={loading} message="please wait..." color="#fff" size={44} />
-    
+      <CancelRequestsModal show={iscancelModalOpen} onClose={()=>setiscancelModalOpen(false)} />
       <ShipmentCancelModal show={opencancelShipment} onClose={()=>{setopencancelShipment(false)}}/>
       <div className="order-page" dir={lang === "ar" ? "rtl" : "ltr"}>
         {/* ✅ Header with Dropdown Filter and Search */}

@@ -42,6 +42,8 @@ import BranchesPage from './Admin/pages/BranchesPage';
 import Merchants from './Admin/pages/merchants';
 import EmployeesRoles from './Admin/pages/EmployeesRoles';
 import ShippingPricing from './Admin/pages/ShippingPricing';
+import Settings from './Admin/pages/SettingsPage';
+
 // Global Components
 import Sidebar from './Components/Sidebar';
 import {senderSidebarData} from './Sender/components/Rightsidebar';
@@ -120,10 +122,14 @@ const App = () => {
           <Route path="/admin" element={<MainLayout header={TopBar} sidebarData={adminSidebarData} />}>
             <Route path="orders" element={<OrderPage />} />
             <Route path="branches" element={<BranchesPage />} />
-              <Route path="merchants" element={<Merchants />} />
-               <Route path="employees-roles" element={<EmployeesRoles />} />
+              
+               
                <Route path="shipping-pricing" element={<ShippingPricing />} />
                {/* <Route path="merchants" element={<TestP />} /> */}
+            <Route path="merchants" element={<Merchants />} />
+            <Route path="employees-roles" element={<EmployeesRoles />} />
+            {/* <Route path="merchants" element={<TestP />} /> */}
+            <Route path="settings" element={<Settings />} />
 
 
           </Route>
@@ -137,7 +143,7 @@ const App = () => {
           <Route path="*" element={<PageNotFound />} />
         
         
-           </Routes>
+          </Routes>
       </Router>
     </>
   );

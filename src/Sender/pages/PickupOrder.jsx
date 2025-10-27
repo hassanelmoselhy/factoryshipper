@@ -344,9 +344,9 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
         <h1>
           <Truck size={24}  /> Pickup Request Management
         </h1>
-        <button className="btn add-manual-btn d-flex align-items-center gap-2">
+        {/* <button className="btn add-manual-btn d-flex align-items-center gap-2">
           <Plus size={16} /> Add Manual Order
-        </button>
+        </button> */}
       </div>
 
       {/* Pickup Details card */}
@@ -361,6 +361,7 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
               <Calendar size={16} /> Pickup Date
             </label>
             <input type="date" name="pickupDate" value={PickupDetails.pickupDate}  onChange={handleChange} className="form-control form-control-custom" placeholder="mm/dd/yyyy" />
+          
           </div>
 
           <div className="col-lg-4 mb-3">
@@ -421,6 +422,7 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
             />
           </div>
         </div>
+
       </div>
 
       {/* Pending Orders card */}
