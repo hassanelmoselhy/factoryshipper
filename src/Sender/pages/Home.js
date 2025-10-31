@@ -32,7 +32,7 @@ const Home = () => {
     const fetchShipmentsStatus = async () => {
       try {
         Setloading(true);
-        const res = await fetch('https://stakeexpress.runasp.net/api/Shipments/getShipmentStatusStatistics', {
+        const res = await fetch('https://stakeexpress.runasp.net/api/Shipments/get-shipment-status-statistics', {
           headers: {
             'X-Client-Key': 'web api',
             Authorization: `Bearer ${user?.token}`,

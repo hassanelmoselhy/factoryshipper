@@ -36,17 +36,7 @@ export default function ReturnPage() {
     customerContactPhone:"",
   });
 
-   const [ShipperDetails,SetShipperDetails]=useState({
-    returnDate:"",
-    returnWindowStart:"",
-    returnWindowEnd:"",
-    shipperStreet:"",
-    shipperCity:"",
-    shipperGovernorate:"",
-    shipperAddressDetails:"",
-    shipperContactName:"",
-    shipperContactPhone:""
-   }); 
+   
 
    const egypt_governorates= [
     {
@@ -281,22 +271,14 @@ const payload={
     customerGoogleMapAddressLink:"https://www.google.com/maps",
     customerContactName:CustomerDetails.customerContactName,
     customerContactPhone:CustomerDetails.customerContactPhone,
-    returnDate:ShipperDetails.returnDate,
-    returnWindowStart:ShipperDetails.returnWindowStart+":00",
-    returnWindowEnd:ShipperDetails.returnWindowEnd+":00",
-    shipperStreet:ShipperDetails.shipperStreet,
-    shipperCity:ShipperDetails.shipperCity,
-    shipperGovernorate:ShipperDetails.shipperGovernorate,
-    shipperAddressDetails:ShipperDetails.shipperAddressDetails,
-    shipperGoogleMapAddressLink:"https://www.google.com/maps",
-    shipperContactName:ShipperDetails.shipperContactName,
-    shipperContactPhone:ShipperDetails.shipperContactPhone,
+
+    
     shipmentIds:selectedOrders
 }
 console.log('payload',payload)
 try{
 setLoading(true);
-const res=await fetch('https://stakeexpress.runasp.net/api/Shipments/returnRequest',{
+const res=await fetch('https://stakeexpress.runasp.net/api/Requests/return-request',{
   method:'POST',
   headers:{
     'Content-Type':'application/json',
@@ -333,10 +315,7 @@ console.error("Error in submitting pickup request:", err);
 const {name,value}=e.target;
 SetCostomerDetails((prev)=>({...prev,[name]:value}));
  }
- const ShipperhandleChange=(e)=>{
-const {name,value}=e.target;
-SetShipperDetails((prev)=>({...prev,[name]:value}));
- }
+ 
   return (
 
     <>
@@ -351,7 +330,7 @@ SetShipperDetails((prev)=>({...prev,[name]:value}));
         </button> */}
       </div>
 
-      {/* Pickup Details card */}
+      {/* customer Details card */}
       <div className="card-section mb-4">
         <h4 className="mb-3" style={{ fontWeight: 700 }}>
           <MapPin size={24} className="me-2" color="#3182ed"/> Costomer  Details
@@ -430,79 +409,6 @@ SetShipperDetails((prev)=>({...prev,[name]:value}));
 
 
 
-      {/** shipper */}
-      <div className="card-section mb-4">
-        <h4 className="mb-3" style={{ fontWeight: 700 }}>
-          <MapPin size={24} className="me-2" color="#3182ed"/> Shipper  Details
-        </h4>
-
-        <div className="row input-row-gap">
-          <div className="col-lg-4 mb-3">
-            <label className="form-label-icon">
-              <Calendar size={16} /> Return Date
-            </label>
-            <input type="date" name="returnDate" value={ShipperDetails.returnDate}  onChange={ShipperhandleChange} className="form-control form-control-custom" placeholder="mm/dd/yyyy" />
-          </div>
-
-          <div className="col-lg-4 mb-3">
-            <label className="form-label-icon">
-              <Clock size={16} /> Window Start
-            </label>
-            <input type="time"  name="returnWindowStart"  value={ShipperDetails.returnWindowStart} onChange={ShipperhandleChange}       className="form-control form-control-custom" placeholder="--:-- --" />
-          </div>
-
-          <div className="col-lg-4 mb-3">
-            <label className="form-label-icon">
-              <Clock size={16} /> Window End
-            </label>
-            <input type="time" name="returnWindowEnd" value={ShipperDetails.returnWindowEnd} onChange={ShipperhandleChange}    className="form-control form-control-custom" placeholder="--:-- --" />
-          </div>
-
-          <div className="col-lg-3 mb-3">
-            <label className="form-label-icon">Street Address</label>
-            <input className="form-control form-control-custom" name="shipperStreet"  value={ShipperDetails.shipperStreet}  onChange={ShipperhandleChange}  placeholder="123 Main Street" />
-          </div>
-          <div className="col-lg-3 mb-3">
-            <label className="form-label-icon">City</label>
-            <input className="form-control form-control-custom" name="shipperCity" value={ShipperDetails.shipperCity} onChange={ShipperhandleChange} placeholder="" />
-          </div>
-          <div className="col-lg-3 mb-3">
-            <label className="form-label-icon">Governorate</label>
-            <select className="form-select form-control-custom" 
-            value={ShipperDetails.shipperGovernorate} onChange={ShipperhandleChange} name="shipperGovernorate"
-            
-            >
-              <option value="" disabled>Select Governorate</option>
-              {egypt_governorates.map((gov) => (
-                <option key={gov.id} value={gov.name}>{gov.name}</option>
-              ))}
-            </select>
-          </div>
-          <div className="col-lg-3 mb-3">
-            <label className="form-label-icon">address Details</label>
-            <input className="form-control form-control-custom" name="ShipperDetails" value={ShipperDetails.ShipperDetails} onChange={ShipperhandleChange} placeholder="Address Details" />
-          </div>
-
-          <div className="col-lg-6 mb-3">
-            <label className="form-label-icon">
-              <User size={16} /> Contact Name
-            </label>
-            <input className="form-control form-control-custom" placeholder="Contact person name" 
-            name="shipperContactName" value={ShipperDetails.shipperContactName} onChange={ShipperhandleChange} 
-            
-            />
-          </div>
-
-          <div className="col-lg-6 mb-3">
-            <label className="form-label-icon">
-              <Phone size={16} /> Contact Phone <span style={{ color: "#6c757d" }}>*</span>
-            </label>
-            <input className="form-control form-control-custom" placeholder="+20123456789"
-            name="shipperContactPhone" value={ShipperDetails.shipperContactPhone} onChange={ShipperhandleChange}
-            />
-          </div>
-        </div>
-      </div>
 
       {/* Pending Orders card */}
       <div className="table-card">

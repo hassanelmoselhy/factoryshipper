@@ -10,7 +10,7 @@ import Signup from './Sender/auth/pages/Signup';
 import Login from './Sender/auth/pages/Login';
 import PickupOrder from './Sender/pages/PickupOrder';
 import ReturnPage from './Sender/pages/ReturnPage';
-
+import Request from './Sender/pages/Request'
 
 
 // import EmployeeMang from './Hanger/pages/EmployeeMang';
@@ -103,6 +103,9 @@ const App = () => {
 
           <Route path="/order-details/:orderId" element={<OrderDetails />} />
           <Route path="/print/:orderId" element={<Print />} />
+          <Route path="/request/:requestype/:id" element={<Request />} />
+
+
 
      {/* -------- Hanger Layout -------- */}
           <Route path="/hanger" element={<MainLayout header={TopBar} sidebarData={hangerSidebarData} />}>

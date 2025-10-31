@@ -1,57 +1,37 @@
-import React from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { useNavigate } from "react-router-dom";
+import { MoreVertical } from "react-feather";
+import { FaTimesCircle, FaInfoCircle } from "react-icons/fa";
 
-// icons
-import { FaTimesCircle, FaEdit, FaInfoCircle } from "react-icons/fa";
-import { MoreVertical } from "lucide-react";
+const ActionsList = ({  id,requestype }) => {
+  const navigate = useNavigate();
 
-import "./css/ActionsList.css"; 
-import "bootstrap/dist/js/bootstrap.bundle"; 
+  const goToDetails = () => {
+    console.log("Navigating to details for request:", requestype, id);
+    navigate(`/request/${requestype}/${id}`);
+  };
 
-const ActionsList = ({ handleopenSchedule }) => {
   return (
     <div className="dropdown">
-     
       <button
         className="btn btn-outline-primary btn-sm ts-toggle"
-        type="button"
-        id="actionsDropdown"
         data-bs-toggle="dropdown"
-        aria-expanded="false"
-        aria-label="More actions"
       >
         <MoreVertical size={18} />
       </button>
 
-      <ul
-        className="dropdown-menu dropdown-menu-end ts-menu"
-        aria-labelledby="actionsDropdown"
-      >
+      <ul className="dropdown-menu dropdown-menu-end ts-menu">
         <li>
-          <button
-            type="button"
-            className="dropdown-item d-flex align-items-center gap-2 ts-item text-danger"
-          >
+          <button className="dropdown-item d-flex align-items-center gap-2 ts-item">
             <FaTimesCircle className="ts-item-icon" />
             <span>Cancel</span>
           </button>
         </li>
 
+        
         <li>
           <button
-            type="button"
             className="dropdown-item d-flex align-items-center gap-2 ts-item"
-            onClick={handleopenSchedule}
-          >
-            <FaEdit className="ts-item-icon" />
-            <span>Edit Schedule</span>
-          </button>
-        </li>
-
-        <li>
-          <button
-            type="button"
-            className="dropdown-item d-flex align-items-center gap-2 ts-item"
+            onClick={goToDetails}
           >
             <FaInfoCircle className="ts-item-icon text-muted" />
             <span>Details</span>

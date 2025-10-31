@@ -254,7 +254,7 @@ export default function PickupRequestManagement() {
       const fetchPendingOrders= async()=>{
       try{
         setLoading(true);
-        const res=await fetch('https://stakeexpress.runasp.net/api/Shipments/getShipmentsToPickup',{
+        const res=await fetch('https://stakeexpress.runasp.net/api/Shipments/to-pickup',{
           method: 'GET',
           headers:{
             'X-Client-Key':'web api',

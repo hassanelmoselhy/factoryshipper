@@ -41,7 +41,7 @@ const Order = () => {
   const[opencancelShipment,setopencancelShipment]=useState(false)
   const user = useUserStore((state) => state.user);
   const SetShipmentsStore = useShipmentsStore((state) => state.SetShipments);
-  const [iscancelModalOpen,setiscancelModalOpen]=useState(true)
+  const [iscancelModalOpen,setiscancelModalOpen]=useState(false)
 
   useEffect(() => {
     console.log("User in Orders page ", user);
@@ -116,12 +116,16 @@ const Order = () => {
     <>
       <LoadingOverlay loading={loading} message="please wait..." color="#fff" size={44} />
       <CancelRequestsModal show={iscancelModalOpen} onClose={()=>setiscancelModalOpen(false)} />
-      <ShipmentCancelModal show={opencancelShipment} onClose={()=>{setopencancelShipment(false)}}/>
+      {/* <ShipmentCancelModal show={opencancelShipment} onClose={()=>{setopencancelShipment(false)}}/> */}
+        
       <div className="order-page" dir={lang === "ar" ? "rtl" : "ltr"}>
-        {/* ✅ Header with Dropdown Filter and Search */}
+        {/*  Header with Dropdown Filter and Search */}
         <div className="order-header">
           <h2>{t.orders}</h2>
-          
+          <div className="d-flex justify-content-between w-100 align-items-center">
+
+         
+
           <div className="filter-search-container">
             {/* 🔽 Status Filter Dropdown */}
             <select 
@@ -145,6 +149,10 @@ const Order = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
+          <button className="btn btn-danger" onClick={()=>setiscancelModalOpen(true)} >Cancel Shipments</button>
+
+          </div>
+          
         </div>
 
         {/* ✅ Orders Count Info */}

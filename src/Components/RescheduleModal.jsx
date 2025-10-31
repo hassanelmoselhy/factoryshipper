@@ -1,103 +1,167 @@
 // File: RescheduleModal.jsx
 import React, { useEffect, useState } from "react";
 import { X, Calendar, CheckCircle, Info,Clock } from "lucide-react";
+import useUserStore from "../Store/UserStore/userStore";
 import "./css/RescheduleModal.css";
 
 export default function RescheduleModal({
   show = true,
   onClose = () => {},
-  // initial values (kept for backward compatibility)
-  orderId = "ORD-000844",
+  
   type = "Delivery",
-  originalDatetime = new Date(),
-  onSubmit = (payload) => console.log("submit", payload),
-  // new prop: list of scheduled requests to pick from
-  // each request: { requestId, requestType, requestDate (YYYY-MM-DD), timeWindowStart (HH:mm), timeWindowEnd (HH:mm), ordersCount }
-  requests = null,
+  
+ 
 }) {
-  const [requestedDatetime, setRequestedDatetime] = useState("");
-  const [reason, setReason] = useState("");
+ 
   const [notifyReceiver, setNotifyReceiver] = useState(true);
   const [selectedRequestId, setSelectedRequestId] = useState(null);
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const [requestsData, setRequestsData] = useState([]);
+  const user = useUserStore((state) => state.user);
+const [FormData,setFormData]=useState({
+  scheduledRequestId:'',
+  newRequestDate:'',
+  newTimeWindowStart:'',
+  newTimeWindowEnd:'',
+  reason:'',
 
+})
   // simple char limit
   const maxReason = 300;
 
-  // sample data used when requests prop is not provided
-  const sampleRequests = [
-    {
-      requestId: "REQ-2025-1001",
-      requestType: "Delivery",
-      requestDate: "2025-10-25",
-      timeWindowStart: "09:00",
-      timeWindowEnd: "12:00",
-      ordersCount: 3,
-    },
-    {
-      requestId: "REQ-2025-1002",
-      requestType: "Pickup",
-      requestDate: "2025-10-25",
-      timeWindowStart: "13:00",
-      timeWindowEnd: "15:00",
-      ordersCount: 1,
-    },
-    {
-      requestId: "REQ-2025-1003",
-      requestType: "Delivery",
-      requestDate: "2025-10-26",
-      timeWindowStart: "10:00",
-      timeWindowEnd: "14:00",
-      ordersCount: 7,
-    },
-  ];
+ 
 
-  const data = Array.isArray(requests) && requests.length > 0 ? requests : sampleRequests;
 
   // If a selectedRequestId changes, update the info card fields
   useEffect(() => {
     if (selectedRequestId == null) {
       // keep existing provided props if nothing selected
+      
+      
       setSelectedRequest(null);
       return;
     }
-    const req = data.find((r) => r.requestId === selectedRequestId) || null;
+    const req = requestsData.find((r) => r.requestId === selectedRequestId) || null;
+    console.log('req from req data',req)
     setSelectedRequest(req);
-  }, [selectedRequestId, requests]); // eslint-disable-line react-hooks/exhaustive-deps
 
+    
+
+
+
+
+
+
+
+
+
+
+
+  }, [selectedRequestId]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(()=>{
+
+    const fetchrequestes=async()=>{
+
+      try{
+        const res=await fetch(`https://stakeexpress.runasp.net/api/Requests/to-reschedule-requests`,{
+          method:'GET',
+          headers: {
+            "Content-Type": "application/json",
+            "X-Client-Key": "web API",
+            Authorization: `Bearer ${user?.token}`,
+          }
+        })
+          if(res.ok){
+            const data=await res.json();
+            console.log('fetching requests successful',data);
+            setRequestsData(data.data);
+          }
+          else{
+            console.log('error in fetching requests');
+          }
+
+
+      }catch(err){
+
+        console.log('error in fetching requests',err);
+      }
+
+
+
+
+    }
+
+    fetchrequestes();
+
+  },[])
+
+  const handleformchange=(e)=>{
+
+    const {name,value}=e.target;
+    setFormData({...FormData,[name]:value})
+  }
   if (!show) return null;
 
   // helper to derive a Date object from requestDate + timeWindowStart
   function deriveDatetimeFromRequest(req) {
-    if (!req || !req.requestDate || !req.timeWindowStart) return originalDatetime;
+    console.log('from timer',req)
     // requestDate format assumed 'YYYY-MM-DD', time 'HH:mm'
-    const iso = `${req.requestDate}T${req.timeWindowStart}:00`;
+    const iso = `${req?.RequestDate}T${req?.windowStart}:00`;
     const dt = new Date(iso);
-    if (isNaN(dt.getTime())) return originalDatetime;
+   
     return dt;
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
+    console.log('form data are',FormData);
     if (!selectedRequestId) {
       alert("Please select the scheduled request to reschedule.");
       return;
     }
-    if (!requestedDatetime || !reason.trim()) {
+    if (FormData&&(!FormData.newRequestDate||!FormData.newTimeWindowStart||!FormData.newTimeWindowEnd||!FormData.reason.trim()||!FormData.scheduledRequestId)) {
       alert("Please fill required fields");
       return;
     }
-    onSubmit({
-      selectedRequestId,
-      requestedDatetime,
-      reason: reason.trim(),
-      notifyReceiver,
-    });
+    
+
+    try{
+      const res=await fetch('https://stakeexpress.runasp.net/api/Requests/reschedule-requests',{
+
+        method:'POST',
+        headers: {
+            "Content-Type": "application/json",
+            "X-Client-Key": "web API",
+            Authorization: `Bearer ${user?.token}`,
+          },
+          body:JSON.stringify(FormData)
+
+      })
+
+      if(res.ok){
+          const data=await res.json()
+        console.log("request reschedule successfully",data)
+      }
+
+
+    }catch(err){
+
+console.log('error in rescheduling request',err)
+
+    }
+
+
   };
 
   // toggle selection using a checkbox input while ensuring only one can be selected
-  function handleCheckboxToggle(requestId) {
-    if (selectedRequestId === requestId) setSelectedRequestId(null); // uncheck
-    else setSelectedRequestId(requestId); // check this one and implicitly uncheck others by state
+  function handleCheckboxToggle(request) {
+    console.log("toggling", request);
+    
+    setSelectedRequest(request)
+    setFormData({...FormData,scheduledRequestId:request?.id})
+    
+    setSelectedRequestId(request?.id); 
+    
   }
 
   return (
@@ -107,7 +171,7 @@ export default function RescheduleModal({
           <div>
             <div className="resched-title">Reschedule Request</div>
             <div className="resched-sub">
-              Change the scheduled delivery for request <strong>{selectedRequest ? selectedRequest.requestId : orderId}</strong>
+              Change the scheduled delivery for request <strong>{selectedRequest ? selectedRequest.id : requestsData.id}</strong>
             </div>
           </div>
           <button className="btn btn-sm btn-light" onClick={onClose} aria-label="Close">
@@ -135,26 +199,26 @@ export default function RescheduleModal({
                   </tr>
                 </thead>
                 <tbody>
-                  {data.map((r) => (
+                  {requestsData.map((r) => (
                     <tr
-                      key={r.requestId}
-                      className={selectedRequestId === r.requestId ? "table-active" : ""}
+                      key={r.id}
+                      className={selectedRequestId === r.id ? "table-active" : ""}
                       style={{ cursor: "pointer" }}
-                      onClick={() => handleCheckboxToggle(r.requestId)}
+                      onClick={() => handleCheckboxToggle(r)}
                     >
-                      <td>{r.requestId}</td>
+                      <td>{r.id}</td>
                       <td>{r.requestType}</td>
                       <td>{r.requestDate}</td>
-                      <td>{r.timeWindowStart}</td>
-                      <td>{r.timeWindowEnd}</td>
-                      <td className="text-center">{r.ordersCount}</td>
+                      <td>{r.windowStart}</td>
+                      <td>{r.windowEnd}</td>
+                      <td className="text-center">{r.shipmentsCount}</td>
                       <td className="text-center">
                         <div className="form-check">
                           <input
                             className="form-check-input"
                             type="checkbox"
                             id={`sel-${r.requestId}`}
-                            checked={selectedRequestId === r.requestId}
+                            checked={FormData?.scheduledRequestId === r.requestId}
                             onChange={() => handleCheckboxToggle(r.requestId)}
                             aria-label={`Select ${r.requestId}`}
                           />
@@ -175,36 +239,20 @@ export default function RescheduleModal({
               <div className="original-row">
                 <Calendar size={16} />
                 <div style={{ fontWeight: 700 }}>
-                  {selectedRequest
-                    ? deriveDatetimeFromRequest(selectedRequest).toLocaleString()
-                    : originalDatetime.toLocaleString()}
+                  {selectedRequest ? selectedRequest.requestDate +" , " + selectedRequest?.windowStart:"ddfgdff"}
                 </div>
               </div>
             </div>
-            <div className="order-id">{selectedRequest ? selectedRequest.requestId : orderId}</div>
+            <div className="order-id">{FormData?.scheduledRequestId}</div>
           </div>
 
-          {/* --- Requested datetime input --- */}
-          {/* <div className="mb-3">
-            <label className="form-label" style={{ fontWeight: 600 }}>
-              New  datetime <span style={{ color: "#ef4444" }}> *</span>
-            </label>
-            <div className="d-flex gap-2">
-              <input
-                type="datetime-local"
-                className="form-control form-control-custom flex-grow-1"
-                value={requestedDatetime}
-                onChange={(e) => setRequestedDatetime(e.target.value)}
-                aria-required
-              />
-            </div>
-          </div> */}
+      
           <div className="row ">
              <div className="col-lg-4 mb-3">
             <label className="form-label-icon">
               <Calendar size={16} /> Pickup Date
             </label>
-            <input type="date" name="pickupDate"  className="form-control form-control-custom" placeholder="mm/dd/yyyy" />
+            <input type="date" name="newRequestDate" onChange={handleformchange} className="form-control form-control-custom" placeholder="mm/dd/yyyy" />
           
           </div>
 
@@ -212,14 +260,14 @@ export default function RescheduleModal({
             <label className="form-label-icon">
               <Clock size={16} /> Window Start
             </label>
-            <input type="time"  name="windowStart"        className="form-control form-control-custom" placeholder="--:-- --" />
+            <input type="time"  name="newTimeWindowStart"   onChange={handleformchange}  className="form-control form-control-custom" placeholder="--:-- --" />
           </div>
 
           <div className="col-lg-4 mb-3">
             <label className="form-label-icon">
               <Clock size={16} /> Window End
             </label>
-            <input type="time" name="windowEnd"    className="form-control form-control-custom" placeholder="--:-- --" />
+            <input type="time" name="newTimeWindowEnd"  onChange={handleformchange}  className="form-control form-control-custom" placeholder="--:-- --" />
           </div>
           </div>
          
@@ -233,11 +281,12 @@ export default function RescheduleModal({
               maxLength={maxReason}
               className="form-control textarea-custom"
               placeholder="Brief explanation for the reschedule request (max 300 characters)"
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
+              name="reason"
+              value={FormData.reason}
+              onChange={handleformchange}
             />
             <div className="text-end mt-1 text-muted" style={{ fontSize: 13 }}>
-              {reason.length}/{maxReason}
+              {FormData?.reason.length}/{maxReason}
             </div>
           </div>
 

@@ -16,11 +16,13 @@ const Actions = () => {
   const user = useUserStore((state) => state.user);
   const [loading, setloading] = useState(false);
   const [isRescheduleOpen,SetisRescheduleOpen]=useState(false)
+  
+  //fetch all requests
   useEffect(() => {
     const fetchRequests = async () => {
       setloading(true);
       try {
-        const res = await fetch('https://stakeexpress.runasp.net/api/Shipments/getAllRequests', {
+        const res = await fetch('https://stakeexpress.runasp.net/api/Requests/getAllRequests', {
           method: 'GET',
           headers: {
             'X-Client-Key': 'web api',
@@ -45,11 +47,7 @@ const Actions = () => {
 
     fetchRequests();
   }, []);
-const sampleRows = [
-  { id: 1, orderId: "ORD-0001", customer: "A. Smith", date: "2025-10-13 10:00", status: "Pending" },
-  { id: 2, orderId: "ORD-0002", customer: "B. Khan", date: "2025-10-12 14:30", status: "Delivered" },
-  { id: 3, orderId: "ORD-0003", customer: "C. Lee", date: "2025-10-11 09:20", status: "On hold" },
-];
+
   const getStatusBadge = (status) => {
     const statusMap = {
       'pending': 'status-pending',
@@ -83,7 +81,7 @@ const sampleRows = [
   return (
     <>
       <LoadingOverlay loading={loading} message="please wait..." color="#fff" size={44} />
-      <RescheduleModal show={isRescheduleOpen}onClose={()=>SetisRescheduleOpen(false)} />
+      
       <div className={`actions-container ${lang === "ar" ? "rtl" : "ltr"} px-4`}>
         {/* زر إضافة جديد */}
         <div className="header-actions">
@@ -136,7 +134,12 @@ const sampleRows = [
                   </td>
                   <td>
                    
-                  <ActionsList handleopenSchedule={()=>SetisRescheduleOpen(true)} />
+                <ActionsList 
+  handleopenSchedule={() => SetisRescheduleOpen(true)}
+  requestId={request?.id}
+  requestype={request?.requestType}
+/>
+
                   </td>
                 </tr>
               ))}
