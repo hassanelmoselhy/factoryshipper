@@ -1,0 +1,148 @@
+.replace-backdrop {
+position: fixed;
+inset: 0;
+background: rgba(0, 0, 0, 0.55);
+display: flex;
+align-items: center;
+justify-content: center;
+z-index: 9999;
+direction: rtl;
+font-family: "Tajawal", sans-serif;
+}
+
+.replace-modal {
+background: #fff;
+width: 460px;
+max-height: 90vh;
+border-radius: 12px;
+overflow-y: auto;
+box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+padding: 20px 24px;
+}
+
+.replace-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.replace-title {
+display: flex;
+align-items: center;
+gap: 8px;
+font-weight: 700;
+font-size: 1.1rem;
+color: #111827;
+}
+
+.replace-icon {
+color: #2563eb;
+}
+
+.replace-close {
+background: transparent;
+border: none;
+cursor: pointer;
+color: #6b7280;
+transition: 0.2s;
+}
+.replace-close:hover {
+color: #111827;
+}
+
+.replace-subtitle {
+font-size: 0.9rem;
+color: #6b7280;
+margin: 4px 0 16px;
+}
+
+.form-group {
+margin-bottom: 14px;
+display: flex;
+flex-direction: column;
+}
+
+.form-group label {
+font-weight: 600;
+margin-bottom: 4px;
+}
+
+.required {
+color: #ef4444;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+border: 1px solid #d1d5db;
+border-radius: 6px;
+padding: 8px 10px;
+font-size: 14px;
+transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+outline: none;
+border-color: #2563eb;
+}
+
+textarea {
+resize: none;
+height: 90px;
+}
+
+.radio-group {
+display: flex;
+flex-direction: column;
+gap: 8px;
+border: 1px solid #d1d5db;
+border-radius: 8px;
+padding: 8px 10px;
+}
+
+.radio-group label {
+display: flex;
+align-items: center;
+gap: 6px;
+}
+
+.replace-footer {
+display: flex;
+justify-content: space-between;
+margin-top: 18px;
+gap: 10px;
+}
+
+.btn-cancel {
+flex: 1;
+padding: 10px;
+border: 1px solid #d1d5db;
+border-radius: 8px;
+background: #f9fafb;
+color: #111827;
+font-weight: 600;
+cursor: pointer;
+transition: background 0.2s;
+}
+
+.btn-cancel:hover {
+background: #f3f4f6;
+}
+
+.btn-submit {
+flex: 1;
+padding: 10px;
+background: #2563eb;
+color: #fff;
+border: none;
+border-radius: 8px;
+font-weight: 600;
+cursor: pointer;
+transition: background 0.2s;
+}
+
+.btn-submit:hover {
+background: #1d4ed8;
+}
