@@ -27,6 +27,7 @@ import useUserStore from './Store/UserStore/userStore';
 import { OrderDetails } from './Sender/pages/OrderDetails';
 import { Toaster } from "sonner";
 
+import ChangePass from './Sender/pages/ChangePass';
 import Print from './Sender/pages/Print'
 import HangerOrders from './Hanger/pages/Orders';
 import PageNotFound from './Components/PageNotFound';
@@ -104,6 +105,7 @@ const App = () => {
           <Route path="/order-details/:orderId" element={<OrderDetails />} />
           <Route path="/print/:orderId" element={<Print />} />
           <Route path="/request/:requestype/:id" element={<Request />} />
+          <Route path="/change-password" element={<ChangePass />} />
 
 
 
