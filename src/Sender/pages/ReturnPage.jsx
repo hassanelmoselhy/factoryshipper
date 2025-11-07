@@ -231,7 +231,7 @@ export default function ReturnPage() {
       const fetchReturnOrders= async()=>{
       try{
         setLoading(true);
-        const res=await fetch('https://stakeexpress.runasp.net/api/Shipments/getShipmentsToReturn',{
+        const res=await fetch('https://stakeexpress.runasp.net/api/Shipments/to-return',{
           method: 'GET',
           headers:{
             'X-Client-Key':'web api',
@@ -261,14 +261,18 @@ export default function ReturnPage() {
 // CustomerDetails.shipmentIds=selectedOrders;
 
 const payload={
-    returnPickupDate:CustomerDetails.returnPickupDate,
-    returnPickupWindowStart:CustomerDetails.returnPickupWindowStart+":00",
-    returnPickupWindowEnd:CustomerDetails.returnPickupWindowEnd+":00",
-    customerStreet:CustomerDetails.customerStreet,
-    customerCity:CustomerDetails.customerCity,
-    customerGovernorate:CustomerDetails.customerGovernorate,
-    customerAddressDetails:CustomerDetails.customerAddressDetails,
-    customerGoogleMapAddressLink:"https://www.google.com/maps",
+    pickupDate:CustomerDetails.returnPickupDate,
+    windowStart:CustomerDetails.returnPickupWindowStart+":00",
+    windowEnd:CustomerDetails.returnPickupWindowEnd+":00",
+     "customerAddress": {
+    street:CustomerDetails.customerStreet,
+    city:CustomerDetails.customerCity,
+    governorate:CustomerDetails.customerGovernorate,
+    details:CustomerDetails.customerAddressDetails,
+    "googleMapAddressLink": "https://www.google.com/maps"
+  },
+    
+    
     customerContactName:CustomerDetails.customerContactName,
     customerContactPhone:CustomerDetails.customerContactPhone,
 
@@ -278,7 +282,7 @@ const payload={
 console.log('payload',payload)
 try{
 setLoading(true);
-const res=await fetch('https://stakeexpress.runasp.net/api/Requests/return-request',{
+const res=await fetch('https://stakeexpress.runasp.net/api/Requests/return-requests',{
   method:'POST',
   headers:{
     'Content-Type':'application/json',

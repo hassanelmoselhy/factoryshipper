@@ -5,7 +5,6 @@ import translations from "../../Store/LanguageStore/translations";
 import { Link } from "react-router-dom";
 import useUserStore from "../../Store/UserStore/userStore";
 import LoadingOverlay from "../components/LoadingOverlay";
-import RescheduleModal from "../../Components/RescheduleModal";
 import ActionsList from "../components/ActionsList";
 import "bootstrap/dist/js/bootstrap.bundle.min.js"; // needed for dropdown behavior
 import "./css/Actions.css";
@@ -22,7 +21,7 @@ const Actions = () => {
     const fetchRequests = async () => {
       setloading(true);
       try {
-        const res = await fetch('https://stakeexpress.runasp.net/api/Requests/getAllRequests', {
+        const res = await fetch('https://stakeexpress.runasp.net/api/Requests', {
           method: 'GET',
           headers: {
             'X-Client-Key': 'web api',
@@ -72,7 +71,7 @@ const Actions = () => {
     };
     
     return (
-      <span className={`status-badge ${statusMap[status] || 'status-pending'}`}>
+      <span className={`status-badge`}>
         {statusText[status] || 'Pending'}
       </span>
     );
@@ -128,7 +127,7 @@ const Actions = () => {
                   <td>{String(request.requestType).replace("Request", " Request")}</td>
                   <td>{new Date(request.createdAt).toLocaleDateString()}</td>
                   <td>{new Date(request.updatedAt).toLocaleDateString()}</td>
-                  <td>{getStatusBadge(request.status)}</td>
+                  <td>{request.requestStatus}</td>
                   <td>
                     <span className="orders-count">{request.shipmentsCount}</span>
                   </td>
@@ -136,7 +135,7 @@ const Actions = () => {
                    
                 <ActionsList 
   handleopenSchedule={() => SetisRescheduleOpen(true)}
-  requestId={request?.id}
+  id={request?.id}
   requestype={request?.requestType}
 />
 

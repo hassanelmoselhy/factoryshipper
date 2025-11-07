@@ -169,12 +169,9 @@ const Home = () => {
       </div>
 
       <div className="orders-summary">
-        <h4>{t.ordersSummary}</h4>
-        <div className="tabs">
-          <button className="tab active">{t.today}</button>
-          <button className="tab">{t.week}</button>
-          <button className="tab">{t.month}</button>
-        </div>
+        {/* <h4>{t.ordersSummary}</h4> */}
+        <h4>Shipments statistics</h4>
+        
 
         <div className="cards">
           {ShipmentsStatus && Object.keys(statusConfig).map((statusKey) => {

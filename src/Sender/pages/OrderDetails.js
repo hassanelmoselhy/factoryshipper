@@ -31,7 +31,7 @@ export const OrderDetails = () => {
       setLoading(true);
       console.log("Fetching details for orderId:",orderId );
         try{
-       const res=await fetch(`https://stakeexpress.runasp.net/api/Shipments/getShipmentById/${orderId}`,{
+       const res=await fetch(`https://stakeexpress.runasp.net/api/Shipments/${orderId}`,{
         method:"Get",
         headers:{
           'Content-Type': 'application/json',
@@ -89,7 +89,7 @@ export const OrderDetails = () => {
     try{
   setLoading(true);
 console.log("Deleting Shipment:",orderId );
-  const res=await fetch("https://stakeexpress.runasp.net/api/Shipments/deleteShipment/"+orderId,{
+  const res=await fetch("https://stakeexpress.runasp.net/api/Shipments/"+orderId,{
 
     method:"DELETE",
     headers:{
@@ -101,16 +101,18 @@ console.log("Deleting Shipment:",orderId );
 
   });
   console.log("Response Status:",res.status);
-  if(res.ok===true){
   
+  if(res.ok===true){
     toast.success("تم إلغاء الطلب بنجاح");
     navigate(-1);
   }
-  else {
-
-   
-    toast.error("حدث خطأ أثناء إلغاء الطلب");
+  else { 
+    const data=await res.json()
+    // console.log('data from cancel',data)
+    toast.error(data?.message);
+    navigate(-1);
   }
+ 
 
 }catch(err){
     toast.error("حدث خطأ في الخادم أثناء إلغاء الطلب");
@@ -121,10 +123,34 @@ console.log("Deleting Shipment:",orderId );
   }
 }
 const handleSaveOnEdit=async(updatedorder)=>{
-
+console.log('test',updatedorder)
+  const payload={
+  customerName: updatedorder.customerName,
+  customerPhone: updatedorder.customerPhone,
+  customerAdditionalPhone: updatedorder.customerAdditionalPhone,
+  customerEmail: updatedorder.customerEmail,
+  customerAddress: {
+    street: updatedorder.street,
+    city: updatedorder.street,
+    governorate:updatedorder.governorate,
+    details: updatedorder.details,
+    googleMapAddressLink: "https://www.google.com/maps"
+  },
+  shipmentDescription: updatedorder.shipmentDescription,
+  shipmentWeight: updatedorder.shipmentWeight,
+  shipmentLength: updatedorder.shipmentLength,
+  shipmentWidth: updatedorder.shipmentWidth,
+  shipmentHeigh: updatedorder.shipmentHeight,
+  quantity: updatedorder.quantity,
+  shipmentNotes:updatedorder.shipmentNotes,
+  cashOnDeliveryEnabled: updatedorder.cashOnDeliveryEnabled,
+  openPackageOnDeliveryEnabled: updatedorder.openPackageOnDeliveryEnabled,
+  expressDeliveryEnabled: updatedorder.expressDeliveryEnabled,
+  collectionAmount: updatedorder.collectionAmount
+}
 
 try{
-  console.log("Saving updated order:",updatedorder );
+  console.log("Saving updated order:",payload );
   setLoading(true);
   const res=await fetch(`https://stakeexpress.runasp.net/api/Shipments/updateShipment/${Shipment.id}`,{
     method:"PUT",
@@ -133,7 +159,7 @@ try{
       'X-Client-Key': 'web API',
       Authorization: `Bearer ${user?.token}`
   },
-  body:JSON.stringify(updatedorder)
+  body:JSON.stringify(payload)
    });
    if(res.ok===true){
 

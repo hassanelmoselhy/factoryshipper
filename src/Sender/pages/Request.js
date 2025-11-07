@@ -76,15 +76,7 @@ fetchRequestDetails();
           </div>
 
           <div className="header-right">
-            <select
-              className="request-type-select"
-              value={requestType}
-              onChange={(e) => setRequestType(e.target.value)}
-            >
-              <option value="Return">Return</option>
-              <option value="Pickup">Pickup</option>
-              <option value="Delivery">Delivery</option>
-            </select>
+       
 
             <span
               className={`status-badge ${order.status

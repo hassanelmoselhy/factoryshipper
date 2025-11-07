@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { X, Calendar, CheckCircle, Info,Clock } from "lucide-react";
 import useUserStore from "../Store/UserStore/userStore";
+import { useNavigate } from "react-router-dom";
 import "./css/RescheduleModal.css";
 
 export default function RescheduleModal({
@@ -17,6 +18,7 @@ export default function RescheduleModal({
   const [selectedRequestId, setSelectedRequestId] = useState(null);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [requestsData, setRequestsData] = useState([]);
+  const navigate=useNavigate();
   const user = useUserStore((state) => state.user);
 const [FormData,setFormData]=useState({
   scheduledRequestId:'',
@@ -115,17 +117,26 @@ const [FormData,setFormData]=useState({
 
   const handleSubmit = async() => {
     console.log('form data are',FormData);
-    if (!selectedRequestId) {
-      alert("Please select the scheduled request to reschedule.");
-      return;
-    }
-    if (FormData&&(!FormData.newRequestDate||!FormData.newTimeWindowStart||!FormData.newTimeWindowEnd||!FormData.reason.trim()||!FormData.scheduledRequestId)) {
-      alert("Please fill required fields");
-      return;
-    }
+    // if (!selectedRequestId) {
+    //   alert("Please select the scheduled request to reschedule.");
+    //   return;
+    // }
+    // if (FormData&&(!FormData.newRequestDate||!FormData.newTimeWindowStart||!FormData.newTimeWindowEnd||!FormData.reason.trim()||!FormData.scheduledRequestId)) {
+    //   alert("Please fill required fields");
+    //   return;
+    // }
     
 
     try{
+      const payload={
+  scheduledRequestId: FormData.scheduledRequestId,
+  newRequestDate: FormData.newRequestDate,
+  newTimeWindowStart: FormData.newTimeWindowStart +":00",
+  newTimeWindowEnd: FormData.newTimeWindowEnd+":00",
+  reason: FormData.reason
+
+      }
+      console.log('from res payload',payload)
       const res=await fetch('https://stakeexpress.runasp.net/api/Requests/reschedule-requests',{
 
         method:'POST',
@@ -134,13 +145,15 @@ const [FormData,setFormData]=useState({
             "X-Client-Key": "web API",
             Authorization: `Bearer ${user?.token}`,
           },
-          body:JSON.stringify(FormData)
+          body:JSON.stringify(payload)
 
       })
 
       if(res.ok){
           const data=await res.json()
         console.log("request reschedule successfully",data)
+        onclose()
+        
       }
 
 

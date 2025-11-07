@@ -93,10 +93,13 @@ const Signup = () => {
       phoneNumber: formData.phoneNumber.trim(),
       companyName: formData.companyName.trim(),
       companyLink: formData.companyLink ? formData.companyLink : null,
-      city: formData.city.trim(),
-      street: formData.street.trim(),
-      governorate: formData.governorate.trim(),
-      details: formData.details.trim(),
+      address: {
+           street: formData.street.trim(),
+          city: formData.city.trim(),
+          governorate: formData.governorate.trim(),
+          details: formData.details.trim(),
+          // "googleMapAddressLink": "string"
+      },
       typeOfProduction: formData.typeOfProduction,
       password: formData.password,
       confirmPassword: formData.confirmPassword,
@@ -107,7 +110,7 @@ const Signup = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        "https://stakeexpress.runasp.net/api/Accounts/shipperRegistration",
+        "https://stakeexpress.runasp.net/api/Accounts/shippers",
         {
           method: "POST",
           headers: {

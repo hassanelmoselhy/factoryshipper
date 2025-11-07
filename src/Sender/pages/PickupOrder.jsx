@@ -287,11 +287,17 @@ const payload={
     pickupDate:PickupDetails.pickupDate,
     windowStart:PickupDetails.windowStart+":00",
     windowEnd:PickupDetails.windowEnd+":00",
+     pickupAddress: {
     street:PickupDetails.street,
     city:PickupDetails.city,
     governorate:PickupDetails.governorate,
-    addressDetails:PickupDetails.addressDetails,
+    details:PickupDetails.addressDetails,
+    
     // googleMapAddressLink: PickupDetails.googleMapAddressLink,
+  },
+    
+    
+    
     contactName:PickupDetails.contactName,
     contactPhone:PickupDetails?.contactPhone,
     shipmentIds:selectedOrders
@@ -300,7 +306,7 @@ const payload={
 try{
 setLoading(true);
 console.log('payload',payload);
-const res=await fetch('https://stakeexpress.runasp.net/api/Shipments/pickupRequest',{
+const res=await fetch('https://stakeexpress.runasp.net/api/Requests/pickup-requests',{
   method:'POST',
   headers:{
     'Content-Type':'application/json',

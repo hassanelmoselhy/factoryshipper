@@ -150,7 +150,7 @@ export default function CancelRequestsModal({
       setLoading(true);
 
       const res = await fetch(
-        `https://stakeexpress.runasp.net/api/Requests/cancellation-request/${requestIds}`,
+        `https://stakeexpress.runasp.net/api/Requests/${requestIds}/cancellations`,
         {
           method: "POST",
           headers: {
@@ -163,9 +163,9 @@ export default function CancelRequestsModal({
       );
 
       if (res.ok) {
-        console.log("Cancelled requests successfully:", shipmentIds);
         const data = await res.json();
-        console.log('data are',data);
+        console.log('Shipment deleted successfully',data);
+        onClose()
         
       } else {
         const text = await res.text().catch(() => "");

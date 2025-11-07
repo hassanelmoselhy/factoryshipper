@@ -72,21 +72,50 @@ const handleSubmit = () => {
 
           <div className="form-group">
             <label>
-              البريد الإلكتروني أو رقم الهاتف <span className="required">*</span>
+                رقم الهاتف <span className="required">*</span>
             </label>
             <input
               type="text"
-              placeholder="05xxxxxxxx أو example@email.com"
+              placeholder="05xxxxxxxx "
+              value={emailOrPhone}
+              onChange={(e) => setEmailOrPhone(e.target.value)}
+            />
+          </div>
+          <div className="form-group">
+            <label>
+              البريد الإلكتروني  <span className="required">*</span>
+            </label>
+            <input
+              type="text"
+              placeholder="example@email.com"
               value={emailOrPhone}
               onChange={(e) => setEmailOrPhone(e.target.value)}
             />
           </div>
 
           <div className="form-group">
-            <label>العنوان</label>
+            <label>المحافظه</label>
             <input
               type="text"
-              placeholder="أدخل عنوان التوصيل"
+              placeholder="أدخل  المحافظه"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+          </div>
+          <div className="form-group">
+            <label>المدينة</label>
+            <input
+              type="text"
+              placeholder="أدخل المدينة "
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+          </div>
+          <div className="form-group">
+            <label>اسم الشارع</label>
+            <input
+              type="text"
+              placeholder="أدخل  اسم الشارع"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
             />

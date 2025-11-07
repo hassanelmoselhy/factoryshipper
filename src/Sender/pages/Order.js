@@ -54,7 +54,7 @@ const Order = () => {
     const fetchOrders = async () => {
       setLoading(true);
       try {
-        const res = await fetch("https://stakeexpress.runasp.net/api/Shipments/getShipments", {
+        const res = await fetch("https://stakeexpress.runasp.net/api/Shipments", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
