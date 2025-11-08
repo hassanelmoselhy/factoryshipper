@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom"; // ✅ استيراد Link
+import { Link } from "react-router-dom"; 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./css/avatar.css";
 
@@ -7,7 +7,7 @@ export default function Avatar({ letter = "A", title = "Avatar A" }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
 
-  // إغلاق القائمة عند الضغط خارجها
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
