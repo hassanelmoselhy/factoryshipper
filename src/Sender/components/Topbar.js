@@ -58,7 +58,7 @@ const TopBar = () => {
               >
                 <button
                   type="button"
-                  className="dropdown-item"
+                  className="dropdown-item d-flex justify-content-between align-items-center"
                   onClick={() => goToPage("shipping")}
                 >
                   <FaTruck /> {lang === "ar" ? "طلب إنشاء شحنه" : "New Shipping"}
@@ -66,7 +66,7 @@ const TopBar = () => {
 
                 <button
                   type="button"
-                  className="dropdown-item"
+                  className="dropdown-item d-flex justify-content-between align-items-center"
                   onClick={() => navigate("/return")}
                 >
                   <FaUndo /> {lang === "ar" ? "طلب استرجاع" : "Return Request"}
@@ -74,7 +74,7 @@ const TopBar = () => {
 
                 <button
                   type="button"
-                  className="dropdown-item"
+                  className="dropdown-item d-flex justify-content-between align-items-center"
                   onClick={() => SetisRescheduleOpen(true)}
                 >
                   <Calendar1 />
@@ -83,11 +83,11 @@ const TopBar = () => {
 
                 <button
                   type="button"
-                  className="dropdown-item"
+                  className="dropdown-item d-flex justify-content-between align-items-center"
                   onClick={() => SetisReplaceOpen(true)}
                 >
                   <Replace />
-                  {lang === "ar" ? "طلب استبدال" : "Replace Request"}
+                  {lang === "ar" ? "طلب استبدال" : "Extchange Request"}
                 </button>
               </div>
             )}

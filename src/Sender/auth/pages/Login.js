@@ -4,6 +4,10 @@ import "../css/LoginPage.css";
 import { FaShippingFast } from "react-icons/fa";
 import useUserStore from "../../../Store/UserStore/userStore";
 import { toast } from "sonner";
+import { useLocation } from "react-router-dom";
+import ss from '../../../Sounds/who-VEED.mp3'
+
+
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import LoadingOverlay from "../../components/LoadingOverlay";
 const Login = () => {
@@ -18,6 +22,21 @@ const Login = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+    const location = useLocation();
+  const showUnauthorized = location.state?.unauthorized;
+
+  useEffect(() => {
+    if (showUnauthorized) {
+    
+      const sound = new Audio(ss);
+      sound.play().catch(() => {  });
+
+   
+      toast.error("Unauthorized, please Login first");
+
+    }
+  }, [showUnauthorized]);
+
 
   useEffect(() => {
     document.body.classList.add("login-page");

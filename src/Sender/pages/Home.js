@@ -17,7 +17,6 @@ import {
 } from 'react-icons/fa';
 import useLanguageStore from '../../Store/LanguageStore/languageStore';
 import translations from '../../Store/LanguageStore/translations';
-import soundUrl from "../../Sounds/videoplayback.mp3"; 
 
 import useUserStore from '../../Store/UserStore/userStore';
 
@@ -27,8 +26,8 @@ const Home = () => {
   const [loading, Setloading] = useState(false);
   const user = useUserStore((state) => state.user);
   const [ShipmentsStatus, SetShipmentsStatus] = useState(null);
-
   useEffect(() => {
+
     const fetchShipmentsStatus = async () => {
       try {
         Setloading(true);
