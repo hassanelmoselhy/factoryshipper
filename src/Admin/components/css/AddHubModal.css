@@ -8,14 +8,14 @@ background: rgba(0, 0, 0, 0.4);
 display: flex;
 justify-content: center;
 align-items: center;
-z-index: 999;
+z-index: 1000;
 }
 
 
 .modal-container {
 background: #fff;
 width: 600px;
-max-height: 90vh;
+max-height:100vh;
 overflow-y: auto;
 border-radius: 12px;
 padding: 20px;
@@ -32,7 +32,7 @@ font-weight: bold;
 }
 
 .modal-subtitle {
-margin: 4px 0 16px;
+margin: 4px 0 10px;
 color: #777;
 font-size: 14px;
 }

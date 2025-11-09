@@ -1,0 +1,137 @@
+.change-pass-page {
+background-color: #f8fbff;
+min-height: 100vh;
+display: flex;
+align-items: center;
+justify-content: center;
+direction: rtl;
+font-family: "Cairo", sans-serif;
+}
+
+/* card */
+.change-pass-card {
+background: #fff;
+padding: 40px 50px;
+border-radius: 12px;
+box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+width: 500px;
+text-align: center;
+}
+
+/* أيقونة القفل */
+.lock-icon {
+background-color: #f5f7fa;
+color: #111;
+font-size: 28px;
+width: 60px;
+height: 60px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+margin: 0 auto 15px;
+}
+
+/* العنوان */
+.change-pass-title {
+font-size: 20px;
+font-weight: 600;
+color: #222;
+margin-bottom: 8px;
+}
+
+/* الوصف */
+.change-pass-subtitle {
+color: #666;
+font-size: 14px;
+margin-bottom: 25px;
+}
+
+/* تسميات الحقول */
+.change-pass-label {
+display: block;
+font-size: 14px;
+color: #333;
+text-align: right;
+margin-bottom: 5px;
+margin-top: 12px;
+}
+
+/* الحقول */
+.change-pass-input {
+position: relative;
+}
+
+.change-pass-input input {
+width: 100%;
+padding: 10px 35px 10px 10px;
+border-radius: 8px;
+border: 1px solid #e5e7eb;
+background-color: #f8f9fb;
+outline: none;
+font-size: 14px;
+}
+
+.change-pass-input span {
+position: absolute;
+right: 10px;
+top: 50%;
+transform: translateY(-50%);
+color: #888;
+cursor: pointer;
+font-size: 14px;
+}
+
+/* الأزرار */
+.change-pass-buttons {
+display: flex;
+justify-content: space-between;
+gap: 10px;
+margin-top: 25px;
+}
+
+.save-btn {
+background-color: #000;
+color: #fff;
+border: none;
+padding: 10px 16px;
+border-radius: 8px;
+cursor: pointer;
+flex: 1;
+transition: background 0.2s ease;
+}
+
+.save-btn:hover {
+background-color: #222;
+}
+
+.cancel-btn {
+background: #fff;
+border: 1px solid #ccc;
+color: #111;
+padding: 10px 16px;
+border-radius: 8px;
+cursor: pointer;
+flex: 1;
+transition: background 0.2s ease;
+}
+
+.cancel-btn:hover {
+background-color: #f3f3f3;
+}
+
+.back-btn {
+display: flex;
+align-items: center;
+gap: 5px;
+background: none;
+border: none;
+color: #007bff;
+font-size: 14px;
+cursor: pointer;
+margin-bottom: 15px;
+}
+
+.back-btn:hover {
+text-decoration: underline;
+}
