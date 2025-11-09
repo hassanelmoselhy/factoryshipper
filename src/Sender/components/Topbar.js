@@ -61,7 +61,7 @@ const TopBar = () => {
                   className="dropdown-item"
                   onClick={() => goToPage("shipping")}
                 >
-                  <FaTruck /> {lang === "ar" ? "طلب إنشاء" : "New Shipping"}
+                  <FaTruck /> {lang === "ar" ? "طلب إنشاء شحنه" : "New Shipping"}
                 </button>
 
                 <button

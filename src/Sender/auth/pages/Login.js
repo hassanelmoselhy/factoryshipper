@@ -100,7 +100,7 @@ const Login = () => {
           sessionStorage.setItem("user", JSON.stringify(data.data));
           SetUser(data.data);
           shceduleRefreshToken(data.data.expiresOn);
-          toast.success("Login successfuly ");
+          toast.success("Welcome back , "+data.data?.firstName );
         }
 
         navigate("/home");

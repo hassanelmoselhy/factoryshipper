@@ -110,7 +110,7 @@ const Signup = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        "https://stakeexpress.runasp.net/api/Accounts/shippers",
+        "https://stakeexpress.runasp.net/api/shippers",
         {
           method: "POST",
           headers: {

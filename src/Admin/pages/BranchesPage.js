@@ -44,6 +44,7 @@ const BranchesPage = () => {
 
 
   const handleAddBranch = (newBranch) => {
+    console.log(newBranch)
     setBranches([...branches, newBranch]);
     setShowModal(false);
   };

@@ -4,14 +4,14 @@ import {
   FaWallet, 
   FaCheckCircle, 
   FaClock, 
-  FaGift, 
+  
   FaExclamationCircle,
-  FaShippingFast,
+ 
   FaTimesCircle,
   FaWarehouse,
   FaTruck,
   FaUndo,
-  FaBoxOpen,
+  
   FaExclamationTriangle,
   FaBan
 } from 'react-icons/fa';
@@ -53,6 +53,8 @@ const Home = () => {
     }
 
     fetchShipmentsStatus();
+
+
   }, []);
 
   // Status configuration with colors and icons 
@@ -139,7 +141,7 @@ const Home = () => {
  
   return (
     <div className="home-container" dir={lang === 'ar' ? 'rtl' : 'ltr'} lang={lang}>
-      <h2 className="page-title">{t.home}</h2>
+      {/* <h2 className="page-title">{t.home}</h2> */}
 
       <div className="balance-card">
         <div className="card-header">

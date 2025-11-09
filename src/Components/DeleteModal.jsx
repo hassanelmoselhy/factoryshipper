@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { FaTrash, FaTimes, FaExclamationTriangle } from 'react-icons/fa';
+import { FaTrash, FaExclamationTriangle } from 'react-icons/fa';
 
 export default function DeleteModal({
   show = false,

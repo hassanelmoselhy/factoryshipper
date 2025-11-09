@@ -1,54 +1,36 @@
 import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
 
-export default function AddEmployeeModal({ show, onClose, onSubmit }) {
+export default function AddEmployeeModal({
+  show,
+  onClose,
+  onSubmit,
+  Roles = [],
+  Hubs = [],
+}) {
   const [activeTab, setActiveTab] = useState("basic"); // 'basic' | 'roles' | 'units'
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
     email: "",
-    phone: "",
+    phoneNumber: "",
+    role: "", // single selected role
+    hubId: "", // single selected hub id
   });
-const roles=[
-    {
-        name:"مدير النظام",
-        description:"صلاحيات كاملة"
-    },
-    {
-        name:"مدير المخزن",
-        description:"اداره مخزن معين"
-    },
-    {
-        name:"موظف مخزن",
-        description:"عمليات المخزن الفرعي"
-    },
-    {
-        name:"سائق توصيل",
-        description:"عمليات التوصيل"
-    },
-    {
-        name:"دعم فني",
-        description:"دعم المعملاء"
-    },
-]
-const hubs=[
-    {
-        name:"المعادي",
-        type:"رئيسي"
-    },
-    {
-        name:"مدينه نصر",
-        type:"رئيسي"
-    },
-    {
-        name:"الزمالك",
-        type:"فرعي"
-    },
-]
+
+  const makeId = (v) =>
+    String(v).toLowerCase().trim().replace(/\s+/g, "-").replace(/[^a-z0-9-_]/g, "");
+
   useEffect(() => {
     if (show) {
-      // reset when opening
-      setForm({ firstName: "", lastName: "", email: "", phone: "+20" });
+      setForm({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phoneNumber: "",
+        role: "",
+        hubId: "",
+      });
       setActiveTab("basic");
     }
   }, [show]);
@@ -58,16 +40,45 @@ const hubs=[
     setForm((s) => ({ ...s, [name]: value }));
   }
 
+  // used for selecting role (radio) or hub (radio)
+  function handleSelect(field, value) {
+    setForm((s) => ({ ...s, [field]: value }));
+  }
+
+  function validateEmail(email) {
+    // basic email check
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  const isFormValid = (() => {
+    // trim everything to avoid accidental spaces
+    const firstName = String(form.firstName || "").trim();
+    const lastName = String(form.lastName || "").trim();
+    const email = String(form.email || "").trim();
+    const phone = String(form.phoneNumber || "").trim();
+    const role = String(form.role || "").trim();
+    const hubId = String(form.hubId || "").trim();
+
+    if (!firstName || !lastName || !email || !phone || !role || !hubId) return false;
+    if (!validateEmail(email)) return false;
+
+    // optional: require a minimum phone length (adjust as needed)
+    if (phone.length < 6) return false;
+
+    return true;
+  })();
+
   function handleSubmit(e) {
     e.preventDefault();
+    if (!isFormValid) return;
     if (onSubmit) onSubmit(form);
   }
 
   if (!show) return null;
 
   return (
-    // backdrop
     <>
+      {/* backdrop */}
       <div
         className="modal-backdrop fade show"
         style={{ opacity: 0.5 }}
@@ -84,12 +95,11 @@ const hubs=[
         <div
           className="modal-dialog modal-dialog-centered"
           role="document"
-          style={{ maxWidth: 487,maxHeight:420 }}
-          
+          style={{ maxWidth: 487, maxHeight: 420 }}
         >
           <div
             className="modal-content shadow rounded-4"
-            dir="rtl" // important for Arabic layout
+            dir="rtl"
             style={{ overflow: "hidden" }}
           >
             <div className="modal-header d-flex justify-content-between border-0 pt-4 pb-0 px-4">
@@ -115,20 +125,20 @@ const hubs=[
             </div>
 
             <div className="px-4 pt-3">
-              {/* Tabs (segmented control) */}
+              {/* Tabs */}
               <div
                 className="d-flex justify-content-center p-1 mb-3 rounded-pill"
                 style={{ backgroundColor: "#ddd" }}
               >
                 <div
-                  className="btn-group rounded-pill shadow-sm  w-100"
+                  className="btn-group rounded-pill shadow-sm w-100"
                   role="tablist"
                   aria-label="tabs"
                 >
                   <button
                     type="button"
                     className={
-                      "btn   border-0 flex-fill  " +
+                      "btn border-0 flex-fill " +
                       (activeTab === "units" ? "btn-light" : "text-muted")
                     }
                     onClick={() => setActiveTab("units")}
@@ -139,7 +149,7 @@ const hubs=[
                   <button
                     type="button"
                     className={
-                      "btn  border-0 flex-fill rounded-pill " +
+                      "btn border-0 flex-fill rounded-pill " +
                       (activeTab === "roles" ? "btn-light" : " text-muted")
                     }
                     onClick={() => setActiveTab("roles")}
@@ -149,7 +159,7 @@ const hubs=[
                   <button
                     type="button"
                     className={
-                      "btn  border-0 flex-fill rounded-pill " +
+                      "btn border-0 flex-fill rounded-pill " +
                       (activeTab === "basic" ? "btn-light" : " text-muted")
                     }
                     onClick={() => setActiveTab("basic")}
@@ -159,14 +169,13 @@ const hubs=[
                 </div>
               </div>
 
-              {/* Body */}
+              {/* Form */}
               <form onSubmit={handleSubmit}>
-                {/* tab panels (simple) */}
                 {activeTab === "basic" && (
                   <div className="modal-body px-0">
                     <div className="row g-3">
                       <div className="col-md-6">
-                        <label className="form-label  small fw-bolder">اسم العائلة</label>
+                        <label className="form-label small fw-bolder">اسم العائلة</label>
                         <input
                           name="lastName"
                           value={form.lastName}
@@ -190,9 +199,7 @@ const hubs=[
                       </div>
 
                       <div className="col-12">
-                        <label className="form-label small fw-bolder">
-                          البريد الإلكتروني
-                        </label>
+                        <label className="form-label small fw-bolder">البريد الإلكتروني</label>
                         <input
                           name="email"
                           value={form.email}
@@ -206,8 +213,8 @@ const hubs=[
                       <div className="col-12">
                         <label className="form-label small fw-bolder">رقم الهاتف</label>
                         <input
-                          name="phone"
-                          value={form.phone}
+                          name="phoneNumber"
+                          value={form.phoneNumber}
                           onChange={handleChange}
                           type="tel"
                           className="form-control form-control-lg rounded-3 fs-6"
@@ -220,44 +227,62 @@ const hubs=[
 
                 {activeTab === "roles" && (
                   <div className="modal-body px-0">
-                    {/* Placeholder content for roles */}
-                    <h5 className="fw-normal small fs-6"> اختر الادوار</h5>
-                    {/**role container */}
+                    <h5 className="fw-normal small fs-6"> اختر الدور</h5>
                     <div className="d-flex flex-column gap-2">
-                    {roles.map((r)=>(
-
-                        <div className="d-flex align-items-center gap-1">
-
-                            <input className="form-check-input" id={r.name} type="checkbox"/>
+                      {Roles.map((r) => {
+                        const id = `role-${makeId(r)}`;
+                        return (
+                          <div className="d-flex align-items-center gap-2" key={id}>
+                            <input
+                              className="form-check-input"
+                              id={id}
+                              type="radio"
+                              name="role"
+                              value={r}
+                              checked={form.role === r}
+                              onChange={() => handleSelect("role", r)}
+                            />
                             <div className="d-flex flex-column">
-                                <label for={r.name} className="form-check-label">{r.name}</label>
-                                <label className="form-check-label text-muted">{r.description}</label>
+                              <label htmlFor={id} className="form-check-label">
+                                {r}
+                              </label>
                             </div>
-                        </div>
-                    ))}
-
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
 
                 {activeTab === "units" && (
-                <div className="modal-body px-0">
-                    {/* Placeholder content for roles */}
-                    <h5 className="fw-normal small fs-6"> اختر المخازن المخصصه</h5>
-                    {/**role container */}
+                  <div className="modal-body px-0">
+                    <h5 className="fw-normal small fs-6"> اختر المخزن</h5>
                     <div className="d-flex flex-column gap-2">
-                    {hubs.map((r)=>(
-
-                        <div className="d-flex align-items-center gap-1">
-
-                            <input className="form-check-input" id={r.name} type="checkbox"/>
+                      {Hubs.map((r, idx) => {
+                        // r might be object { id, name, type } or a string
+                        const hubId = (r && r.id) ?? (typeof r === "string" ? r : `${r?.name ?? idx}`);
+                        const hubName = r?.name ?? r;
+                        const id = `hub-${makeId(hubId)}`;
+                        return (
+                          <div className="d-flex align-items-center gap-2" key={id}>
+                            <input
+                              className="form-check-input"
+                              id={id}
+                              type="radio"
+                              name="hubId"
+                              value={hubId}
+                              checked={String(form.hubId) === String(hubId)}
+                              onChange={() => handleSelect("hubId", String(hubId))}
+                            />
                             <div className="d-flex align-items-center gap-1 fw-bolder">
-                                <label for={r.name} className="form-check-label">{r.name}</label>
-                                <label className="form-check-label "> ( {r.type} ) </label>
+                              <label htmlFor={id} className="form-check-label">
+                                {hubName}
+                              </label>
+                              {r?.type && <label className="form-check-label"> ( {r.type} ) </label>}
                             </div>
-                        </div>
-                    ))}
-
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
@@ -274,7 +299,8 @@ const hubs=[
                       </button>
                       <button
                         type="submit"
-                        className="btn btn-primary rounded-3"
+                        className={"btn btn-primary rounded-3" + (!isFormValid ? " disabled" : "")}
+                        disabled={!isFormValid}
                       >
                         إضافة الموظف
                       </button>

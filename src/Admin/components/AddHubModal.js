@@ -4,7 +4,7 @@ import { toast } from "sonner";
 
 const AddHubModal = ({ isOpen, onClose, onAdd }) => {
   const [formData, setFormData] = useState({
-    type: "هـب رئيسي",
+    type: "",
     name: "",
     address: "",
     governorate: "",
@@ -24,11 +24,10 @@ const AddHubModal = ({ isOpen, onClose, onAdd }) => {
 
   const handleAdd = () => {
     const newBranch = {
-      branch: formData.type,
-      data: {
+      type: formData.type,
+
         name: formData.name,
-        id: "HUB-" + Math.floor(Math.random() * 1000)
-      },
+      
       city: formData.city,
       managerName: formData.managerName,
       managerPhone: formData.managerPhone,

@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { MoreVertical } from "react-feather";
 import { FaTimesCircle, FaInfoCircle } from "react-icons/fa";
-
+import styles from './css/ActionsList.module.css'
 const ActionsList = ({  id,requestype }) => {
   const navigate = useNavigate();
 
@@ -13,7 +13,8 @@ const ActionsList = ({  id,requestype }) => {
   return (
     <div className="dropdown">
       <button
-        className="btn btn-outline-primary btn-sm ts-toggle"
+        className={'btn btn-outline-primary btn-sm ' + styles['ts-toggle']}
+
         data-bs-toggle="dropdown"
       >
         <MoreVertical size={18} />

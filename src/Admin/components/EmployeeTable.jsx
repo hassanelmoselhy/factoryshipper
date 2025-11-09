@@ -1,60 +1,44 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Mail,
   Phone,
   MoreVertical,
-  CheckCircle,
-  XCircle,
   Building2,
   User,
 } from "lucide-react";
 import "./css/EmployeeTable.css";
 
-/** small helper formatters */
-const sampleData = [
-  {
-    id: "EMP-001",
-    name: "محمد أحمد",
-    email: "m.ahmed@stakeexpress.com",
-    phone: "201123456789+",
-    roles: ["مدير هب", "مشاهد مالية"],
-    units: [{ label: "هب", count: 1 }],
-    lastLogin: "2025/07/01",
-    status: "active",
-  },
-  {
-    id: "EMP-002",
-    name: "فاطمة محمود",
-    email: "f.mahmoud@stakeexpress.com",
-    phone: "201234567890+",
-    roles: ["مدير النظام"],
-    units: [{ label: "هيئات", count: 2 }],
-    lastLogin: "2025/07/01",
-    status: "active",
-  },
-  {
-    id: "EMP-003",
-    name: "أحمد سالم",
-    email: "a.salem@stakeexpress.com",
-    phone: "201345678901+",
-    roles: ["موظف مخزن"],
-    units: [{ label: "هب", count: 1 }],
-    lastLogin: "2025/05/01",
-    status: "inactive",
-  },
-];
 
-export default function EmployeeTable({ data = sampleData }) {
-  const copyToClipboard = async (text) => {
-    if (navigator.clipboard) {
-      try {
-        await navigator.clipboard.writeText(text);
-      } catch (e) {
-        /* ignore */
+
+export default function EmployeeTable({ data  }) {
+  const [Employees,SetEmployees]=useState([])
+
+  useEffect(()=>{
+
+    const fetchEmployees=async ()=>{
+
+      try{
+        const res=await fetch('https://stakeexpress.runasp.net/api/Employees',{
+          headers: {
+            "Content-Type": "application/json",
+            "X-Client-Key": "web API",
+          },
+        })
+
+        if(res.ok){
+            const data=await res.json()
+          console.log('employees data',data.data)
+          SetEmployees(data?.data)
+        }
+
+      }catch(err){
+        console.log('error in fetching employees',err)
       }
-    }
-  };
 
+    }
+fetchEmployees()
+
+  },[])
   return (
     <div
       className="employee-table-container"
@@ -66,8 +50,6 @@ export default function EmployeeTable({ data = sampleData }) {
           <thead className="table-light">
             <tr>
               <th className="col-actions">الإجراءات</th>
-              <th className="col-status">الحالة</th>
-              <th className="col-lastlogin">آخر دخول</th>
               <th className="col-units">الهئات المخصصة</th>
               <th className="col-roles">الأدوار</th>
               <th className="col-phone">الهاتف</th>
@@ -77,8 +59,8 @@ export default function EmployeeTable({ data = sampleData }) {
           </thead>
 
           <tbody>
-            {data.map((row) => (
-              <tr key={row.id}>
+            {Employees.map((row) => (
+              <tr key={row.employeeId}>
                 {/* actions */}
                 <td className="text-nowrap">
                   <button
@@ -91,56 +73,40 @@ export default function EmployeeTable({ data = sampleData }) {
                   </button>
                 </td>
 
-                {/* status */}
-                <td>
-                  {row.status === "active" ? (
-                    <span className="status-pill status-active">
-                      <CheckCircle size={12} className="me-1 status-icon" />
-                      نشط
-                    </span>
-                  ) : (
-                    <span className="status-pill status-inactive">
-                      <XCircle size={4} className="me-1 status-icon" />
-                      معطل
-                    </span>
-                  )}
-                </td>
 
-                {/* last login */}
-                <td className="small text-muted">{row.lastLogin}</td>
 
                 {/* units */}
                 <td>
                   <div className="d-flex align-items-center gap-2">
-                    {row.units?.map((u, i) => (
+                    
                       <div
-                        key={i}
+                  
                         className="unit-pill d-flex align-items-center gap-1"
                       >
                         <span className="unit-text">
-                          {u.count} {u.label}
+                          {row?.hubName? row.hubName:"Not Assigned yet"}
                         </span>
                         <Building2 size={14} />
                       </div>
-                    ))}
+            
                   </div>
                 </td>
 
                 {/* roles */}
                 <td>
                   <div className="d-flex align-items-center gap-2 flex-wrap">
-                    {row.roles?.map((r, i) => (
-                      <span key={i} className="role-badge">
-                        {r}
+                    
+                      <span  className="role-badge">
+                        {row.role}
                       </span>
-                    ))}
+                  
                   </div>
                 </td>
 
                 {/* phone */}
                 <td>
                   <div className="d-flex align-items-center gap-2">
-                    <span className="small phone-text">{row.phone}</span>
+                    <span className="small phone-text">{row.phoneNumber}</span>
 
                     <Phone size={14} />
                   </div>
@@ -163,7 +129,7 @@ export default function EmployeeTable({ data = sampleData }) {
                 <td>
                   <div className="d-flex align-items-center gap-1">
                     <div className="employee-meta">
-                      <div className="employee-name">{row.name}</div>
+                      <div className="employee-name">{row.fullName}</div>
                       <div className="employee-id small text-muted">
                         {row.id}
                       </div>

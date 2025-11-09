@@ -4,6 +4,7 @@ import useUserStore from "../../Store/UserStore/userStore";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import LoadingOverlay from "../components/LoadingOverlay";
+import Swal from 'sweetalert2'
 
 const ShippingPage = () => {
   const navigate = useNavigate();
@@ -257,6 +258,7 @@ const ShippingPage = () => {
     e.preventDefault();
     if (!user?.token) {
       toast.error("غير مصرح - الرجاء تسجيل الدخول لإنشاء الشحنة.");
+      navigate('/')
       return;
     }
 
@@ -287,7 +289,15 @@ const ShippingPage = () => {
       console.log("Status:", response.status, "Response:", text);
 
       if (response.ok) {
-        toast.success("تم إنشاء الشحنة بنجاح!");
+            Swal.fire({
+      position: "center-center",
+      icon: "success",
+      title: "Shipment Created Successfully",
+      showConfirmButton: false,
+      timer: 2000
+
+        });
+
         navigate("/order");
       } else if (response.status === 400) {
         toast.error("❌ فشل إنشاء الشحنة. يرجى مراجعة البيانات.");
