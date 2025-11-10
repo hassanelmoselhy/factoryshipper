@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FaFilter } from "react-icons/fa";
 import useLanguageStore from "../../Store/LanguageStore/languageStore";
 import translations from "../../Store/LanguageStore/translations";
-import { Link } from "react-router-dom";
 import useUserStore from "../../Store/UserStore/userStore";
 import LoadingOverlay from "../components/LoadingOverlay";
 import ActionsList from "../components/ActionsList";
@@ -11,11 +10,10 @@ import "./css/Actions.css";
 const Actions = () => {
   const { lang } = useLanguageStore();
   const t = translations[lang];
-  const [Resquests, setResquests] = useState([]);
+  const [Requests, setResquests] = useState([]);
   const user = useUserStore((state) => state.user);
   const [loading, setloading] = useState(false);
-  const [isRescheduleOpen,SetisRescheduleOpen]=useState(false)
-  
+  const [searchTerm,SetsearchTerm]=useState("")
   //fetch all requests
   useEffect(() => {
     const fetchRequests = async () => {
@@ -46,6 +44,25 @@ const Actions = () => {
 
     fetchRequests();
   }, []);
+
+  const FilteredRequests=useMemo(()=>{
+    let list= Requests||[];
+
+    if(searchTerm!==""){
+      const q=searchTerm.trim()
+      list=list.filter((o)=>{
+        const Idmatch=String(o.id).includes(q)
+        const Requesttype=(o.requestType||"").toLowerCase().includes(q)
+        const status=(o.requestStatus||"").toLowerCase().includes(q)
+        return Idmatch||Requesttype||status
+      })
+      
+    }
+      
+
+return list
+
+  },[searchTerm,Requests])
 
   const getStatusBadge = (status) => {
     const statusMap = {
@@ -82,24 +99,24 @@ const Actions = () => {
       <LoadingOverlay loading={loading} message="please wait..." color="#fff" size={44} />
       
       <div className={`actions-container ${lang === "ar" ? "rtl" : "ltr"} px-4`}>
-        {/* زر إضافة جديد */}
-        <div className="header-actions">
-          <Link to="/Pickuporder" className="new-request">{t.newRequest}</Link>
-        </div>
+ 
 
         {/* فلتر وبحث */}
         <div className="filter-search">
           <button className="filter-btn">
             <FaFilter /> {t.advancedFilter}
           </button>
-          <input type="text" placeholder={t.searchTask} />
+          <input type="text" placeholder={t.searchTask} 
+          onChange={(e)=>SetsearchTerm(e.target.value)}
+          value={searchTerm}
+          />
         </div>
 
         {/* Tabs */}
         <div className="tabs">
           <span>{t.today} (0)</span>
           <span>{t.week} (0)</span>
-          <span className="active">{t.all} ({Resquests.length})</span>
+          <span className="active">{t.all} ({Requests.length})</span>
         </div>
 
         {/* Modern Table Container */}
@@ -117,7 +134,7 @@ const Actions = () => {
               </tr>
             </thead>
             <tbody>
-              {Resquests.map((request, index) => (
+              {FilteredRequests.map((request, index) => (
                 <tr 
                   key={request.id} 
                   className="table-row"
@@ -134,7 +151,7 @@ const Actions = () => {
                   <td>
                    
                 <ActionsList 
-  handleopenSchedule={() => SetisRescheduleOpen(true)}
+
   id={request?.id}
   requestype={request?.requestType}
 />

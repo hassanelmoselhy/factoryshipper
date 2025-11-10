@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -16,11 +16,10 @@ import Login from "./Sender/auth/pages/Login";
 import PickupOrder from "./Sender/pages/PickupOrder";
 import ReturnPage from "./Sender/pages/ReturnPage";
 import Request from "./Sender/pages/Request";
+import ExtchangePage from "./Sender/pages/ExtchangePage";
 
-// import EmployeeMang from './Hanger/pages/EmployeeMang';
 import Scan from "./Hanger/pages/Scan";
-// import HangerAttendance from './Hanger/pages/HangerAttendance';
-// import DeliverySchedule from './Hanger/pages/DeliverySchedule';
+
 import Reciver from "./reciver/pages/reciver";
 import SignUp from "./Hanger/auth/pages/HangerSignup";
 import SignIn from "./Hanger/auth/pages/HangerSignin";
@@ -58,10 +57,9 @@ import "./App.css";
 
 import ProtectedRoute from "./utils/ProtectedRoute";
 
-// لو عندك فانكشن اسمها shceduleRefreshToken لازم تكون مستوردة
-// import { shceduleRefreshToken } from "./utils/auth";
 
 const MainLayout = ({ header: HeaderComponent, sidebarData }) => {
+
   return (
     <div className="layout">
       <Sidebar
@@ -78,6 +76,39 @@ const MainLayout = ({ header: HeaderComponent, sidebarData }) => {
 };
 
 const App = () => {
+  const SetUser=useUserStore((state)=>state.Setuser)
+
+    useEffect(()=>{
+     async function RefreshToken() {
+    try {
+      const response = await fetch(
+        "https://stakeexpress.runasp.net/api/Accounts/refreshToken",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Client-Key": "web API",
+          },
+          credentials: "include",
+        }
+      );
+      const data = await response.json();
+      if (response.status === 200) {
+        SetUser(data.data);
+        console.log("Token refreshed:", data);
+
+        console.log("token data = ", data.data.expiresOn);
+        // shceduleRefreshToken(data.data.expiresOn);
+      }
+      console.log("Token ", data);
+    } catch (error) {
+      console.log("Error refreshing token:", error);
+    }
+  }
+  console.log('hello')
+  RefreshToken()
+},[])
+
   return (
     <>
       <Toaster position="top-right" richColors closeButton />
@@ -112,10 +143,14 @@ const App = () => {
             <Route path="/wallet" element={<Wallet />} />
           </Route>
 
+            <Route > 
+
           <Route path="/order-details/:orderId" element={<OrderDetails />} />
           <Route path="/print/:orderId" element={<Print />} />
           <Route path="/request/:requestype/:id" element={<Request />} />
           <Route path="/change-password" element={<ChangePass />} />
+          <Route path="/extchange-request" element={<ExtchangePage />} />
+            </Route>
 
           {/* -------- Hanger Layout -------- */}
           <Route

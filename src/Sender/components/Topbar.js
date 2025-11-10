@@ -22,9 +22,6 @@ const TopBar = () => {
     setShowActions((prev) => !prev);
   };
 
-  useEffect(() => {
-    console.log("from store", user);
-  }, [user]);
 
   const goToPage = (type) => {
     setShowActions(false);
@@ -88,6 +85,14 @@ const TopBar = () => {
                 >
                   <Replace />
                   {lang === "ar" ? "طلب استبدال" : "Extchange Request"}
+                </button>
+                <button
+                  type="button"
+                  className="dropdown-item d-flex justify-content-between align-items-center"
+                  onClick={() => navigate("/Pickuporder")}
+                >
+                  
+                  {lang === "ar" ? "طلب أستلام شحنه" : "Pickup Request"}
                 </button>
               </div>
             )}

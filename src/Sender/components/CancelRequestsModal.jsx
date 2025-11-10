@@ -295,7 +295,7 @@ export default function CancelRequestsModal({
               Clear
             </button>
             <button className="btn-orange" onClick={handleDelete}>
-              <Trash2 size={16} style={{ marginRight: 8 }} /> Delete Selected
+              <Trash2 size={16} style={{ marginRight: 8 }} /> Cancel Selected
             </button>
           </div>
         </div>

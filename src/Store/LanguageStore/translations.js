@@ -56,7 +56,7 @@ const translations = {
      // Actions
     newRequest: "طلب استلام جديد",
     advancedFilter: "فلترة متقدمة",
-    searchTask: "البحث برقم المهمة، اسم المرسل، رقم الهاتف أو العنوان...",
+    searchTask: "البحث برقم المهمة، نوع المهمه، الحاله...",
     tasks: "المهام",
 
     // Missions Table

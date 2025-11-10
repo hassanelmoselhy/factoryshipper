@@ -8,7 +8,7 @@ import useShipmentsStore from "../../Store/UserStore/ShipmentsStore";
 import LoadingOverlay from "../components/LoadingOverlay";
 import CancelRequestsModal from "../components/CancelRequestsModal";
 import "./css/Order.css";
-
+import { useLocation } from "react-router-dom";
 //  Status Options
 const statusOptions = [
   "All",
@@ -40,10 +40,16 @@ const Order = () => {
   const user = useUserStore((state) => state.user);
   const SetShipmentsStore = useShipmentsStore((state) => state.SetShipments);
   const [iscancelModalOpen,setiscancelModalOpen]=useState(false)
+const location = useLocation();
+  const { state } = location;
 
   useEffect(() => {
     console.log("User in Orders page ", user);
 
+      console.log('status is',state)
+      if(state){
+        setSelectedStatus(state)
+      }
     if (!user) {
       toast.error("Unauthorized, login first");
       return;
@@ -180,13 +186,8 @@ const Order = () => {
                   <p>العميل: {order.customerName}</p>
                   <p>الهاتف: {order.customerPhone}</p>
                   <p>العنوان: {
-                    order.customerAddress?.governorate +
-                    " - " +
-                    order.customerAddress?.city +
-                    " - " +
-                    order.customerAddress?.street +
-                    " - " +
-                    order.customerAddress?.details
+                    order?.governorate 
+                  
                   }</p>
                   <p>التاريخ: {new Date(order.createdAt).toLocaleDateString()}</p>
                 </div>

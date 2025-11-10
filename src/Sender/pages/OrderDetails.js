@@ -10,6 +10,7 @@ import LoadingOverlay from "../components/LoadingOverlay";
 import DeleteModal from "../../Components/DeleteModal";
 import EditOrderModal from "../components/OrderEditSidebar";
 import ShipmentCancelModal from "../../Components/ShipmentCancelModal";
+import Swal from "sweetalert2";
 import "./css/OrderDetails.css";
 
 
@@ -104,6 +105,13 @@ console.log("Deleting Shipment:",orderId );
   
   if(res.ok===true){
     toast.success("تم إلغاء الطلب بنجاح");
+    Swal.fire({
+      position: "center-center",
+      icon: "success",
+      title: "Shipment Deleted Successfully",
+      showConfirmButton: false,
+      timer: 2000
+})
     navigate(-1);
   }
   else { 
