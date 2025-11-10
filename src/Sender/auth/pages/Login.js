@@ -101,12 +101,12 @@ const Login = () => {
           headers: {
             "Content-Type": "application/json",
             "X-Client-Key": "web API",
+            Authorization: `Bearer ${user.token}`,
           },
           body: JSON.stringify({
             email: formData.email.trim(),
             password: formData.password,
           }),
-          credentials: "include",
         }
       );
 
