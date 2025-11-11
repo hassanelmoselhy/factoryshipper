@@ -78,36 +78,6 @@ const MainLayout = ({ header: HeaderComponent, sidebarData }) => {
 const App = () => {
   const SetUser=useUserStore((state)=>state.Setuser)
 
-    useEffect(()=>{
-     async function RefreshToken() {
-    try {
-      const response = await fetch(
-        "https://stakeexpress.runasp.net/api/Accounts/refreshToken",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Client-Key": "web API",
-          },
-          credentials: "include",
-        }
-      );
-      const data = await response.json();
-      if (response.status === 200) {
-        SetUser(data.data);
-        console.log("Token refreshed:", data);
-
-        console.log("token data = ", data.data.expiresOn);
-        // shceduleRefreshToken(data.data.expiresOn);
-      }
-      console.log("Token ", data);
-    } catch (error) {
-      console.log("Error refreshing token:", error);
-    }
-  }
-  console.log('hello')
-  RefreshToken()
-},[])
 
   return (
     <>
@@ -130,6 +100,7 @@ const App = () => {
           <Route path="/return" element={<ReturnPage />} />
 
           {/* -------- Sender Layout -------- */}
+       {/* parent route */}
           <Route
             element={
               <ProtectedRoute>
@@ -142,8 +113,8 @@ const App = () => {
             <Route path="/actions" element={<Actions />} />
             <Route path="/wallet" element={<Wallet />} />
           </Route>
-
-            <Route > 
+ {/* parent route */}
+            <Route  element={<ProtectedRoute />}> 
 
           <Route path="/order-details/:orderId" element={<OrderDetails />} />
           <Route path="/print/:orderId" element={<Print />} />

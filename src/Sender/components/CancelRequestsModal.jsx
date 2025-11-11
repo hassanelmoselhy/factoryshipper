@@ -4,6 +4,7 @@ import { X, Trash2 } from "lucide-react";
 import "../../Components/css/RescheduleModal.css"; // reuse styles where appropriate
 import useUserStore from "../../Store/UserStore/userStore";
 import LoadingOverlay from "./LoadingOverlay";
+import Swal from "sweetalert2";
 
 export default function CancelRequestsModal({
   show = true,
@@ -165,6 +166,14 @@ export default function CancelRequestsModal({
       if (res.ok) {
         const data = await res.json();
         console.log('Shipment deleted successfully',data);
+        Swal.fire({
+                  position: "center-center",
+                  icon: "success",
+                  title: "Shipmens Canceled Successfully",
+                  showConfirmButton: false,
+                  timer: 2000
+            
+                    });
         onClose()
         
       } else {

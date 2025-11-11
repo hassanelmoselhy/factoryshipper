@@ -24,7 +24,7 @@ export default function ChangePass() {
   useEffect(() => {
     if (!token) {
       toast.error("المستخدم غير مسجّل الدخول");
-      navigate("/login"); 
+      navigate("/"); 
     }
   }, [token, navigate]);
 

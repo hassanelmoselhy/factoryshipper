@@ -5,6 +5,9 @@ import translations from "../../Store/LanguageStore/translations";
 import useUserStore from "../../Store/UserStore/userStore";
 import LoadingOverlay from "../components/LoadingOverlay";
 import ActionsList from "../components/ActionsList";
+import CancelModal from "../../Components/CancelModal";
+import axios from "axios";
+import Swal from "sweetalert2";
 import "bootstrap/dist/js/bootstrap.bundle.min.js"; // needed for dropdown behavior
 import "./css/Actions.css";
 const Actions = () => {
@@ -14,6 +17,16 @@ const Actions = () => {
   const user = useUserStore((state) => state.user);
   const [loading, setloading] = useState(false);
   const [searchTerm,SetsearchTerm]=useState("")
+  const [selectedRequest,setSelectedRequest]=useState(null);
+
+ //cancel modal states
+ const[showModal,SetShow]=useState(false)
+const handleshow=(id,type)=>{
+setSelectedRequest({id,type})
+SetShow(true)
+}
+
+
   //fetch all requests
   useEffect(() => {
     const fetchRequests = async () => {
@@ -93,11 +106,95 @@ return list
       </span>
     );
   };
+ const handleCancelRequest=async()=>{
 
+  console.log(selectedRequest) 
+
+  let ids=[]
+    if(selectedRequest?.type==="PickupRequest"){
+      try{
+
+        const res=await  axios.get('https://stakeexpress.runasp.net/api/Requests/pickup-requests/'+selectedRequest.id,{
+          headers:{
+             "Content-Type": "application/json",
+            "X-Client-Key": "web API",
+            Authorization: `Bearer ${user?.token}`,
+          }
+        })
+        
+      console.log(res.data.data.shipments)
+      const shipments = res.data?.data?.shipments || [];
+      ids=shipments.map((s)=>s.id)
+      
+
+      }catch(err){
+        console.log('error in fetching request details',err)
+      }
+
+}
+    if(selectedRequest?.type==="ReturnRequest"){
+      try{
+
+        const res=await  axios.get('https://stakeexpress.runasp.net/api/Requests/return-requests/'+selectedRequest.id,{
+          headers:{
+             "Content-Type": "application/json",
+            "X-Client-Key": "web API",
+            Authorization: `Bearer ${user?.token}`,
+          }
+        })
+        
+      console.log(res.data.data.shipments)
+      const shipments = res.data?.data?.shipments || [];
+      ids=shipments.map((s)=>s.id)
+      console.log('ids',ids)
+
+      }catch(err){
+        console.log('error in fetching request details',err)
+      }
+
+}
+  //////// post cancelation
+  const url=`https://stakeexpress.runasp.net/api/Requests/${selectedRequest?.id}/cancellations`;
+  const ShipmentIds=ids||[]
+
+  try{
+    const res=await  axios.post(url,{"ShipmentIds":ShipmentIds},{
+      headers:{
+         "Content-Type": "application/json",
+            "X-Client-Key": "web API",
+            Authorization: `Bearer ${user.token}`,
+      }
+    })
+
+    console.log('res=',res)
+       Swal.fire({
+          position: "center-center",
+          icon: "success",
+          title: "Request Canceled Successfully",
+          showConfirmButton: false,
+          timer: 2000
+    
+            });
+
+  }catch(err){
+console.log('Error in cancel request',err)
+
+  }
+
+
+
+SetShow(false)
+}
   return (
     <>
       <LoadingOverlay loading={loading} message="please wait..." color="#fff" size={44} />
-      
+      <CancelModal 
+      show={showModal} 
+      onCancel={()=>SetShow(false)} 
+      onConfirm={handleCancelRequest}
+      title="Cancel Request"
+      message="Are you sure you want to Cancel this Request? This action cannot be undone."
+      />
       <div className={`actions-container ${lang === "ar" ? "rtl" : "ltr"} px-4`}>
  
 
@@ -154,6 +251,8 @@ return list
 
   id={request?.id}
   requestype={request?.requestType}
+  showModal={()=>handleshow(request?.id,request?.requestType)}
+
 />
 
                   </td>

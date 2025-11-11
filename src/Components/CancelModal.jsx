@@ -1,45 +1,46 @@
 import React, { useEffect, useRef } from 'react';
 import { FaTrash, FaExclamationTriangle } from 'react-icons/fa';
 
-export default function DeleteModal({
+export default function CancelModal({ 
   show = false,
-  title = 'Delete item',
-  message = 'Are you sure you want to delete this item? This action cannot be undone.',
+  title = 'Cancel item',
+  message = 'Are you sure you want to Cancel this item? This action cannot be undone.',
   itemName = '',
+  
   onCancel = () => {},
   onConfirm = () => {},
-  loading = false,
-}) {
-  const cancelRef = useRef(null);
+  loading = false,}) {
+   const cancelRef = useRef(null);
+ 
+   useEffect(() => {
+     if (show) {
+       // prevent background scroll while modal is open
+       document.body.style.overflow = 'hidden';
+       // focus the cancel button after mount
+       setTimeout(() => cancelRef.current?.focus(), 30);
+       
+       const onKey = (e) => {
+         if (e.key === 'Escape') onCancel();
+       };
+       window.addEventListener('keydown', onKey);
+       return () => {
+         window.removeEventListener('keydown', onKey);
+         document.body.style.overflow = '';
+       };
+     } else {
+       document.body.style.overflow = '';
+     }
+   }, [show, onCancel]);
+ 
+   if (!show) return null;
+ 
+ 
+   function onBackdropClick(e) {
+     if (e.target === e.currentTarget) onCancel();
+   }
+ 
+    return (
 
-  useEffect(() => {
-    if (show) {
-      // prevent background scroll while modal is open
-      document.body.style.overflow = 'hidden';
-      // focus the cancel button after mount
-      setTimeout(() => cancelRef.current?.focus(), 30);
-      
-      const onKey = (e) => {
-        if (e.key === 'Escape') onCancel();
-      };
-      window.addEventListener('keydown', onKey);
-      return () => {
-        window.removeEventListener('keydown', onKey);
-        document.body.style.overflow = '';
-      };
-    } else {
-      document.body.style.overflow = '';
-    }
-  }, [show, onCancel]);
-
-  if (!show) return null;
-
-
-  function onBackdropClick(e) {
-    if (e.target === e.currentTarget) onCancel();
-  }
-
-  return (
     <div
       className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-50 p-3 fade show"
       style={{ zIndex: 1050 }}
@@ -131,6 +132,6 @@ export default function DeleteModal({
         </div>
       </div>
     </div>
-  
-);
+
+)
 }

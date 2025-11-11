@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { MoreVertical } from "react-feather";
 import { FaTimesCircle, FaInfoCircle } from "react-icons/fa";
 import styles from './css/ActionsList.module.css'
-const ActionsList = ({  id,requestype }) => {
+const ActionsList = ({  id,requestype ,showModal}) => {
   const navigate = useNavigate();
 
   const goToDetails = () => {
@@ -22,7 +22,9 @@ const ActionsList = ({  id,requestype }) => {
 
       <ul className="dropdown-menu dropdown-menu-end ts-menu">
         <li>
-          <button className="dropdown-item d-flex align-items-center gap-2 ts-item">
+          <button className="dropdown-item d-flex align-items-center gap-2 ts-item"
+          onClick={showModal}
+          >
             <FaTimesCircle className="ts-item-icon" />
             <span>Cancel</span>
           </button>
