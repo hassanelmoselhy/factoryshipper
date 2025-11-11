@@ -17,6 +17,7 @@ import PickupOrder from "./Sender/pages/PickupOrder";
 import ReturnPage from "./Sender/pages/ReturnPage";
 import Request from "./Sender/pages/Request";
 import ExtchangePage from "./Sender/pages/ExtchangePage";
+import ConfirmEmailPage from "./Sender/pages/ConfirmEmailPage";
 
 import Scan from "./Hanger/pages/Scan";
 
@@ -121,6 +122,7 @@ const App = () => {
           <Route path="/request/:requestype/:id" element={<Request />} />
           <Route path="/change-password" element={<ChangePass />} />
           <Route path="/extchange-request" element={<ExtchangePage />} />
+          <Route path="/confirm-email" element={<ConfirmEmailPage />} />
             </Route>
 
           {/* -------- Hanger Layout -------- */}

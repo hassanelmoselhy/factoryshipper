@@ -1,0 +1,124 @@
+/* Container setup */
+.confirm-container {
+background-color: #f8fbff;
+min-height: 100vh;
+display: flex;
+align-items: center;
+justify-content: center;
+direction: ltr;
+font-family: "Cairo", sans-serif;
+}
+
+/* Card */
+.confirm-card {
+background: #fff;
+padding: 40px 50px;
+border-radius: 12px;
+box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+width: 500px;
+text-align: center;
+}
+
+/* Icon */
+.icon-wrapper {
+background-color: #f5f7fa;
+color: #111;
+font-size: 28px;
+width: 60px;
+height: 60px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+margin: 0 auto 15px;
+}
+
+.mail-icon {
+font-size: 40px;
+color: #111;
+}
+
+/* Titles */
+.title {
+font-size: 20px;
+font-weight: 600;
+color: #222;
+margin-bottom: 8px;
+}
+
+.subtitle {
+color: #666;
+font-size: 14px;
+margin-bottom: 25px;
+}
+
+/* OTP inputs */
+.otp-container {
+display: flex;
+justify-content: center;
+gap: 10px;
+margin: 20px 0;
+}
+
+.otp-input {
+width: 50px;
+height: 50px;
+text-align: center;
+font-size: 20px;
+font-weight: 500;
+border: 2px solid #000;
+border-radius: 6px;
+outline: none;
+transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.otp-input:focus {
+border-color: #222;
+box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Buttons */
+.submit-btn {
+background-color: #000;
+color: #fff;
+width: 100%;
+border: none;
+padding: 10px 16px;
+margin-top: 20px;
+border-radius: 8px;
+cursor: pointer;
+transition: background 0.2s ease;
+}
+
+.submit-btn:hover {
+background-color: #222;
+}
+
+.resend-btn {
+background: #fff;
+border: 1px solid #ccc;
+width: 100%;
+color: #111;
+padding: 10px 16px;
+border-radius: 8px;
+cursor: pointer;
+margin-top: 10px;
+transition: background 0.2s ease;
+}
+
+.resend-btn:hover {
+background-color: #f3f3f3;
+}
+
+/* Hint */
+.hint-text {
+font-size: 13px;
+color: #666;
+margin-top: 15px;
+}
+
+.timer-text {
+margin-top: 10px;
+color: #555;
+font-size: 14px;
+}
