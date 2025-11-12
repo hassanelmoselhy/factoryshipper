@@ -56,10 +56,6 @@ export const OrderDetails = () => {
         }
       }
 
-   
-    
-  
-
     fetchShipmentDetails();
   }, []);
 
@@ -142,7 +138,7 @@ console.log('test',updatedorder)
     city: updatedorder.street,
     governorate:updatedorder.governorate,
     details: updatedorder.details,
-    googleMapAddressLink: "https://www.google.com/maps"
+    googleMapAddressLink: updatedorder.googleMapAddressLink,
   },
   shipmentDescription: updatedorder.shipmentDescription,
   shipmentWeight: updatedorder.shipmentWeight,
@@ -226,7 +222,7 @@ console.log("Error updating order:",err );
           </button>
           {(Shipment?.shipmentStatuses[0].status==="InWarehouse"||Shipment.shipmentStatuses[0].status==="Delivered")&&(
 
-             <button className="cancel-button"      onClick={()=>{setshowCancelRequest(true)}} >
+            <button className="cancel-button"      onClick={()=>{setshowCancelRequest(true)}} >
             طلب الغاء
             <i class="fa-solid fa-xmark"></i>
           </button>
@@ -252,7 +248,6 @@ console.log("Error updating order:",err );
 
         <div className="order-details-section">
           <h3>تفاصيل الطلب والعميل</h3>
-
 
           <div className="order-info-grid">
             <div className="info-item1">
@@ -286,16 +281,19 @@ console.log("Error updating order:",err );
             <h3>معلومات العميل</h3>
             <div className="customer-info-grid">
               <div className="info-item">
-                <span className="info-label">اسم العميل</span>
-                <i className="fas fa-user"></i> {Shipment.customerName}
+                {Shipment.customerName}
+                <span className="info-label">اسم العميل <i className="fas fa-user"></i> </span>
               </div>
               <div className="info-item">
-                <span className="info-label">رقم الهاتف</span>
-                <i className="fas fa-phone"></i> {Shipment.customerPhone}
+              {Shipment.customerPhone}
+                <span className="info-label"> رقم الهاتق الاضافي <i className="fas fa-phone"></i> </span>
               </div>
               <div className="info-item">
-                <span className="info-label">العنوان الكامل</span>
-                <i className="fas fa-map-marker-alt"></i> {
+              {Shipment.customerAdditionalPhone}
+                <span className="info-label">رقم هاتف اخر <i className="fas fa-phone"></i> </span>
+              </div>
+              <div className="info-item">
+              {
               Shipment.customerAddress.governorate +
               " - " +
               Shipment.customerAddress.city +
@@ -303,35 +301,68 @@ console.log("Error updating order:",err );
               Shipment.customerAddress.street +
               " - " +
               Shipment.customerAddress.details}
+                <span className="info-label">العنوان الكامل <i className="fas fa-map-marker-alt"></i> </span>
               </div>
               <div className="info-item">
-                <span className="info-label">محتوى الطرد</span>
-                <i className="fas fa-box"></i> {Shipment.shipmentDescription}
+              {Shipment.customerAddress.googleMapAddressLink}
+                <span className="info-label">رابط العنوان<i className="fas fa-map-marker-alt"></i></span>
+              </div>
+              <div className="info-item">
+              {Shipment.shipmentDescription}
+                <span className="info-label">محتوى الطرد <i className="fas fa-box"></i> </span>
               </div>
             </div>
           </div>
 
 <div className="order-extra-sections">
+          <div className="delivery-section">
+            <h3> معلومات الشحنة</h3>
+            <div className="delivery-box">
+              <div className="delivery-row"><strong>{Shipment.shipmentDescription} </strong><span>تفاصيل الشحنة</span></div>
+              <div className="delivery-row"><strong>{Shipment.shipmentWeight} كجم</strong><span> وزن الشحنة</span></div>
+              <div className="delivery-row"><strong>{Shipment.shipmentLength} سم</strong><span> طول الشحنة</span></div>
+              <div className="delivery-row"><strong>{Shipment.shipmentWidth} سم</strong><span> عرض الشحنة</span></div>
+              <div className="delivery-row"><strong>{Shipment.shipmentHeight} سم</strong><span> ارتفاع الشحنة</span></div>
+              <div className="delivery-row"><strong>{Shipment.quantity} قطعة</strong><span> عدد قطع الشحنة</span></div>
+              <div className="delivery-row"><strong>{Shipment.shipmentNotes}</strong><span> ملاحظات الشحنة</span></div>
+
+              
+          </div>
+          </div>
+        </div>
+
+
+<div className="order-extra-sections">
           <div className="finance-section">
             <h3>المعلومات المالية</h3>
             <div className="finance-box">
-              <div className="finance-row"><span>قيمة التحصيل</span><strong>{Shipment.collectionAmount} جنيه</strong></div>
-              <div className="finance-row"><span>قيمة الشحن</span><strong>{Shipment.shippingCost} جنيه</strong></div>
-              <div className="finance-row"><span>رسوم اضافيه</span><strong>{Shipment.additionalCost} جنيه</strong></div>
-              
-              {/* <div className="finance-row"><span>المبالغ الإضافية</span>
-                <div>
-                  
-                    <div  className="extra-item">{"وزن زائد"}: {Shipment.additionalWeightCost} جنيه</div>
-                
-                </div>
-              </div> */}
-                                <div className="finance-row"><span>المبلغ الكلي</span><strong>{Shipment?.totalCost} جنيه</strong></div>
+              <div className="finance-row"><strong>{Shipment.collectionAmount} جنيه</strong><span>قيمة التحصيل</span></div>
+              <div className="finance-row"><strong>{Shipment.shippingCost} جنيه</strong><span>قيمة الشحن</span></div>
+              <div className="finance-row"><strong>{Shipment.additionalCost} جنيه</strong><span>رسوم اضافيه</span></div>
+              <div className="finance-row">
+              <strong>
+    {Shipment.cashOnDeliveryEnabled && "الدفع عند الاستلام"}
+    {Shipment.openPackageOnDeliveryEnabled && "فتح الطرد عند الاستلام"}
+    {!Shipment.cashOnDeliveryEnabled && !Shipment.openPackageOnDeliveryEnabled && "غير محدد"}
+  </strong>
+              <span>طريقة الدفع</span>
+        
+</div>
+
+<div className="finance-row">
+  <strong>{Shipment.expressDeliveryEnabled ? "سريع" : "عادي"}</strong>
+  <span>نوع الشحن</span>
+</div>
+<div className="finance-row"><strong>{Shipment.additionalWeightCost} جنيه</strong><span> وزن زائد</span></div>
+    
+  <div className="finance-row"><strong>{Shipment?.totalCost} جنيه</strong><span>المبلغ الكلي</span></div>
 
 
               <div className="finance-total">قيمة التوريد: {Shipment?.netPayout} جنيه</div>
             </div>
           </div>
+
+
 
 
     {/* <div className="tracking-section">
@@ -347,13 +378,40 @@ console.log("Error updating order:",err );
             </ul>
           </div> */}
         </div>
+  <div className="tracking-section">
+    <h3>تفاصيل حالة الشحنة</h3>
+    <table className="tracking-table">
+      <thead>
+        <tr>
+          <th>حالة الشحنة</th>
+          <th>الوقت</th>
+          <th>ملاحظات</th>
+        </tr>
+      </thead>
+      <tbody>
+        {Shipment.shipmentStatuses && Shipment.shipmentStatuses.length > 0 ? (
+          Shipment.shipmentStatuses.map((s, index) => (
+            <tr key={index}>
+              <td>{s.status}</td>
+              <td>{new Date(s.timestamp).toLocaleString("ar-EG")}</td>
+              <td>{s.notes}</td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan={3}>لا توجد بيانات لحالة الشحنة</td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  </div>
+</div>
 
 
           <button onClick={() => navigate(-1)} className="back-button">
             العودة للطلبات
           </button>
         </div>
-      </div>
   
     </>
   );

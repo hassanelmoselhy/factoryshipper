@@ -11,15 +11,15 @@ const ShippingPage = () => {
   const [formData, setFormData] = useState({
     customerName: "",
     customerPhone: "",
+    customerAdditionalPhone: "",
     customerEmail: "",
     customerAddress: {
       street: "",
       city: "",
       governorate: "",
       details: "",
-      // "googleMapAddressLink": "string"
+      googleMapAddressLink: "" // Correctly nested here
     },
-
     quantity: "",
     shipmentWeight: "",
     shipmentLength: "",
@@ -85,10 +85,14 @@ const ShippingPage = () => {
     qtyInteger: "العدد يجب أن يكون عددًا صحيحًا.",
     collectionRequired: "ادخل قيمة تحصيل صحيحة (أكبر من 0) عند تفعيل الدفع عند الاستلام.",
     invalidEmail: "البريد الإلكتروني غير صالح.",
+    invalidUrl: "الرجاء إدخال رابط صالح (مثال: https://example.com).",
+    optional: "", // For fields that are optional but might have format validation
   };
 
   // Basic email regex
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
+
 
   // helpers to get/set nested path values like "customerAddress.street"
   const getByPath = (obj, path) => {
@@ -133,6 +137,24 @@ const ShippingPage = () => {
 
       case "customerPhone":
         if (!value || String(value).trim() === "") return messages.required;
+        return null;
+
+      case "customerAdditionalPhone":
+        // This field is optional, no specific validation if empty
+        return null;
+
+      case "googleMapAddressLink":
+        if (!value || String(value).trim() === "") return null; // Optional, so no error if empty
+
+        // Check if it's a valid URL. If not, try prepending https://
+        if (!urlRegex.test(value)) {
+          const autoFixed = `https://${value}`;
+          if (urlRegex.test(autoFixed)) {
+            // It's fixable, so not an error here, but you might want to auto-correct in handleChange
+            return null;
+          }
+          return messages.invalidUrl;
+        }
         return null;
 
       case "quantity":
@@ -182,10 +204,12 @@ const ShippingPage = () => {
       "customerName",
       "customerEmail",
       "customerPhone",
+      // "customerAdditionalPhone", // Optional, so not strictly required
 
       "customerAddress.street",
       "customerAddress.city",
       "customerAddress.governorate",
+      "customerAddress.googleMapAddressLink", // <--- Updated path for full validation
 
       "shipmentDescription",
       "quantity",
@@ -227,6 +251,15 @@ const ShippingPage = () => {
         else if (rawValue === "false") newVal = false;
         else newVal = rawValue;
       }
+
+      // Special handling for googleMapAddressLink to prepend https:// if missing and valid
+      if (name === "customerAddress.googleMapAddressLink" && newVal && typeof newVal === 'string' && !urlRegex.test(newVal)) {
+        const autoFixed = `https://${newVal}`;
+        if (urlRegex.test(autoFixed)) {
+          newVal = autoFixed;
+        }
+      }
+
 
       // If the name contains ".", update nested path immutably
       const updated = name.includes(".") ? setByPath(prev, name, newVal) : { ...prev, [name]: newVal };
@@ -326,6 +359,7 @@ const ShippingPage = () => {
             <strong>المستلم</strong>
             <p>{formData.customerName || "-"}</p>
             <p>{formData.customerPhone || "-"}</p>
+            <p>{formData.customerAdditionalPhone || "-"}</p>
             <p>{formData.customerEmail || "-"}</p>
           </div>
 
@@ -335,6 +369,13 @@ const ShippingPage = () => {
             <p>{formData.customerAddress.details || "-"}</p>
             <p>{formData.customerAddress.city || "-"}</p>
             <p>{formData.customerAddress.governorate || "-"}</p>
+            <p>
+              {formData.customerAddress.googleMapAddressLink ? (
+                <a href={formData.customerAddress.googleMapAddressLink} target="_blank" rel="noopener noreferrer">
+                  رابط الخريطة
+                </a>
+              ) : "-"}
+            </p>
           </div>
 
           <div className="summary-item">
@@ -383,6 +424,17 @@ const ShippingPage = () => {
               <label>رقم الهاتف </label>
               <input type="text" name="customerPhone" value={formData.customerPhone} onChange={handleChange} />
               {errors.customerPhone && <p className="text-danger">{errors.customerPhone}</p>}
+            </div>
+
+            <div className="form-group">
+              <label>رقم الهاتف الاضافي </label>
+              <input
+                type="text"
+                name="customerAdditionalPhone"
+                value={formData.customerAdditionalPhone}
+                onChange={handleChange}
+              />
+              {errors.customerAdditionalPhone && <p className="text-danger">{errors.customerAdditionalPhone}</p>}
             </div>
 
             <div className="form-group">
@@ -439,6 +491,17 @@ const ShippingPage = () => {
               {errors["customerAddress.governorate"] && (
                 <p className="text-danger">{errors["customerAddress.governorate"]}</p>
               )}
+            </div>
+
+            <div className="form-group">
+              <label>رابط العنوان</label>
+              <input
+                type="text"
+                name="customerAddress.googleMapAddressLink" 
+                value={formData.customerAddress.googleMapAddressLink}
+                onChange={handleChange}
+              />
+              {errors["customerAddress.googleMapAddressLink"] && <p className="text-danger">{errors["customerAddress.googleMapAddressLink"]}</p>}
             </div>
           </div>
 
