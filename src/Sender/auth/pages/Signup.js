@@ -103,6 +103,7 @@ const Signup = () => {
       typeOfProduction: formData.typeOfProduction,
       password: formData.password,
       confirmPassword: formData.confirmPassword,
+      confirmEmailUrl:"http://localhost:3000/confirm-email"
     };
 
     console.log("🚀 Payload sent:", payload);
@@ -127,9 +128,9 @@ const Signup = () => {
         sessionStorage.setItem("user", JSON.stringify(data));
         SetUser(data.data);
        
-        toast.success("Account created successfully");
+        toast.success("Check your email for the confirmation link!");
         console.log("✅ Signup successful:", data);
-        navigate("/home");
+       
       } else {
         const rawError = await response.text();
         let errorText;

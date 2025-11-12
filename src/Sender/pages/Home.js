@@ -187,7 +187,7 @@ const Home = () => {
         
         
 
-        <div className="cards">
+        <div className="cards ">
           {ShipmentsStatus && Object.keys(statusConfig).map((statusKey) => {
             const config = statusConfig[statusKey];
             const IconComponent = config.icon;

@@ -21,13 +21,6 @@ export default function ChangePass() {
 
   const token = user?.token || localStorage.getItem("token");
 
-  useEffect(() => {
-    if (!token) {
-      toast.error("المستخدم غير مسجّل الدخول");
-      navigate("/"); 
-    }
-  }, [token, navigate]);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));

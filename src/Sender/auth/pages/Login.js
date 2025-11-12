@@ -28,8 +28,8 @@ const Login = () => {
   useEffect(() => {
     if (showUnauthorized) {
     
-      const sound = new Audio(ss);
-      sound.play().catch(() => {  });
+      // const sound = new Audio(ss);
+      // sound.play().catch(() => {  });
 
    
       toast.error("Unauthorized, please Login first");
@@ -37,6 +37,8 @@ const Login = () => {
     }
   }, [showUnauthorized]);
 
+
+  
 
   useEffect(() => {
     document.body.classList.add("login-page");
@@ -106,6 +108,7 @@ const Login = () => {
           body: JSON.stringify({
             email: formData.email.trim(),
             password: formData.password,
+            confirmEmailUrl:"http://localhost:3000/confirm-email"
           }),
           credentials:'include'
         }
@@ -127,6 +130,15 @@ const Login = () => {
       } else {
         console.error("🚨 Login error:", data);
         setError(`❌ ${data.message}`);
+
+        if(data?.message==="Change Password Required"){
+         navigate("/reset-password", {
+        state: {
+          email: formData.email,
+          password: formData.password
+        }
+  });
+        }
       }
     } catch (err) {
       setError("❌ خطأ في الاتصال: " + err.message);
@@ -233,7 +245,7 @@ const Login = () => {
                 <label>
                   <input type="checkbox" /> Remember me
                 </label>
-                <a href="/" className="login-forgot-link">
+                <a href="/forget-password" className="login-forgot-link">
                   Forgot password?
                 </a>
               </div>

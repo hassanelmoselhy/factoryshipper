@@ -121,4 +121,41 @@ margin-top: 15px;
 margin-top: 10px;
 color: #555;
 font-size: 14px;
+display: flex;
+gap: 15px;
+justify-content: center;
+}
+
+
+
+
+
+
+.hourglass {
+  display: inline-block;          
+  transform-origin: 50% 50%;        
+  will-change: transform;         
+  animation: spin-360 3s linear infinite;
+  -webkit-animation: spin-360 3s linear infinite; 
+  
+}
+
+
+@keyframes spin-360 {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+
+@-webkit-keyframes spin-360 {
+  from { -webkit-transform: rotate(0deg); }
+  to   { -webkit-transform: rotate(360deg); }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .hourglass {
+    animation: none !important;
+    -webkit-animation: none !important;
+  }
 }

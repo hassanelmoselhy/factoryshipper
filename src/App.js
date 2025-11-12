@@ -39,7 +39,8 @@ import WarehouseList from "./Hanger/pages/WarehouseList";
 import OrdersPage from "./Hanger/pages/OrdersPage";
 import OrderRelease from "./Hanger/pages/OrdersRelease";
 import Safe from "./Hanger/pages/Safe";
-
+import ForgetPassword from "./Components/ForgetPassword";
+import ResetPassword from "./Components/ResetPassword";
 // Admin Components
 
 import OrderPage from "./Admin/pages/OrderPage";
@@ -90,6 +91,8 @@ const App = () => {
           {/* Sender Auth */}
           <Route path="/signup" element={<Signup />} />
           <Route path="/" element={<Login />} />
+          <Route path="/forget-password" element={<ForgetPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* Hanger Auth */}
           <Route path="/hanger/sign-up" element={<SignUp />} />
@@ -104,9 +107,9 @@ const App = () => {
        {/* parent route */}
           <Route
             element={
-              <ProtectedRoute>
+              
                 <MainLayout header={TopBar} sidebarData={senderSidebarData} />
-              </ProtectedRoute>
+            
             }
           >
             <Route path="/home" element={<Home />} />
@@ -115,15 +118,15 @@ const App = () => {
             <Route path="/wallet" element={<Wallet />} />
           </Route>
  {/* parent route */}
-            <Route  element={<ProtectedRoute />}> 
+            <Route  > 
 
           <Route path="/order-details/:orderId" element={<OrderDetails />} />
           <Route path="/print/:orderId" element={<Print />} />
           <Route path="/request/:requestype/:id" element={<Request />} />
           <Route path="/change-password" element={<ChangePass />} />
           <Route path="/extchange-request" element={<ExtchangePage />} />
-          <Route path="/confirm-email" element={<ConfirmEmailPage />} />
             </Route>
+          <Route path="/confirm-email" element={<ConfirmEmailPage />} />
 
           {/* -------- Hanger Layout -------- */}
           <Route
