@@ -4,22 +4,21 @@ import "../Sender/pages/css/ChangePass.css";
 import { FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "sonner";
 import useUserStore from "../Store/UserStore/userStore";
-import Swal from "sweetalert2";
-
+import LoadingOverlay from "../Sender/components/LoadingOverlay";
 export default function ForgetPassword() {
  const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [res, Setres] = useState(false);
-
+const [loading,setloading]=useState(false)
   const [formData, setFormData] = useState({
     email: "",
-    resetPasswordUrl: "http://localhost:3000",
+    resetPasswordUrl: window.location.origin,
   });
 
   const navigate = useNavigate();
   const user = useUserStore((state) => state.user);
 
-  const token = user?.token || localStorage.getItem("token");
+
 
 
   const handleChange = (e) => {
@@ -30,8 +29,9 @@ export default function ForgetPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-
+setloading(true)
     try {
+
       const response = await fetch(
         "https://stakeexpress.runasp.net/api/Accounts/forget-password",
         {
@@ -62,10 +62,17 @@ export default function ForgetPassword() {
     } catch (err) {
       toast.error("⚠️ خطأ في الاتصال بالخادم: " + err.message);
       console.error("Error:", err);
-    }
+    }finally{setloading(false)}
   };
 
     return (
+      <>
+        <LoadingOverlay
+        loading={loading}
+        message="please wait..."
+        color="#fff"
+        size={44}
+      />
     <div className="change-pass-page">
           <div className="change-pass-card">
             <div className="lock-icon">
@@ -76,7 +83,7 @@ export default function ForgetPassword() {
               قم بإدخال البريد الالكتروني الحالي
             </p>
 
-            <p>{res}</p>
+            <p className="text-success fw-boler fs-5">{res}</p>
 
             <form className="change-pass-form" onSubmit={handleSubmit}>
               <label className="change-pass-label">البريد الألكتروني الحالي</label>
@@ -108,5 +115,7 @@ export default function ForgetPassword() {
             </form>
           </div>
         </div>
-  )
+      </>
+  
+)
 }

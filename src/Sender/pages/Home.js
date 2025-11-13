@@ -26,7 +26,8 @@ const Home = () => {
   const [ShipmentsStatus, SetShipmentsStatus] = useState(null);
   const navigate=useNavigate()
   useEffect(() => {
-
+const tt = window.location.origin;
+    console.log('name',tt)
     const fetchShipmentsStatus = async () => {
       try {
         Setloading(true);

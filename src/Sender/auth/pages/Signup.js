@@ -103,7 +103,7 @@ const Signup = () => {
       typeOfProduction: formData.typeOfProduction,
       password: formData.password,
       confirmPassword: formData.confirmPassword,
-      confirmEmailUrl:"http://localhost:3000/confirm-email"
+      confirmEmailUrl:     window.location.origin+"/confirm-email"
     };
 
     console.log("🚀 Payload sent:", payload);

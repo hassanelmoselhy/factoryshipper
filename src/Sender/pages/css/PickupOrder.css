@@ -212,3 +212,31 @@
   .backmove { padding: 7px 12px; font-size: 13px; min-height: 34px; }
   .backmove__icon { width: 16px; height: 16px; }
 }
+
+.manual-order-card{
+  background: linear-gradient(180deg,#ffffff, #fbfdff);
+  border-radius:12px;
+  box-shadow:0 6px 18px rgba(8,15,30,0.08);
+  border:1px solid rgba(50,60,80,0.06);
+  padding:18px;
+}
+
+.manual-order-card h5{font-size:1.05rem;font-weight:600}
+
+.manual-order-form .form-label{font-weight:600;font-size:0.9rem;color:#263238}
+
+.manual-order-form .form-control{border-radius:8px;padding:10px 12px;box-shadow:none;border:1px solid #e6eef8}
+
+.manual-order-form .form-control:focus{outline:none;box-shadow:0 0 0 4px rgba(49,130,237,0.08);border-color:#3182ed}
+
+.manual-order-form .form-check{display:flex;align-items:center}
+
+.manual-order-card .btn-primary{background:#2b6cb0;border-color:#2b6cb0}
+.manual-order-card .btn-primary:hover{background:#285ea3}
+
+.manual-order-card .btn-secondary{background:#eef2f7;border-color:#eef2f7;color:#22333b}
+
+@media (max-width:768px){
+  .manual-order-card{padding:12px}
+  .manual-order-form .col-md-6,.manual-order-form .col-md-3,.manual-order-form .col-md-2,.manual-order-form .col-md-1{flex:0 0 100%;max-width:100%}
+}

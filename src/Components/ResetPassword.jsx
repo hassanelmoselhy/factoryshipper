@@ -3,13 +3,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "../Sender/pages/css/ChangePass.css";
 import { FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "sonner";
-import useUserStore from "../Store/UserStore/userStore";
 import Swal from "sweetalert2";
-
+import LoadingOverlay from "../Sender/components/LoadingOverlay";
 export default function ResetPassword() {
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [loading,setloading]=useState(false)
   const location=useLocation()
   const [formData, setFormData] = useState({
     email:"",
@@ -63,8 +63,8 @@ function getRawQueryParam(name) {
       return;
     }
 
-    
     const resetShipper=async()=>{
+      setloading(true)
 
       try {
         const response = await fetch(
@@ -108,7 +108,7 @@ function getRawQueryParam(name) {
       } catch (err) {
         toast.error("⚠️ خطأ في الاتصال بالخادم: " + err.message);
         console.error("Error:", err);
-      }
+      }finally{setloading(false)}
     
     }
 
@@ -162,7 +162,7 @@ function getRawQueryParam(name) {
       } catch (err) {
         toast.error("⚠️ خطأ في الاتصال بالخادم: " + err.message);
         console.error("Error:", err);
-      }
+      }finally{setloading(false)}
     
 
     }
@@ -174,7 +174,14 @@ function getRawQueryParam(name) {
   };
 
     return (
-    <div className="change-pass-page">
+   <>
+  <LoadingOverlay
+        loading={loading}
+        message="please wait..."
+        color="#fff"
+        size={44}
+      />   
+   <div className="change-pass-page">
           <div className="change-pass-card">
             <div className="lock-icon">
               <FaLock />
@@ -225,7 +232,7 @@ function getRawQueryParam(name) {
                 <button
                   type="button"
                   className="cancel-btn"
-                  onClick={() => navigate("/home")}
+                  onClick={() => navigate("/")}
                 >
                   إلغاء
                 </button>
@@ -233,5 +240,7 @@ function getRawQueryParam(name) {
             </form>
           </div>
         </div>
-  )
+   </>
+  
+)
 }

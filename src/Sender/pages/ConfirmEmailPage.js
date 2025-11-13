@@ -3,6 +3,7 @@ import { useNavigate,useSearchParams } from "react-router-dom";
 import "./css/ConfirmEmailPage.css";
 import { Hourglass, Mail } from "lucide-react";
 import Swal from "sweetalert2";
+import { toast } from "sonner";
 import axios from "axios";
 export default function ConfirmEmailPage() {
 const [code, setCode] = useState(["", "", "", "", "", ""]);
@@ -80,10 +81,10 @@ const [ShowResendbtn,SetShowResendbtn]=useState(false)
         if (res.ok) {
           setMessage("confirmed email successfully");
           setErr(0);
-
+            toast.info('Redirecting to Login Page')
           setTimeout(()=>{
             navigate("/")
-          },1000)
+          },2000)
         } else {
           setMessage("error confirming email");
           setErr(1);
@@ -158,6 +159,7 @@ const handleResend = async() => {
         if(res.ok){
          
             console.log('success in resending email')
+            setMessage("The email has been resent. Kindly check your inbox and confirm receipt.")
         }
 
     }catch(err){

@@ -41,6 +41,8 @@ const Login = () => {
   
 
   useEffect(() => {
+const tt = window.location.origin+"/confirm-email";
+    console.log('name',tt)
     document.body.classList.add("login-page");
     return () => {
       document.body.classList.remove("login-page");
@@ -108,7 +110,7 @@ const Login = () => {
           body: JSON.stringify({
             email: formData.email.trim(),
             password: formData.password,
-            confirmEmailUrl:"http://localhost:3000/confirm-email"
+            confirmEmailUrl:window.location.origin+"/confirm-email"
           }),
           credentials:'include'
         }

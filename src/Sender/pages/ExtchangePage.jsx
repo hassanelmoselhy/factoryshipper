@@ -6,8 +6,6 @@ import {
   Truck,
   Plus,
   MapPin,
-  Clock,
-  Calendar,
   User,
   Phone,
   Search,
@@ -27,7 +25,10 @@ function ExtchangePage() {
   const navigate = useNavigate();
   const [selectedOrderId, setSelectedOrderId] = useState(null);
 
-  // react-hook-form setup
+  // toggle manual order form
+  const [showManual, setShowManual] = useState(false);
+
+  // react-hook-form for exchange form
   const {
     register,
     handleSubmit,
@@ -45,6 +46,37 @@ function ExtchangePage() {
       addressDetails: "",
       contactName: "",
       contactPhone: "",
+    },
+  });
+
+  // react-hook-form for manual order creation
+  const {
+    register: registerManual,
+    handleSubmit: handleSubmitManual,
+    reset: resetManual,
+    formState: { errors: errorsManual, isSubmitting: isSubmittingManual },
+  } = useForm({
+    defaultValues: {
+      customerName: "",
+      customerPhone: "",
+      customerEmail: "",
+      customerAddress: {
+        street: "",
+        city: "",
+        governorate: "",
+        details: "",
+      },
+      shipmentDescription: "",
+      shipmentWeight: 0.01,
+      shipmentLength: 0.01,
+      shipmentWidth: 0.01,
+      shipmentHeight: 0.01,
+      quantity: 1,
+      shipmentNotes: "",
+      cashOnDeliveryEnabled: false,
+      openPackageOnDeliveryEnabled: false,
+      expressDeliveryEnabled: false,
+      collectionAmount: 0,
     },
   });
 
@@ -126,6 +158,60 @@ function ExtchangePage() {
     } catch (err) {
       console.error("Exchange submit error:", err);
       toast.error("Failed to submit exchange request");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // manual order submit handler
+  const onSubmitManual = async (data) => {
+    try {
+      setLoading(true);
+      // assemble payload making sure numeric fields are numbers
+      const payload = {
+        customerName: data.customerName,
+        customerPhone: data.customerPhone,
+        customerAdditionalPhone: null,
+        customerEmail: data.customerEmail || null,
+        customerAddress: {
+          street: data["customerAddress.street"] || "",
+          city: data["customerAddress.city"] || "",
+          governorate: data["customerAddress.governorate"] || "",
+          details: data["customerAddress.details"] || "",
+        },
+        shipmentDescription: data.shipmentDescription,
+        shipmentWeight: parseFloat(data.shipmentWeight) || 0.01,
+        shipmentLength: parseFloat(data.shipmentLength) || 0.01,
+        shipmentWidth: parseFloat(data.shipmentWidth) || 0.01,
+        shipmentHeight: parseFloat(data.shipmentHeight) || 0.01,
+        quantity: parseInt(data.quantity, 10) || 1,
+        shipmentNotes: data.shipmentNotes || "",
+        cashOnDeliveryEnabled: !!data.cashOnDeliveryEnabled,
+        openPackageOnDeliveryEnabled: !!data.openPackageOnDeliveryEnabled,
+        expressDeliveryEnabled: !!data.expressDeliveryEnabled,
+        collectionAmount: parseFloat(data.collectionAmount) || 0,
+      };
+
+      const res = await axios.post(
+        "https://stakeexpress.runasp.net/api/Shipments",
+        payload,
+        {
+          headers: {
+            "X-Client-Key": "web api",
+            Authorization: `Bearer ${user?.token}`,
+          },
+        }
+      );
+
+      toast.success("Manual order added");
+      // add the created order to the list (try res.data.data, fallback to res.data or payload)
+      const created = res.data?.data || res.data || payload;
+      setOrders((prev) => [created, ...prev]);
+      resetManual();
+      setShowManual(false);
+    } catch (err) {
+      console.error("Manual order create error:", err);
+      toast.error("Failed to add manual order");
     } finally {
       setLoading(false);
     }
@@ -264,6 +350,10 @@ function ExtchangePage() {
                   <input className="form-control search-input ps-5" placeholder="Search orders..." style={{ zIndex: 1, backgroundColor: "#fcfcfd" }} />
                 </div>
 
+                <button className="btn btn-outline-secondary d-flex align-items-center" type="button" onClick={() => setShowManual(true)}>
+                  <Plus size={16} className="me-1" /> Add Manual Order
+                </button>
+
                 <button className="btn btn-outline-secondary d-flex align-items-center">
                   <CheckSquare size={16} className="me-1" /> Select All
                 </button>
@@ -277,6 +367,126 @@ function ExtchangePage() {
                 </button>
               </div>
             </div>
+
+            {/* Manual Order form container (shown when showManual) */}
+            {showManual && (
+              <div className="card mb-3 p-3 manual-order-card">
+                <div className="d-flex justify-content-between align-items-center mb-2">
+                  <h5 className="m-0">Add Manual Order</h5>
+                  <div>
+                    <button className="btn btn-sm btn-secondary me-2" onClick={() => { resetManual(); setShowManual(false); }}>
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+
+                <form onSubmit={handleSubmitManual(onSubmitManual)} className="row g-2 manual-order-form">
+                  <div className="col-md-4">
+                    <label className="form-label">Customer Name</label>
+                    <input className="form-control" {...registerManual("customerName", { required: "Customer name is required" })} />
+                    {errorsManual.customerName && <small className="text-danger">{errorsManual.customerName.message}</small>}
+                  </div>
+
+                  <div className="col-md-4">
+                    <label className="form-label">Customer Phone</label>
+                    <input className="form-control" {...registerManual("customerPhone", { required: "Phone is required", pattern: { value: /^\+?[0-9]{9,15}$/, message: "Invalid phone" } })} />
+                    {errorsManual.customerPhone && <small className="text-danger">{errorsManual.customerPhone.message}</small>}
+                  </div>
+
+                  <div className="col-md-4">
+                    <label className="form-label">Email</label>
+                    <input className="form-control" {...registerManual("customerEmail", { pattern: { value: /^[^@\s]+@[^@\s]+\.[^@\s]+$/, message: "Invalid email" } })} />
+                    {errorsManual.customerEmail && <small className="text-danger">{errorsManual.customerEmail.message}</small>}
+                  </div>
+
+                  <div className="col-12"><hr /></div>
+
+                  <div className="col-md-3">
+                    <label className="form-label">Street</label>
+                    <input className="form-control" {...registerManual("customerAddress.street")} />
+                  </div>
+                  <div className="col-md-3">
+                    <label className="form-label">City</label>
+                    <input className="form-control" {...registerManual("customerAddress.city")} />
+                  </div>
+                  <div className="col-md-3">
+                    <label className="form-label">Governorate</label>
+                    <input className="form-control" {...registerManual("customerAddress.governorate")} />
+                  </div>
+                  <div className="col-md-3">
+                    <label className="form-label">Details</label>
+                    <input className="form-control" {...registerManual("customerAddress.details")} />
+                  </div>
+
+                  <div className="col-md-5">
+                    <label className="form-label">Shipment Description</label>
+                    <input className="form-control" {...registerManual("shipmentDescription", { required: "Description required" })} />
+                    {errorsManual.shipmentDescription && <small className="text-danger">{errorsManual.shipmentDescription.message}</small>}
+                  </div>
+
+                  <div className="col-md-2">
+                    <label className="form-label">Weight (kg)</label>
+                    <input type="number" step="0.01" className="form-control" {...registerManual("shipmentWeight", { valueAsNumber: true, min: { value: 0.0001, message: "Weight must be > 0" } })} />
+                    {errorsManual.shipmentWeight && <small className="text-danger">{errorsManual.shipmentWeight.message}</small>}
+                  </div>
+
+                  <div className="col-md-1">
+                    <label className="form-label">Length</label>
+                    <input type="number" step="0.01" className="form-control" {...registerManual("shipmentLength", { valueAsNumber: true })} />
+                  </div>
+
+                  <div className="col-md-1">
+                    <label className="form-label">Width</label>
+                    <input type="number" step="0.01" className="form-control" {...registerManual("shipmentWidth", { valueAsNumber: true })} />
+                  </div>
+
+                  <div className="col-md-1">
+                    <label className="form-label">Height</label>
+                    <input type="number" step="0.01" className="form-control" {...registerManual("shipmentHeight", { valueAsNumber: true })} />
+                  </div>
+
+                  <div className="col-md-2">
+                    <label className="form-label">Quantity</label>
+                    <input type="number" className="form-control" {...registerManual("quantity", { valueAsNumber: true, min: { value: 1, message: "At least 1" } })} />
+                    {errorsManual.quantity && <small className="text-danger">{errorsManual.quantity.message}</small>}
+                  </div>
+
+                  <div className="col-12">
+                    <label className="form-label">Shipment Notes</label>
+                    <textarea className="form-control" rows={2} {...registerManual("shipmentNotes")} />
+                  </div>
+
+                  <div className="col-md-3 form-check mt-2">
+                    <input className="form-check-input" type="checkbox" {...registerManual("cashOnDeliveryEnabled")} id="cod" />
+                    <label className="form-check-label" htmlFor="cod">Cash On Delivery Enabled</label>
+                  </div>
+
+                  <div className="col-md-3 form-check mt-2">
+                    <input className="form-check-input" type="checkbox" {...registerManual("openPackageOnDeliveryEnabled")} id="openPkg" />
+                    <label className="form-check-label" htmlFor="openPkg">Open Package On Delivery</label>
+                  </div>
+
+                  <div className="col-md-3 form-check mt-2">
+                    <input className="form-check-input" type="checkbox" {...registerManual("expressDeliveryEnabled")} id="express" />
+                    <label className="form-check-label" htmlFor="express">Express Delivery</label>
+                  </div>
+
+                  <div className="col-md-3">
+                    <label className="form-label">Collection Amount</label>
+                    <input type="number" step="0.01" className="form-control" {...registerManual("collectionAmount", { valueAsNumber: true })} />
+                  </div>
+
+                  <div className="col-12 d-flex justify-content-end gap-2 mt-3">
+                    <button type="button" className="btn btn-secondary" onClick={() => { resetManual(); setShowManual(false); }}>
+                      Cancel
+                    </button>
+                    <button type="submit" className="btn btn-primary" disabled={isSubmittingManual}>
+                      {isSubmittingManual ? "Adding..." : "Add Order"}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
 
             <div className="table-responsive">
               <table className="table orders-table">
@@ -296,7 +506,7 @@ function ExtchangePage() {
                 </thead>
                 <tbody>
                   {orders.map((p, idx) => (
-                    <tr key={p.id} className={selectedOrderId === p.id ? "table-active" : ""}>
+                    <tr key={p.id || idx} className={selectedOrderId === p.id ? "table-active" : ""}>
                       <td>{idx + 1}</td>
                       <td>
                         <input type="checkbox" />
@@ -305,7 +515,7 @@ function ExtchangePage() {
                         {/* clicking the link will populate the form with order details */}
                         <Link
                           className="order-link"
-                          to={`/order-customerAddressDetails/${p.id}`}
+                          to={`/order-customerAddressDetails/${p.id || "manual-" + idx}`}
                           title="Go To Order Details"
                           onClick={(e) => {
                             // prevent navigation so user can fill the form first — remove preventDefault if you still want to navigate
@@ -313,7 +523,7 @@ function ExtchangePage() {
                             handleSelectOrder(p);
                           }}
                         >
-                          {p.id}
+                          {p.id || `manual-${idx + 1}`}
                         </Link>
                       </td>
                       <td>{p.customerName}</td>
