@@ -5,11 +5,10 @@ import { FaShippingFast } from "react-icons/fa";
 import useUserStore from "../../../Store/UserStore/userStore";
 import { toast } from "sonner";
 import { useLocation } from "react-router-dom";
-import ss from '../../../Sounds/who-VEED.mp3'
-
+import api from "../../../utils/Api";
+import ss from "../../../Sounds/who-VEED.mp3";
 
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import LoadingOverlay from "../../components/LoadingOverlay";
 const Login = () => {
   const SetUser = useUserStore((state) => state.SetUser);
   const user = useUserStore((state) => state.user);
@@ -22,27 +21,21 @@ const Login = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-    const location = useLocation();
+  const location = useLocation();
   const showUnauthorized = location.state?.unauthorized;
 
   useEffect(() => {
     if (showUnauthorized) {
-    
       // const sound = new Audio(ss);
       // sound.play().catch(() => {  });
 
-   
       toast.error("Unauthorized, please Login first");
-
     }
   }, [showUnauthorized]);
 
-
-  
-
   useEffect(() => {
-const tt = window.location.origin+"/confirm-email";
-    console.log('name',tt)
+    const tt = window.location.origin + "/confirm-email";
+    console.log("name", tt);
     document.body.classList.add("login-page");
     return () => {
       document.body.classList.remove("login-page");
@@ -96,54 +89,42 @@ const tt = window.location.origin+"/confirm-email";
 
     setError("");
     setLoading(true);
+    const body = JSON.stringify({
+      email: formData.email.trim(),
+      password: formData.password,
+      confirmEmailUrl: window.location.origin + "/confirm-email",
+    });
 
     try {
-      const response = await fetch(
-        "https://stakeexpress.runasp.net/api/Accounts/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Client-Key": "web API",
-          
-          },
-          body: JSON.stringify({
-            email: formData.email.trim(),
+      const res = await api.post("/Accounts/login", body,{withCredentials:true});
+      console.log(res)
+      const result=res.data.data;
+      const message=res.data.message
+      // console.log(message)
+      if (message === "Change Password Required") {
+        navigate("/reset-password", {
+          state: {
+            email: formData.email,
             password: formData.password,
-            confirmEmailUrl:window.location.origin+"/confirm-email"
-          }),
-          credentials:'include'
-        }
-      );
-
-      const data = await response.json();
-
-      if (response.ok) {
-        console.log("✅ Login successful:", data);
-
-        if (data) {
-          sessionStorage.setItem("user", JSON.stringify(data.data));
-          SetUser(data.data);
-          shceduleRefreshToken(data.data.expiresOn);
-          toast.success("Welcome back , "+data.data?.firstName );
-        }
-
-        navigate("/home");
-      } else {
-        console.error("🚨 Login error:", data);
-        setError(`❌ ${data.message}`);
-
-        if(data?.message==="Change Password Required"){
-         navigate("/reset-password", {
-        state: {
-          email: formData.email,
-          password: formData.password
-        }
-  });
-        }
+          },
+        });
       }
+      else{
+
+        console.log("✅ Login successful:",result);
+         sessionStorage.setItem("user", JSON.stringify(result));
+                SetUser(result);
+                navigate("/home");
+                shceduleRefreshToken(result.expiresOn);
+                toast.success("Welcome back , "+result?.firstName );
+      }
+    
     } catch (err) {
-      setError("❌ خطأ في الاتصال: " + err.message);
+      const message = err.response?.data.message || "";
+      setError(message);
+      console.error("🚨 Login error:", message);
+
+      
     } finally {
       setLoading(false);
     }
@@ -180,93 +161,83 @@ const tt = window.location.origin+"/confirm-email";
   };
   return (
     <>
-      <LoadingOverlay
-        loading={loading}
-        message="please wait..."
-        color="#fff"
-        size={44}
-      />
-<div>
-
-
-      <div className="loginPage-container">
-
-      
-        <div className="login-banner">
-          <div className="login-logo">
-            <FaShippingFast className="login-icon" />
-            <h1 className="login-title">Stake Express</h1>
+      <div>
+        <div className="loginPage-container">
+          <div className="login-banner">
+            <div className="login-logo">
+              <FaShippingFast className="login-icon" />
+              <h1 className="login-title">Stake Express</h1>
+            </div>
+            <p className="login-slogan">
+              Your trusted logistics partner for fast and reliable shipping
+            </p>
           </div>
-          <p className="login-slogan">
-            Your trusted logistics partner for fast and reliable shipping
-          </p>
-        </div>
 
-        <div className="login-container">
-          <div className="login-form-wrapper">
-            <form onSubmit={handleSubmit}>
-              <h2 className="login-form-title">Sign In to Your Account</h2>
-              <p className="login-form-subtitle">
-                Welcome back! Please enter your credentials to continue
-              </p>
+          <div className="login-container">
+            <div className="login-form-wrapper">
+              <form onSubmit={handleSubmit}>
+                <h2 className="login-form-title">Sign In to Your Account</h2>
+                <p className="login-form-subtitle">
+                  Welcome back! Please enter your credentials to continue
+                </p>
 
-              {error && <p style={{ color: "red" }}>{error}</p>}
+                {error && <p style={{ color: "red" }}>{error}</p>}
 
-              <div className="login-input-group">
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Email Address *"
-                  value={formData.email}
-                  onChange={handleChange}
-                />
-                <div className="d-flex align-items-center position-relative">
+                <div className="login-input-group">
                   <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    placeholder="Password *"
-                    value={formData.password}
+                    type="email"
+                    name="email"
+                    placeholder="Email Address *"
+                    value={formData.email}
                     onChange={handleChange}
-                    className="w-100"
-                  ></input>
-                  <button
-                    type="button"
-                    className=" btn-link p-2 text-muted password-toggle"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                  >
-                    {showPassword ? (
-                      <AiOutlineEyeInvisible size={"1.2em"} />
-                    ) : (
-                      <AiOutlineEye size={"1.2em"} />
-                    )}
-                  </button>
+                  />
+                  <div className="d-flex align-items-center position-relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      placeholder="Password *"
+                      value={formData.password}
+                      onChange={handleChange}
+                      className="w-100"
+                    ></input>
+                    <button
+                      type="button"
+                      className=" btn-link p-2 text-muted password-toggle"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                    >
+                      {showPassword ? (
+                        <AiOutlineEyeInvisible size={"1.2em"} />
+                      ) : (
+                        <AiOutlineEye size={"1.2em"} />
+                      )}
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              <div className="login-options">
-                <label>
-                  <input type="checkbox" /> Remember me
-                </label>
-                <a href="/forget-password" className="login-forgot-link">
-                  Forgot password?
-                </a>
-              </div>
+                <div className="login-options">
+                  <label>
+                    <input type="checkbox" /> Remember me
+                  </label>
+                  <a href="/forget-password" className="login-forgot-link">
+                    Forgot password?
+                  </a>
+                </div>
 
-              <button
-                type="submit"
-                className="login-submit-button"
-                disabled={loading}
-              >
-                {loading ? "Signing In..." : "Sign In & Continue"}
-              </button>
-              <p className="login-footer-text">
-                Are you shipper?,Don’t have an account?{" "}
-                <a href="/signup">Sign up here</a>
-              </p>
-            </form>
+                <button
+                  type="submit"
+                  className="login-submit-button"
+                  disabled={loading}
+                >
+                  {loading ? "Signing In..." : "Sign In & Continue"}
+                </button>
+                <p className="login-footer-text">
+                  Are you shipper?,Don’t have an account?{" "}
+                  <a href="/signup">Sign up here</a>
+                </p>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
       </div>
     </>
   );

@@ -17,38 +17,26 @@ import translations from '../../Store/LanguageStore/translations';
 import { useNavigate } from 'react-router-dom';
 import useUserStore from '../../Store/UserStore/userStore';
 import { Link } from 'react-router-dom';
-
+import api from '../../utils/Api'
 const Home = () => {
   const { lang } = useLanguageStore();
   const t = translations[lang];
-  const [loading, Setloading] = useState(false);
-  const user = useUserStore((state) => state.user);
   const [ShipmentsStatus, SetShipmentsStatus] = useState(null);
-  const navigate=useNavigate()
   useEffect(() => {
-const tt = window.location.origin;
-    console.log('name',tt)
+
     const fetchShipmentsStatus = async () => {
       try {
-        Setloading(true);
-        const res = await fetch('https://stakeexpress.runasp.net/api/Shipments/get-shipment-status-statistics', {
-          headers: {
-            'X-Client-Key': 'web api',
-            Authorization: `Bearer ${user?.token}`,
-          }
-        });
-        const data = await res.json();
-        if (res.ok) {
-          console.log('successful fetching shipments status', data);
-          SetShipmentsStatus(data.data);
-        } else {
-          console.log('error in fetching shipments status', data);
-        }
+          const response=await api.get('/Shipments/get-shipment-status-statistics')
+          const result=response.data.data;
+         
+          console.log('successful fetching shipments status', result);
+          SetShipmentsStatus(result);
+        
       } catch (err) {
+        const message=err.response?.data.message
         console.log('error in fetching shipments status', err);
-      } finally {
-        Setloading(false);
-      }
+        console.log( message);
+      } 
     }
 
     fetchShipmentsStatus();

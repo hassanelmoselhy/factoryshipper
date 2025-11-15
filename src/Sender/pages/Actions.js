@@ -10,6 +10,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import "bootstrap/dist/js/bootstrap.bundle.min.js"; // needed for dropdown behavior
 import "./css/Actions.css";
+import api from "../../utils/Api";
 const Actions = () => {
   const { lang } = useLanguageStore();
   const t = translations[lang];
@@ -32,27 +33,19 @@ SetShow(true)
     const fetchRequests = async () => {
       setloading(true);
       try {
-        const res = await fetch('https://stakeexpress.runasp.net/api/Requests', {
-          method: 'GET',
-          headers: {
-            'X-Client-Key': 'web api',
-            Authorization: `Bearer ${user.token}`
-          }
-        });
-
-        if (res.ok === true) {
-          const data = await res.json();
-          console.log('fetching requests sucessfully', data);
-          setResquests(data.data);
-        } else {
-          const data = await res.json();
-          console.log('fetching requests failed', data);
-        }
+        const res = await api.get('/Requests');
+        const result=res.data.data
+        
+          
+          console.log('fetching requests sucessfully', result);
+          setResquests(result);
+        
+        
       } catch (err) {
+        const message=err.response?.data.message
         console.log('Error', err);
-      } finally {
-        setloading(false);
-      }
+        console.log('fetching requests failed', message);
+      } 
     };
 
     fetchRequests();
@@ -187,7 +180,6 @@ SetShow(false)
 }
   return (
     <>
-      <LoadingOverlay loading={loading} message="please wait..." color="#fff" size={44} />
       <CancelModal 
       show={showModal} 
       onCancel={()=>SetShow(false)} 

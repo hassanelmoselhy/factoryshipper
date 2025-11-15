@@ -96,7 +96,9 @@ function getRawQueryParam(name) {
               timer: 2000
                 });
   
-          navigate("/");
+  
+  
+           navigate("/");
         } else {
           console.error("❌ Reset password error:", data);
           toast.error(
@@ -149,8 +151,11 @@ function getRawQueryParam(name) {
               showConfirmButton: false,
               timer: 2000
                 });
-  
-          navigate("/hanger/orders");
+
+                  setTimeout(() => {
+                    
+                    navigate("/hanger/orders");
+                  }, 1500);
         } else {
           console.error("❌ Reset password error:", data);
           toast.error(

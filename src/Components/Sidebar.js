@@ -3,7 +3,8 @@ import { NavLink } from "react-router-dom";
 import { FaBars, FaCube } from "react-icons/fa";
 import axios from "axios";
 import useUserStore from "../Store/UserStore/userStore";
-import './css/Sidebar.css';
+import "./css/Sidebar.css";
+import api from "../utils/Api";
 
 const Sidebar = ({ title, subtitle, menuItems }) => {
   const [isActive, setIsActive] = useState(false);
@@ -14,49 +15,36 @@ const Sidebar = ({ title, subtitle, menuItems }) => {
 
   const RevokeToken = async () => {
     const url = "https://stakeexpress.runasp.net/api/Accounts/revokeToken";
-      
+
     try {
-   
-      const response = await axios.post(
+      const response = await api.post(
         url,
-        {}, 
+        {},
         {
-          headers: {
-            "Content-Type": "application/json",
-            "X-Client-Key": "web API",
-            Authorization: `Bearer ${user?.token}`,
-          },
-          withCredentials:true
+          withCredentials: true,
         }
       );
 
       console.log("success", response.data);
-      sessionStorage.clear()
+      sessionStorage.clear();
       return response.data;
     } catch (err) {
-      
       if (err.response) {
-       
         console.log("Fail", {
           status: err.response.status,
           data: err.response.data,
         });
       } else {
-   
         console.log("Failed", err.message);
       }
- 
+
       throw err;
     }
   };
 
   const lg = (item) => {
-   
     if (item?.path === "/") {
-    
-      RevokeToken()
-        
-    
+      RevokeToken();
     }
 
     closeSidebar();

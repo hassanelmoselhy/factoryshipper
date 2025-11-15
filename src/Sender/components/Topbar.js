@@ -34,8 +34,8 @@ const TopBar = () => {
 
   return (
     <>
-      {/* مودال جدولة */}
-      <RescheduleModal show={isRescheduleOpen} onClose={() => SetisRescheduleOpen(false)} />
+      {/* مودال جدولة
+      <RescheduleModal show={isRescheduleOpen} onClose={() => SetisRescheduleOpen(false)} /> */}
 
       {/* مودال الاستبدال */}
       <ReplaceModal show={isReplaceOpen} onClose={() => SetisReplaceOpen(false)} />
@@ -58,7 +58,7 @@ const TopBar = () => {
                   className="dropdown-item d-flex justify-content-between align-items-center"
                   onClick={() => goToPage("shipping")}
                 >
-                  <FaTruck /> {lang === "ar" ? "طلب إنشاء شحنه" : "New Shipping"}
+                  <FaTruck /> {lang === "ar" ? "طلب إنشاء شحنه" : "New Shipment"}
                 </button>
 
                 <button

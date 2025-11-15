@@ -3,12 +3,10 @@ import { FaShippingFast } from "react-icons/fa";
 import "../css/Signup.css";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import useUserStore from "../../../Store/UserStore/userStore";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import LoadingOverlay from "../../components/LoadingOverlay";
+import api from "../../../utils/Api";
 
 const Signup = () => {
-  const SetUser = useUserStore((state) => state.SetUser);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -27,9 +25,6 @@ const Signup = () => {
   });
 
   const [error, setError] = useState("");
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-
   useEffect(() => {
     document.body.classList.add("signup-page");
     return () => {
@@ -109,51 +104,21 @@ const Signup = () => {
     console.log("🚀 Payload sent:", payload);
 
     try {
-      setLoading(true);
-      const response = await fetch(
-        "https://stakeexpress.runasp.net/api/shippers",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Client-Key": "web API",
-          },
-          body: JSON.stringify(payload),
-          credentials: 'include'
-        }
-      );
+      const response= await api.post("/shippers",payload,{withCredentials:true})
+        const result=response.data.data;
+        const message=response.data.message
 
-      if (response.ok) {
-        const data = await response.json();
-        sessionStorage.setItem("user", JSON.stringify(data));
-        SetUser(data.data);
+        // sessionStorage.setItem("user", JSON.stringify(result));
+        // SetUser(result);
        
-        toast.success("Check your email for the confirmation link!");
-        console.log("✅ Signup successful:", data);
-       
-      } else {
-        const rawError = await response.text();
-        let errorText;
+        toast.success(message);
+        console.log("✅ Signup successful:", result);
 
-        try {
-          const parsed = JSON.parse(rawError);
-          if (parsed.errors) {
-            errorText = Object.values(parsed.errors).flat().join(" | ");
-          } else {
-            errorText = parsed.message || JSON.stringify(parsed);
-          }
-        } catch {
-          errorText = rawError;
-        }
-
-        console.error("🚨 Response:", errorText);
-        toast.error("❌ خطأ: " + errorText);
-      }
     } catch (error) {
-      toast.error("❌ server error, " + error.message);
-    } finally {
-      setLoading(false);
-    }
+    const message = error.response.data.message || "";
+      console.error("🚨 Response:", message);
+        toast.error(message);
+    } 
   };
 
   const egypt_governorates = [
@@ -187,7 +152,6 @@ const Signup = () => {
 
   return (
     <>
-      <LoadingOverlay loading={loading} message="please wait..." color="#fff" size={44} />
       
       <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center py-4">
         <div className="row w-100 justify-content-center">

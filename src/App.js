@@ -55,9 +55,12 @@ import Sidebar from "./Components/Sidebar";
 import { senderSidebarData } from "./Sender/components/Rightsidebar";
 import { hangerSidebarData } from "./Hanger/components/Sidebar";
 import { adminSidebarData } from "./Admin/components/AdminSidebar";
+import LoadingOverlay from "./Sender/components/LoadingOverlay";
+import UseLoadingStore from "./Store/LoadingController/Loadingstore";
 import "./App.css";
 
 import ProtectedRoute from "./utils/ProtectedRoute";
+import EmailConfirmation from "./Components/Confirm-email-notification";
 
 
 const MainLayout = ({ header: HeaderComponent, sidebarData }) => {
@@ -79,11 +82,17 @@ const MainLayout = ({ header: HeaderComponent, sidebarData }) => {
 
 const App = () => {
   const SetUser=useUserStore((state)=>state.Setuser)
-
+  const loading=UseLoadingStore((state)=>state.Loading)
 
   return (
     <>
       <Toaster position="top-right" richColors closeButton />
+      <LoadingOverlay
+        loading={loading}
+        message="please wait..."
+        color="#fff"
+        size={44}
+      />
       <Router>
         <Routes>
           {/* <Route path="/" element={<SelectRole />} /> */}
@@ -93,6 +102,7 @@ const App = () => {
           <Route path="/" element={<Login />} />
           <Route path="/forget-password" element={<ForgetPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/em" element={<EmailConfirmation />} />
 
           {/* Hanger Auth */}
           <Route path="/hanger/sign-up" element={<SignUp />} />

@@ -38,7 +38,7 @@ function getRawQueryParam(name) {
 
 //error message state
 const [ShowResendbtn,SetShowResendbtn]=useState(false)
-  const [searchParams, setSearchParams] = useSearchParams();
+
   const [err, setErr] = useState(2);
   const [message, setMessage] = useState("");
 
@@ -84,7 +84,7 @@ const [ShowResendbtn,SetShowResendbtn]=useState(false)
             toast.info('Redirecting to Login Page')
           setTimeout(()=>{
             navigate("/")
-          },2000)
+          },3000)
         } else {
           setMessage("error confirming email");
           setErr(1);
@@ -164,7 +164,8 @@ const handleResend = async() => {
 
     }catch(err){
         console.log('error in renseding email',err)
-    }
+          setMessage("error in renseding email")
+      }
 
 };
 
@@ -234,7 +235,7 @@ return (
         {err===1 && (
             
 
-        <p className="text-danger fs-5 fw-boler">{message}</p>
+        <p className="text-danger fs-5 fw-bolder">{message}</p>
         )}
      
         

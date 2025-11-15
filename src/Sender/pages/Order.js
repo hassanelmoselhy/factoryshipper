@@ -5,10 +5,10 @@ import translations from "../../Store/LanguageStore/translations";
 import useUserStore from "../../Store/UserStore/userStore";
 import { toast } from "sonner";
 import useShipmentsStore from "../../Store/UserStore/ShipmentsStore";
-import LoadingOverlay from "../components/LoadingOverlay";
 import CancelRequestsModal from "../components/CancelRequestsModal";
-import "./css/Order.css";
 import { useLocation } from "react-router-dom";
+import api from "../../utils/Api";
+import "./css/Order.css";
 //  Status Options
 const statusOptions = [
   "All",
@@ -36,7 +36,6 @@ const Order = () => {
   const [Shipments, setShipments] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(false);
   const user = useUserStore((state) => state.user);
   const SetShipmentsStore = useShipmentsStore((state) => state.SetShipments);
   const [iscancelModalOpen,setiscancelModalOpen]=useState(false)
@@ -44,7 +43,6 @@ const location = useLocation();
   const { state } = location;
 
   useEffect(() => {
-    console.log("User in Orders page ", user);
 
       console.log('status is',state)
       if(state){
@@ -56,27 +54,21 @@ const location = useLocation();
     }
 
     const fetchOrders = async () => {
-      setLoading(true);
       try {
-        const res = await fetch("https://stakeexpress.runasp.net/api/Shipments", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Client-Key": "web API",
-            Authorization: `Bearer ${user.token}`,
-          },
-        });
 
-        if (res.ok === true) {
-          const data = await res.json();
-          console.log(data.data);
-          setShipments(data.data);
-          SetShipmentsStore(data.data);
-        }
+        // const response= await api.get('/Shipments')
+        const response=await api.get('/Shipments')
+        const result=response.data.data;
+        console.log(response.data)
+        
+          
+          console.log('result',result);
+          setShipments(result);
+          SetShipmentsStore(result);
+        
       } catch (error) {
-        console.log("Using fallback orders due to error:", error.message);
-      } finally {
-        setLoading(false);
+        const message=error.response.data.message||"";
+        console.log("Using fallback orders due to error:", message);
       }
 
     };
@@ -118,7 +110,6 @@ const location = useLocation();
 
   return (
     <>
-      <LoadingOverlay loading={loading} message="please wait..." color="#fff" size={44} />
       <CancelRequestsModal show={iscancelModalOpen} onClose={()=>setiscancelModalOpen(false)} />
       {/* <ShipmentCancelModal show={opencancelShipment} onClose={()=>{setopencancelShipment(false)}}/> */}
         
