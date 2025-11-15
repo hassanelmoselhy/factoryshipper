@@ -60,7 +60,6 @@ import UseLoadingStore from "./Store/LoadingController/Loadingstore";
 import "./App.css";
 
 import ProtectedRoute from "./utils/ProtectedRoute";
-import EmailConfirmation from "./Components/Confirm-email-notification";
 
 
 const MainLayout = ({ header: HeaderComponent, sidebarData }) => {
@@ -102,7 +101,6 @@ const App = () => {
           <Route path="/" element={<Login />} />
           <Route path="/forget-password" element={<ForgetPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/em" element={<EmailConfirmation />} />
 
           {/* Hanger Auth */}
           <Route path="/hanger/sign-up" element={<SignUp />} />
