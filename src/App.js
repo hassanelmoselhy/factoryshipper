@@ -41,6 +41,7 @@ import OrderRelease from "./Hanger/pages/OrdersRelease";
 import Safe from "./Hanger/pages/Safe";
 import ForgetPassword from "./Components/ForgetPassword";
 import ResetPassword from "./Components/ResetPassword";
+import ShipperProfile from "./Sender/pages/ShipperProfile";
 // Admin Components
 
 import OrderPage from "./Admin/pages/OrderPage";
@@ -124,6 +125,7 @@ const App = () => {
             <Route path="/order" element={<Order />} />
             <Route path="/actions" element={<Actions />} />
             <Route path="/wallet" element={<Wallet />} />
+            <Route path="/profile" element={<ShipperProfile />} />
           </Route>
  {/* parent route */}
             <Route  > 

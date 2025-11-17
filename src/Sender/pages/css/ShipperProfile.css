@@ -1,0 +1,467 @@
+/* ================= MAIN CONTAINER ================= */
+.shipper-profile {
+width: 95%;
+margin: 25px auto;
+font-family: Arial, sans-serif;
+color: #333;
+}
+
+.loading, .error {
+text-align: center;
+font-size: 18px;
+color: #666;
+padding: 50px;
+}
+
+/* ================= HEADER ================= */
+.profile-header {
+background: #fff;
+padding: 30px;
+border-radius: 12px;
+display: flex;
+align-items: center;
+gap: 15px;
+box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+margin-bottom: 25px;
+}
+
+.avatar-circle {
+width: 75px;
+height: 75px;
+border-radius: 50%;
+background: #eaf1ff;
+color: #3f64ff;
+display: flex;
+justify-content: center;
+align-items: center;
+font-size: 26px;
+font-weight: 600;
+}
+
+.header-text h1 {
+margin: 0;
+font-size: 22px;
+font-weight: 600;
+display: flex;
+align-items: center;
+}
+
+.sub-title {
+font-size: 13px;
+color: gray;
+display: flex;
+align-items: center;
+}
+.name-id{
+display: flex;
+gap: 20px;
+}
+
+.shipper-id-badge {
+background: #f5f5f5;
+padding: 6px 12px;
+border-radius: 6px;
+font-size: 12px;
+display: flex;
+align-items: center;
+color: #333;
+border: 1px solid #e2e2e2;
+margin-left: auto;
+}
+
+/* ================= CARDS GRID ================= */
+.cards-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 22px;
+}
+
+/* ================= PROFILE CARD ================= */
+.profile-card {
+background: #fff;
+padding: 20px;
+border-radius: 12px;
+box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+display: flex;
+flex-direction: column;
+}
+
+.card-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 10px;
+}
+
+.card-header h3 {
+margin: 0;
+font-size: 17px;
+display: flex;
+align-items: center;
+gap: 8px;
+font-weight: 600;
+color: #333;
+}
+
+.card-icon {
+font-size: 16px;
+color: #555;
+}
+
+.card-subtitle {
+color: gray;
+font-size: 12px;
+margin-top: -3px;
+margin-bottom: 15px;
+}
+
+.edit-btn-small, .add-btn {
+border: none;
+background: none;
+cursor: pointer;
+color: #555;
+font-size: 14px;
+display: flex;
+align-items: center;
+gap: 5px;
+padding: 5px 10px;
+border-radius: 5px;
+transition: background-color 0.2s ease;
+}
+
+.edit-btn-small:hover, .add-btn:hover {
+background-color: #e2e2e2;
+color: #000;
+}
+
+.edit-btn-small svg, .add-btn svg {
+font-size: 18px;
+}
+
+.card-body p {
+margin-bottom: 12px;
+font-size: 14px;
+}
+
+.full-name {
+display: flex;
+align-items: center;
+gap: 15px;
+margin-bottom: 14px;
+}
+.full-name > .icon {
+align-self: flex-start;
+margin-top: 3px;
+}
+
+.full-name > div {
+flex: 1;
+}
+.full-name > div:first-of-type {
+border-right: 1px solid #eee;
+padding-right: 15px;
+}
+.full-name > div:last-of-type {
+padding-left: 15px;
+}
+
+
+.info-row {
+display: flex;
+align-items: start;
+gap: 15px;
+margin-bottom: 14px;
+}
+
+.info-row strong, .full-name strong {
+display: block;
+font-size: 13px;
+color: #666;
+margin-bottom: 2px;
+}
+
+.info-row p, .full-name p {
+margin: 0;
+font-size: 14px;
+color: #333;
+}
+
+.icon {
+color: #555;
+font-size: 18px;
+flex-shrink: 0;
+}
+.edit-icon, .delete-icon {
+border: none;
+background: none;
+cursor: pointer;
+color: #555;
+font-size: 16px;
+padding: 5px;
+border-radius: 5px;
+transition: background-color 0.2s ease;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+.edit-icon:hover {
+background-color: #eaf1ff;
+color: #3f64ff;
+}
+.delete-icon:hover {
+background-color: #ffeaea;
+color: #dc3545;
+}
+
+
+/* ================= ADDRESS BOX ================= */
+.addresses-container {
+display: flex;
+flex-direction: column;
+gap: 15px;
+}
+
+.address-box {
+background: #fafafa;
+padding: 15px;
+border-radius: 10px;
+border: 1px solid #ececec;
+}
+
+.address-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 10px;
+font-size: 15px;
+font-weight: 600;
+color: #333;
+}
+
+.address-actions {
+display: flex;
+gap: 5px;
+}
+
+.address-box p {
+font-size: 14px;
+margin-bottom: 8px;
+}
+.address-box p:last-of-type {
+margin-bottom: 0;
+}
+.address-box strong {
+display: inline;
+margin-right: 5px;
+color: #555;
+}
+
+.muted {
+color: gray;
+font-size: 13px;
+}
+.address-box a {
+color: #007bff;
+text-decoration: none;
+}
+.address-box a:hover {
+text-decoration: underline;
+}
+
+/* ================= MODAL STYLES ================= */
+.modal-overlay {
+position: fixed;
+text-align: left;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.5);
+display: flex;
+justify-content: center;
+align-items: center;
+z-index: 1000;
+}
+
+.modal-content {
+background-color: #fff;
+padding: 30px;
+border-radius: 12px;
+box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+width: 90%;
+max-width: 550px;
+position: relative;
+max-height: 90vh;
+overflow-y: auto;
+}
+
+.modal-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 20px;
+padding-bottom: 15px;
+border-bottom: 1px solid #eee;
+}
+
+.modal-header h4 {
+margin: 0;
+font-size: 20px;
+font-weight: 600;
+color: #333;
+}
+
+.close-button {
+cursor: pointer;
+color: #777;
+transition: color 0.2s ease;
+}
+
+.close-button:hover {
+color: #333;
+}
+
+.modal-subtitle {
+font-size: 13px;
+color: #666;
+margin-bottom: 25px;
+}
+
+.form-group {
+margin-bottom: 20px;
+}
+
+.form-group label {
+display: block;
+margin-bottom: 8px;
+font-size: 14px;
+font-weight: 600;
+color: #444;
+}
+
+/* Unified input styling */
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group textarea,
+.phone-input-group input {
+width: 100%; 
+padding: 11px;
+text-align: left;
+border: 1px solid #ddd;
+border-radius: 8px;
+font-size: 14px;
+box-sizing: border-box;
+transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group textarea:focus,
+.phone-input-group input:focus {
+border-color: #88bfff;
+outline: none;
+box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.form-group.inline {
+display: flex;
+gap: 15px;
+}
+
+.form-group.inline > div {
+flex: 1;
+}
+
+/* Ensure inputs within inline form groups still take full width of their flex item */
+.form-group.inline > div input {
+width: 100%;
+}
+
+.phone-input-group {
+display: flex;
+align-items: center;
+margin-bottom: 10px;
+gap: 10px;
+}
+
+.phone-input-group .add-phone,
+.phone-input-group .remove-phone,
+.add-phone-initial {
+background: none;
+border: none;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 8px;
+border-radius: 5px;
+transition: background-color 0.2s ease;
+}
+
+.phone-input-group .add-phone, .add-phone-initial {
+color: #3f64ff;
+font-size: 14px;
+font-weight: 500;
+gap: 5px;
+}
+.phone-input-group .add-phone:hover, .add-phone-initial:hover {
+background-color: #eaf1ff;
+}
+
+.phone-input-group .remove-phone {
+color: #dc3545;
+}
+.phone-input-group .remove-phone:hover {
+background-color: #ffeaea;
+}
+
+
+.btn-save-changes {
+width: 100%;
+padding: 12px;
+background-color: #000;
+color: #fff;
+border: none;
+border-radius: 8px;
+font-size: 16px;
+font-weight: 600;
+cursor: pointer;
+margin-top: 20px;
+transition: background-color 0.2s ease;
+}
+
+.btn-save-changes:hover {
+background-color: #666;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 992px) {
+.cards-grid {
+grid-template-columns: repeat(2, 1fr);
+}
+}
+
+@media (max-width: 768px) {
+.cards-grid {
+grid-template-columns: 1fr;
+}
+
+.profile-header {
+flex-direction: column;
+text-align: center;
+align-items: center;
+gap: 15px;
+}
+
+.shipper-id-badge {
+margin-left: 0;
+align-self: center;
+}
+
+.form-group.inline {
+flex-direction: column;
+gap: 15px;
+}
+}
+
+
