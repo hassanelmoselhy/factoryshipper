@@ -58,7 +58,7 @@ const ShippingPricing = lazy(() => import("./Admin/pages/ShippingPricing"));
 const Settings = lazy(() => import("./Admin/pages/SettingsPage"));
 const Sidebar = lazy(() => import("./Components/Sidebar"));
 const Orders2 = lazy(() => import("./Sender/pages/order2"));
-
+const ShipperProfile=lazy(()=>import("./Sender/pages/ShipperProfile"))
 const MainLayout = ({ header: HeaderComponent, sidebarData }) => {
   return (
     <div className="layout">
@@ -119,6 +119,7 @@ const App = () => {
               <Route path="/actions" element={<Actions />} />
               <Route path="/shipments" element={<Orders2 />} />
               <Route path="/wallet" element={<Wallet />} />
+               <Route path="/profile" element={<ShipperProfile />} />
             </Route>
 
             {/* Misc sender routes */}
