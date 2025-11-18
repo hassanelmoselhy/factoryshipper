@@ -10,42 +10,37 @@ import {
   FaTruck,
   FaUndo,
   FaExclamationTriangle,
-  FaBan
+  FaBan,
+  FaExchangeAlt,
+  FaclipboardList
 } from 'react-icons/fa';
 import useLanguageStore from '../../Store/LanguageStore/languageStore';
 import translations from '../../Store/LanguageStore/translations';
-import { useNavigate } from 'react-router-dom';
-import useUserStore from '../../Store/UserStore/userStore';
 import { Link } from 'react-router-dom';
 import api from '../../utils/Api'
+
 const Home = () => {
   const { lang } = useLanguageStore();
   const t = translations[lang];
   const [ShipmentsStatus, SetShipmentsStatus] = useState(null);
-  useEffect(() => {
 
+  useEffect(() => {
     const fetchShipmentsStatus = async () => {
       try {
-          const response=await api.get('/Shipments/get-shipment-status-statistics')
-          const result=response.data.data;
-         
-          console.log('successful fetching shipments status', result);
+          const response = await api.get('/Shipments/get-shipment-status-statistics');
+          const result = response.data.data;
           SetShipmentsStatus(result);
-        
       } catch (err) {
-        const message=err.response?.data.message
+        const message = err.response?.data.message;
         console.log('error in fetching shipments status', err);
-        console.log( message);
+        console.log(message);
       } 
     }
-
     fetchShipmentsStatus();
-
-
   }, []);
 
-  // Status configuration with colors, icons and keys
   const statusConfig = {
+    // --- Initial Stages ---
     pending: {
       label: t.Pending,
       color: 'yellow',
@@ -58,15 +53,69 @@ const Home = () => {
       icon: FaTimesCircle,
       key: "Canceled"
     },
-    waitingForPickup: {
-      label: t.WaitingforPickup,
-      color: 'blue',
+
+    // --- Review Stages (New) ---
+    inReviewForPickup: {
+      label: t.InReviewForPickup,
+      color: 'blue', 
       icon: FaClock,
-      key: "WatingForPickup"
+      key: "InReviewForPickup"
     },
+    inReviewForReturn: {
+      label: t.InReviewForReturn,
+      color: 'blue',
+      icon: FaUndo,
+      key: "InReviewForReturn"
+    },
+    inReviewForDelivery: {
+      label: t.InReviewForDelivery,
+      color: 'blue',
+      icon: FaTruck,
+      key: "InReviewForDelivery"
+    },
+    inReviewForCancellation: {
+      label: t.InReviewForCancellation,
+      color: 'orange', 
+      icon: FaExclamationCircle,
+      key: "InReviewForCancellation"
+    },
+    inReviewForExchange: {
+      label: t.InReviewForExchange,
+      color: 'orange',
+      icon: FaExchangeAlt,
+      key: "InReviewForExchange"
+    },
+
+    // --- Waiting Stages ---
+    waitingForPickup: {
+      label: t.WaitingforPickup, 
+      color: 'teal',
+      icon: FaClock,
+      key: "WaitingForPickup"
+    },
+    waitingForReturn: {
+      label: t.WaitingForReturn,
+      color: 'teal',
+      icon: FaClock,
+      key: "WaitingForReturn"
+    },
+    waitingForExchange: {
+      label: t.WaitingForExchange,
+      color: 'teal',
+      icon: FaClock,
+      key: "WaitingForExchange"
+    },
+    waitingForDelivery: {
+      label: t.WaitingForDelivery,
+      color: 'teal',
+      icon: FaClock,
+      key: "WaitingForDelivery"
+    },
+
+    // --- Active Logistics ---
     pickedUp: {
       label: t.PickedUp,
-      color: 'green',
+      color: 'purple',
       icon: FaCheckCircle,
       key: "PickedUp"
     },
@@ -76,23 +125,31 @@ const Home = () => {
       icon: FaWarehouse,
       key: "InWarehouse"
     },
-    onHold: {
-      label: t.OnHold,
-      color: 'orange',
-      icon: FaExclamationCircle,
-      key: "OnHold"
-    },
     outForDelivery: {
       label: t.OutforDelivery,
       color: 'teal',
       icon: FaTruck,
       key: "OutForDelivery"
     },
-    failedDelivery: {
-      label: t.FailedDelivery,
+    delivered: {
+      label: t.Delivered,
+      color: 'green',
+      icon: FaCheckCircle,
+      key: "Delivered"
+    },
+
+    // --- Returns & Exchanges ---
+    returned: {
+      label: t.Returned,
       color: 'red',
-      icon: FaExclamationTriangle,
-      key: "FailedDelivery"
+      icon: FaUndo,
+      key: "Returned"
+    },
+    exchanged: {
+      label: t.Exchanged,
+      color: 'green',
+      icon: FaExchangeAlt,
+      key: "Exchanged"
     },
     returningToWarehouse: {
       label: t.ReturningtoWarehouse,
@@ -101,22 +158,24 @@ const Home = () => {
       key: "ReturningToWarehouse"
     },
     returningToShipper: {
-      label: t.ReturningtoShipper,
+      label: t.ReturningtoShipper, 
       color: 'red',
       icon: FaUndo,
       key: "ReturningToShipper"
     },
-    delivered: {
-      label: t.Delivered,
-      color: 'green',
-      icon: FaCheckCircle,
-      key: "Delivered"
+
+    // --- Exceptions ---
+    onHold: {
+      label: t.OnHold,
+      color: 'orange',
+      icon: FaExclamationCircle,
+      key: "OnHold"
     },
-    returned: {
-      label: t.ReturningtoShipper,
+    failedDelivery: {
+      label: t.FailedDelivery,
       color: 'red',
-      icon: FaUndo,
-      key: "Returned"
+      icon: FaExclamationTriangle,
+      key: "FailedDelivery"
     },
     lost: {
       label: t.Lost,
@@ -132,7 +191,7 @@ const Home = () => {
     }
   };
 
-
+  // Balance Formatting
   const amountNumber = 15420.5;
   const formattedAmount = new Intl.NumberFormat(
     lang === 'ar' ? 'ar-SA' : 'en-US',
@@ -142,8 +201,8 @@ const Home = () => {
  
   return (
     <div className="home-container" dir={lang === 'ar' ? 'rtl' : 'ltr'} lang={lang}>
-      {/* <h2 className="page-title">{t.home}</h2> */}
-
+      
+      {/* Balance Card Section */}
       <div className="balance-card">
         <div className="card-header">
           <p className="account-label">{t.accountBalance}</p>
@@ -171,21 +230,24 @@ const Home = () => {
         </div>
       </div>
 
+      {/* Orders Summary Grid */}
       <div className="orders-summary">
-        {/* <h4>{t.ordersSummary}</h4> */}
-        
-        
-
-        <div className="cards ">
+        <div className="cards">
           {ShipmentsStatus && Object.keys(statusConfig).map((statusKey) => {
             const config = statusConfig[statusKey];
             const IconComponent = config.icon;
-            // Map the simplified key back to the original API response key
-            const apiKey = `${statusKey}ShipmentsCount`;
+            
+            const apiKey = `${config.key}ShipmentsCount`;
             const count = ShipmentsStatus[apiKey] || 0;
             
             return (
-              <Link to={"/shipments"} state={config.key} key={statusKey} className={`summary-card ${config.color}`} style={{textDecoration:'none'}}>
+              <Link 
+                to={"/order"} 
+                state={config.key} 
+                key={statusKey} 
+                className={`summary-card ${config.color}`} 
+                style={{textDecoration:'none'}}
+              >
                 <div>
                   <IconComponent className="summary-icon" />
                   <p className="label">{config.label}</p>
@@ -196,8 +258,6 @@ const Home = () => {
           })}
         </div>
       </div>
-
-      {/* <StatusBarChartECharts onBarClick={handleBarClick} height={520} /> */}
     </div>
   );
 };

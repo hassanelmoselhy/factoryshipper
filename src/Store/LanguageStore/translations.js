@@ -46,6 +46,16 @@ const translations = {
       inProgress: { ar: "قيد التنفيذ", en: "In Progress" },
       waitingDecision: { ar: "انتظار القرار", en: "Pending Decision" },
     },
+InReviewForPickup: "قيد المراجعة للاستلام",
+InReviewForReturn: "قيد المراجعة للإرجاع",
+InReviewForDelivery: "قيد المراجعة للتسليم",
+InReviewForCancellation: "قيد المراجعة للإلغاء",
+InReviewForExchange: "قيد المراجعة للاستبدال",
+WaitingForReturn: "في انتظار الإرجاع",
+WaitingForExchange: "في انتظار الاستبدال",
+WaitingForDelivery: "في انتظار التسليم",
+Exchanged: "تم الاستبدال",
+
         // Map types ✅
     typeMap: {
       fast: { ar: "سريع", en: "Fast" },
@@ -142,6 +152,16 @@ const translations = {
       inProgress: { ar: "قيد التنفيذ", en: "In Progress" },
       waitingDecision: { ar: "انتظار القرار", en: "Pending Decision" },
     },
+InReviewForPickup: "In Review for Pickup",
+InReviewForReturn: "In Review for Return",
+InReviewForDelivery: "In Review for Delivery",
+InReviewForCancellation: "In Review for Cancellation",
+InReviewForExchange: "In Review for Exchange",
+WaitingForReturn: "Waiting for Return",
+WaitingForExchange: "Waiting for Exchange",
+WaitingForDelivery: "Waiting for Delivery",
+Exchanged: "Exchanged",
+
     
     // Map types ✅
     typeMap: {
