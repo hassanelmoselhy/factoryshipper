@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import useShipmentsStore from "../../Store/UserStore/ShipmentsStore";
 import CancelRequestsModal from "../components/CancelRequestsModal";
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import api from "../../utils/Api";
 import "./css/Order.css";
 //  Status Options
@@ -39,6 +40,7 @@ const Order = () => {
   const user = useUserStore((state) => state.user);
   const SetShipmentsStore = useShipmentsStore((state) => state.SetShipments);
   const [iscancelModalOpen,setiscancelModalOpen]=useState(false)
+  const navigate =useNavigate()
 const location = useLocation();
   const { state } = location;
 
@@ -144,7 +146,11 @@ const location = useLocation();
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
+
+              <div className="d-flex gap-3">
+          <button className="btn btn-info" onClick={()=> navigate("/shipping")} >Add Shipments</button>
           <button className="btn btn-danger" onClick={()=>setiscancelModalOpen(true)} >Cancel Shipments</button>
+              </div>
 
           </div>
           

@@ -1,10 +1,13 @@
+/*
 body {
   font-family: 'Cairo', sans-serif;
   background-color: #fff;
   margin: 0;
 }
 
+
 /* ===== Top Bar (ثابت فوق السايدبار) ===== */
+/*
 .top {
   display: flex;
   flex-direction: column;
@@ -27,21 +30,25 @@ body {
 }
 
 /* ===== Sidebar ===== */
-.bottom {
+/*
+*/
+
+/* .bottom {
   display: flex;
   flex-direction: column;
   padding: 20px;
   background-color: #f8f9fa;
-  height: calc(100vh - 70px); /* أقل 70px عشان الـ top */
+  height: calc(100vh - 70px); 
   border-right: 1px solid #e0e0e0;
   position: fixed;
   right: 0;
-  top: 100px; /* يبدأ بعد التوب */
+  top: 100px; 
   width: 260px;
   z-index: 1000;
-  overflow-y: auto; /* يضيف scroll لو القائمة طويلة */
-}
+  overflow-y: auto; 
+} */
 
+/* 
 .bottom ul {
   list-style: none;
   padding: 0;
@@ -50,10 +57,10 @@ body {
 
 .bottom li {
   margin-bottom: 20px;
-}
+} */
 
 /* ===== Links ===== */
-.nav-link {
+/* .nav-link {
   display: flex !important;
   align-items: center !important;
   justify-content: flex-end !important; 
@@ -85,12 +92,12 @@ body {
   font-size: 17px !important;
 }
 .icon2 { margin-left: 18px !important; }
-.icon3 { margin-left: 2px !important; }
+.icon3 { margin-left: 2px !important; } */
 
 /* ===== Responsive ===== */
 
 /* تابلت */
-@media (max-width: 992px) {
+/* @media (max-width: 992px) {
   .top {
     width: 220px;
     padding: 15px;
@@ -105,17 +112,18 @@ body {
     font-size: 14px !important;
     padding: 8px 12px !important;
   }
-}
+} */
 
 /* موبايل متوسط */
-@media (max-width: 768px) {
+
+/* @media (max-width: 768px) {
   .top {
-    /* width: 100%;
+     width: 100%;
     position: fixed;
     top: 0;
     right: 0;
     border-bottom: 2px solid #e58ca3;
-    z-index: 1001; */
+    z-index: 1001; 
     display: none;
   }
 
@@ -161,10 +169,10 @@ body {
     margin-left: 0 !important;
     font-size: 16px !important;
   }
-}
+} */
 
 /* موبايل صغير */
-@media (max-width: 480px) {
+/* @media (max-width: 480px) {
   .top h1 {
     font-size: 18px;
   }
@@ -177,4 +185,14 @@ body {
   .icon {
     font-size: 14px !important;
   }
+} */
+
+.sidebar {
+  width: 15%;          
+  min-height: 100vh;
+  position: fixed;
+  right: 0;
+  top: 0;
+  background: #fff;     
+  border-left: 1px solid #eee;
 }

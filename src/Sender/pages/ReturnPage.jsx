@@ -7,8 +7,7 @@ import {
   Truck,
   Plus,
   MapPin,
-  Clock,
-  Calendar,
+  Mail,
   User,
   Phone,
   Search,
@@ -16,6 +15,7 @@ import {
   Square,
   MoveLeft 
 } from "lucide-react";
+import { egypt_governorates } from "../../Shared/Constants";
 import LoadingOverlay from '../components/LoadingOverlay'; 
 import { toast } from "sonner";
 export default function ReturnPage() {
@@ -25,178 +25,26 @@ export default function ReturnPage() {
   const [ReturnOrders, SetReturnOrders] = useState([]);
   const [loading, setLoading] = useState(false);  
   const [CustomerDetails, SetCostomerDetails] = useState({
-    returnPickupDate:"",
-    returnPickupWindowStart:"",
-    returnPickupWindowEnd:"",
+   
     customerStreet:"",
     customerCity:"",
     customerGovernorate:"",
     customerAddressDetails:"",
     customerContactName:"",
     customerContactPhone:"",
+    customerEmail:""
+  });
+  const [ShipperDetails, SetShipperDetails] = useState({
+   
+    ShipperStreet:"",
+    ShipperCity:"",
+    ShipperGovernorate:"",
+    ShipperAddressDetails:""
   });
 
    
 
-   const egypt_governorates= [
-    {
-      "id": 1,
-      "name": "Cairo",
-      "name_arabic": "القاهرة",
-    },
-    {
-      "id": 2,
-      "name": "Alexandria",
-      "name_arabic": "الإسكندرية",
-      "capital": "Alexandria",
-      
-    },
-    {
-      "id": 3,
-      "name": "Port Said",
-      "name_arabic": "بورسعيد",
-      
-    },
-    {
-      "id": 4,
-      "name": "Suez",
-      "name_arabic": "السويس",
-
-    },
-    {
-      "id": 5,
-      "name": "Luxor",
-      "name_arabic": "الأقصر",
-     
-    },
-    {
-      "id": 6,
-      "name": "Dakahlia",
-      "name_arabic": "الدقهلية",
- 
-    },
-    {
-      "id": 7,
-      "name": "Sharqia",
-      "name_arabic": "الشرقية",
-     
-    },
-    {
-      "id": 8,
-      "name": "Qalyubia",
-      "name_arabic": "القليوبية",
-      
-    },
-    {
-      "id": 9,
-      "name": "Damietta",
-      "name_arabic": "دمياط",
   
-    },
-    {
-      "id": 10,
-      "name": "Beheira",
-      "name_arabic": "البحيرة",
-      
-    },
-    {
-      "id": 11,
-      "name": "Gharbia",
-      "name_arabic": "الغربية",
-     
-    },
-    {
-      "id": 12,
-      "name": "Monufia",
-      "name_arabic": "المنوفية",
-     
-    },
-    {
-      "id": 13,
-      "name": "Kafr El Sheikh",
-      "name_arabic": "كفر الشيخ",
-    
-    },
-    {
-      "id": 14,
-      "name": "Giza",
-      "name_arabic": "الجيزة",
-      
-    },
-    {
-      "id": 15,
-      "name": "Faiyum",
-      "name_arabic": "الفيوم",
-      
-    },
-    {
-      "id": 16,
-      "name": "Beni Suef",
-      "name_arabic": "بني سويف",
-      
-    },
-    {
-      "id": 17,
-      "name": "Minya",
-      "name_arabic": "المنيا",
-    
-    },
-    {
-      "id": 18,
-      "name": "Asyut",
-      "name_arabic": "أسيوط",
-   
-    },
-    {
-      "id": 19,
-      "name": "Sohag",
-      "name_arabic": "سوهاج",
-    
-    },
-    {
-      "id": 20,
-      "name": "Qena",
-      "name_arabic": "قنا",
-      
-    },
-    {
-      "id": 21,
-      "name": "Aswan",
-      "name_arabic": "أسوان",
-   
-    },
-    {
-      "id": 22,
-      "name": "Red Sea",
-      "name_arabic": "البحر الأحمر",
-  
-    },
-    {
-      "id": 23,
-      "name": "New Valley",
-      "name_arabic": "الوادي الجديد",
-   
-    },
-    {
-      "id": 24,
-      "name": "Matrouh",
-      "name_arabic": "مطروح",
-     
-    },
-    {
-      "id": 25,
-      "name": "North Sinai",
-      "name_arabic": "شمال سيناء",
-   
-    },
-    {
-      "id": 26,
-      "name": "South Sinai",
-      "name_arabic": "جنوب سيناء",
-   
-    }
-  ];
-
   // Select All functionality
   const handleSelectAll = () => {
     const allOrderIds = ReturnOrders.map(order => order.id);
@@ -253,30 +101,31 @@ export default function ReturnPage() {
 
       }finally{setLoading(false);}
     }
+
     fetchReturnOrders();
 
   },[])
 
  const HandleSubmit=async ()=>{
 // CustomerDetails.shipmentIds=selectedOrders;
-
+  console.log('shipper details',ShipperDetails)
 const payload={
-    pickupDate:CustomerDetails.returnPickupDate,
-    windowStart:CustomerDetails.returnPickupWindowStart+":00",
-    windowEnd:CustomerDetails.returnPickupWindowEnd+":00",
+  
+    "shipperAddress": {
+    street:ShipperDetails.ShipperStreet,
+    city:ShipperDetails.ShipperCity,
+    governorate:ShipperDetails.ShipperGovernorate,
+    details:ShipperDetails.ShipperAddressDetails
+  },
      "customerAddress": {
     street:CustomerDetails.customerStreet,
     city:CustomerDetails.customerCity,
     governorate:CustomerDetails.customerGovernorate,
-    details:CustomerDetails.customerAddressDetails,
-    "googleMapAddressLink": "https://www.google.com/maps"
+    details:CustomerDetails.customerAddressDetails
   },
-    
-    
-    customerContactName:CustomerDetails.customerContactName,
-    customerContactPhone:CustomerDetails.customerContactPhone,
-
-    
+    customerName:CustomerDetails.customerContactName,
+    customerPhone:CustomerDetails.customerContactPhone,
+    customerEmail:CustomerDetails.customerEmail,
     shipmentIds:selectedOrders
 }
 console.log('payload',payload)
@@ -319,6 +168,10 @@ console.error("Error in submitting pickup request:", err);
 const {name,value}=e.target;
 SetCostomerDetails((prev)=>({...prev,[name]:value}));
  }
+ const ShipperhandleChange=(e)=>{
+const {name,value}=e.target;
+SetShipperDetails((prev)=>({...prev,[name]:value}));
+ }
  
   return (
 
@@ -341,26 +194,7 @@ SetCostomerDetails((prev)=>({...prev,[name]:value}));
         </h4>
 
         <div className="row input-row-gap">
-          <div className="col-lg-4 mb-3">
-            <label className="form-label-icon">
-              <Calendar size={16} /> return pickup date
-            </label>
-            <input type="date" name="returnPickupDate" value={CustomerDetails.returnPickupDate}  onChange={CustomerhandleChange} className="form-control form-control-custom" placeholder="mm/dd/yyyy" />
-          </div>
-
-          <div className="col-lg-4 mb-3">
-            <label className="form-label-icon">
-              <Clock size={16} /> Window Start
-            </label>
-            <input type="time"  name="returnPickupWindowStart"  value={CustomerDetails.returnPickupWindowStart} onChange={CustomerhandleChange}       className="form-control form-control-custom" placeholder="--:-- --" />
-          </div>
-
-          <div className="col-lg-4 mb-3">
-            <label className="form-label-icon">
-              <Clock size={16} /> Window End
-            </label>
-            <input type="time" name="returnPickupWindowEnd" value={CustomerDetails.returnPickupWindowEnd} onChange={CustomerhandleChange}    className="form-control form-control-custom" placeholder="--:-- --" />
-          </div>
+         
 
           <div className="col-lg-3 mb-3">
             <label className="form-label-icon">Street Address</label>
@@ -387,7 +221,7 @@ SetCostomerDetails((prev)=>({...prev,[name]:value}));
             <input className="form-control form-control-custom" name="customerAddressDetails" value={CustomerDetails.customerAddressDetails} onChange={CustomerhandleChange} placeholder="Address Details" />
           </div>
 
-          <div className="col-lg-6 mb-3">
+          <div className="col-lg-4 mb-3">
             <label className="form-label-icon">
               <User size={16} /> Contact Name
             </label>
@@ -397,14 +231,69 @@ SetCostomerDetails((prev)=>({...prev,[name]:value}));
             />
           </div>
 
-          <div className="col-lg-6 mb-3">
+          <div className="col-lg-4 mb-3">
             <label className="form-label-icon">
-              <Phone size={16} /> Contact Phone <span style={{ color: "#6c757d" }}>*</span>
+              <Phone size={16} /> 
+              Contact Phone 
+              <span style={{ color: "#6c757d" }}>*</span>
             </label>
             <input className="form-control form-control-custom" placeholder="+20123456789"
             name="customerContactPhone" value={CustomerDetails.customerContactPhone} onChange={CustomerhandleChange}
             />
           </div>
+          
+          <div className="col-lg-4 mb-3">
+            <label className="form-label-icon">
+              <Mail size={16} /> 
+              Email 
+              <span style={{ color: "#6c757d" }}>*</span>
+            </label>
+            <input className="form-control form-control-custom" placeholder="+20123456789"
+            name="customerEmail" value={CustomerDetails.customerEmail} onChange={CustomerhandleChange}
+            />
+          </div>
+
+        </div>
+      </div>
+
+
+      {/* Shipper Details card */}
+      <div className="card-section mb-4">
+        <h4 className="mb-3" style={{ fontWeight: 700 }}>
+          <MapPin size={24} className="me-2" color="#3182ed"/> Shipper  Details
+        </h4>
+
+        <div className="row input-row-gap">
+         
+
+          <div className="col-lg-3 mb-3">
+            <label className="form-label-icon">Street Address</label>
+            <input className="form-control form-control-custom" name="ShipperStreet"  value={ShipperDetails.ShipperStreet}  onChange={ShipperhandleChange}  placeholder="123 Main Street" />
+          </div>
+          <div className="col-lg-3 mb-3">
+            <label className="form-label-icon">City</label>
+            <input className="form-control form-control-custom" placeholder="المعادي" name="ShipperCity" value={ShipperDetails.ShipperCity} onChange={ShipperhandleChange}  />
+          </div>
+          <div className="col-lg-3 mb-4">
+            <label className="form-label-icon">Governorate</label>
+            <select className="form-select form-control-custom" 
+            value={ShipperDetails.ShipperGovernorate} onChange={ShipperhandleChange} name="ShipperGovernorate"
+            
+            >
+              <option value="" disabled>Select Governorate</option>
+              {egypt_governorates.map((gov) => (
+                <option key={gov.id} value={gov.name}>{gov.name}</option>
+              ))}
+            </select>
+          </div>
+          <div className="col-lg-3 mb-4">
+            <label className="form-label-icon">address Details</label>
+            <input className="form-control form-control-custom" name="ShipperAddressDetails" value={ShipperDetails.ShipperAddressDetails} onChange={ShipperhandleChange} placeholder="Address Details" />
+          </div>
+
+         
+          
+
         </div>
       </div>
 

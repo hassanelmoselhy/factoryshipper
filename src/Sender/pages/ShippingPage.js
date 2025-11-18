@@ -5,7 +5,8 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import LoadingOverlay from "../components/LoadingOverlay";
 import Swal from 'sweetalert2'
-
+import {egypt_governorates} from '../../Shared/Constants'
+import {CreateShipment}  from '../Data/ShipmentsService'
 const ShippingPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -17,54 +18,26 @@ const ShippingPage = () => {
       street: "",
       city: "",
       governorate: "",
-      details: "",
-      googleMapAddressLink: "" // Correctly nested here
+      details: ""// Correctly nested here
     },
     quantity: "",
-    shipmentWeight: "",
-    shipmentLength: "",
-    shipmentWidth: "",
-    shipmentHeight: "",
+    shipmentWeight: 0.1,
+
+    
     shipmentDescription: "",
     shipmentNotes: "",
     expressDeliveryEnabled: false,
     openPackageOnDeliveryEnabled: false,
     cashOnDeliveryEnabled: false,
     collectionAmount: 0,
+    isDelivered:false
   });
 
   const user = useUserStore((state) => state.user);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const egypt_governorates = [
-    { id: 1, name: "Cairo", name_arabic: "القاهرة" },
-    { id: 2, name: "Alexandria", name_arabic: "الإسكندرية", capital: "Alexandria" },
-    { id: 3, name: "Port Said", name_arabic: "بورسعيد" },
-    { id: 4, name: "Suez", name_arabic: "السويس" },
-    { id: 5, name: "Luxor", name_arabic: "الأقصر" },
-    { id: 6, name: "Dakahlia", name_arabic: "الدقهلية" },
-    { id: 7, name: "Sharqia", name_arabic: "الشرقية" },
-    { id: 8, name: "Qalyubia", name_arabic: "القليوبية" },
-    { id: 9, name: "Damietta", name_arabic: "دمياط" },
-    { id: 10, name: "Beheira", name_arabic: "البحيرة" },
-    { id: 11, name: "Gharbia", name_arabic: "الغربية" },
-    { id: 12, name: "Monufia", name_arabic: "المنوفية" },
-    { id: 13, name: "Kafr El Sheikh", name_arabic: "كفر الشيخ" },
-    { id: 14, name: "Giza", name_arabic: "الجيزة" },
-    { id: 15, name: "Faiyum", name_arabic: "الفيوم" },
-    { id: 16, name: "Beni Suef", name_arabic: "بني سويف" },
-    { id: 17, name: "Minya", name_arabic: "المنيا" },
-    { id: 18, name: "Asyut", name_arabic: "أسيوط" },
-    { id: 19, name: "Sohag", name_arabic: "سوهاج" },
-    { id: 20, name: "Qena", name_arabic: "قنا" },
-    { id: 21, name: "Aswan", name_arabic: "أسوان" },
-    { id: 22, name: "Red Sea", name_arabic: "البحر الأحمر" },
-    { id: 23, name: "New Valley", name_arabic: "الوادي الجديد" },
-    { id: 24, name: "Matrouh", name_arabic: "مطروح" },
-    { id: 25, name: "North Sinai", name_arabic: "شمال سيناء" },
-    { id: 26, name: "South Sinai", name_arabic: "جنوب سيناء" },
-  ];
+
 
   // Validation rules constants
   const LIMITS = {
@@ -124,7 +97,6 @@ const ShippingPage = () => {
     switch (last) {
       case "customerName":
       case "street":
-      case "details":
       case "city":
       case "shipmentDescription":
         if (!value || String(value).trim() === "") return messages.required;
@@ -164,19 +136,11 @@ const ShippingPage = () => {
         return null;
 
       case "shipmentWeight":
-        if (value === "" || value === null) return messages.required;
-        if (typeof value !== "number" || Number.isNaN(value)) return messages.required;
-        if (value < LIMITS.weightMin || value > LIMITS.weightMax) return messages.weightRange;
+        if (value === "" || value === null) return null;
+       
         return null;
 
-      case "shipmentLength":
-      case "shipmentWidth":
-      case "shipmentHeight": {
-        if (value === "" || value === null) return messages.required;
-        if (typeof value !== "number" || Number.isNaN(value)) return messages.required;
-        if (value < LIMITS.dimMin || value > LIMITS.dimMax) return messages.dimRange;
-        return null;
-      }
+     
 
       case "collectionAmount":
         // only validate strictly when cashOnDeliveryEnabled is true
@@ -209,14 +173,12 @@ const ShippingPage = () => {
       "customerAddress.street",
       "customerAddress.city",
       "customerAddress.governorate",
-      "customerAddress.googleMapAddressLink", // <--- Updated path for full validation
+      // "customerAddress.googleMapAddressLink", // <--- Updated path for full validation
 
       "shipmentDescription",
       "quantity",
-      "shipmentWeight",
-      "shipmentLength",
-      "shipmentWidth",
-      "shipmentHeight",
+     
+   
     ];
 
     fieldsToCheck.forEach((field) => {
@@ -289,11 +251,7 @@ const ShippingPage = () => {
   // Submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!user?.token) {
-      toast.error("غير مصرح - الرجاء تسجيل الدخول لإنشاء الشحنة.");
-      navigate('/')
-      return;
-    }
+
 
     // Validate all fields
     const newErrors = validateAll(formData);
@@ -302,26 +260,18 @@ const ShippingPage = () => {
       toast.error("يرجى تصحيح الأخطاء قبل المتابعة.");
       return;
     }
-
-    try {
-      setLoading(true);
-
       const payload = { ...formData };
+     if (payload.shipmentWeight === "") {
+  delete payload.shipmentWeight;
+}
       console.log("from payload", payload);
-      const response = await fetch("https://stakeexpress.runasp.net/api/Shipments", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Client-Key": "web API",
-          Authorization: `Bearer ${user?.token}`,
-        },
-        body: JSON.stringify(payload),
-      });
 
-      const text = await response.text();
-      console.log("Status:", response.status, "Response:", text);
 
-      if (response.ok) {
+       setLoading(true)
+      const response = CreateShipment(payload)
+      const  result=await response;
+      console.log('ressss',result)
+      if ( result.Success) {
             Swal.fire({
       position: "center-center",
       icon: "success",
@@ -332,24 +282,28 @@ const ShippingPage = () => {
         });
 
         navigate("/order");
-      } else if (response.status === 400) {
-        toast.error("❌ فشل إنشاء الشحنة. يرجى مراجعة البيانات.");
-      } else if (response.status === 401) {
-        toast.error("❌ غير مصرح - يرجى تسجيل الدخول مجددًا.");
-      } else {
-        toast.error("خطأ في الخادم. حاول لاحقًا.");
       }
-    } catch (err) {
-      console.error(err);
-      toast.error(`❌ فشل الإرسال: ${err.message}`);
-    } finally {
-      setLoading(false);
-    }
+      else{
+
+      if (result.StatusCode === 400) {
+              toast.error(result.Message||"one or more validation error");
+            } 
+            else if (response.status === 401) {
+              toast.error(result.Message||"one or more validation error");
+            }
+             else {
+              toast.error("خطأ في الخادم. حاول لاحقًا.");
+            }
+      }
+setLoading(false)
+    
+      
+       
+  
   };
 
   return (
     <>
-      <LoadingOverlay loading={loading} message="please wait..." color="#fff" size={44} />
 
       <div className="shipping-container">
         {/* ملخص الطلب */}
@@ -550,50 +504,8 @@ const ShippingPage = () => {
               </small>
             </div>
 
-            <div className="form-group">
-              <label>الطول (سم) </label>
-              <input
-                type="number"
-                name="shipmentLength"
-                value={formData.shipmentLength}
-                onChange={handleChange}
-                min={LIMITS.dimMin}
-                max={LIMITS.dimMax}
-                step="0.1"
-              />
-              {errors.shipmentLength && <p className="text-danger">{errors.shipmentLength}</p>}
-            </div>
 
-            <div className="form-group">
-              <label>العرض (سم) *</label>
-              <input
-                type="number"
-                name="shipmentWidth"
-                value={formData.shipmentWidth}
-                onChange={handleChange}
-                min={LIMITS.dimMin}
-                max={LIMITS.dimMax}
-                step="0.1"
-              />
-              {errors.shipmentWidth && <p className="text-danger">{errors.shipmentWidth}</p>}
-            </div>
-
-            <div className="form-group">
-              <label>الارتفاع (سم) </label>
-              <input
-                type="number"
-                name="shipmentHeight"
-                value={formData.shipmentHeight}
-                onChange={handleChange}
-                min={LIMITS.dimMin}
-                max={LIMITS.dimMax}
-                step="0.1"
-              />
-              {errors.shipmentHeight && <p className="text-danger">{errors.shipmentHeight}</p>}
-              <small className="hint">
-                الأبعاد يجب أن تكون بين {LIMITS.dimMin} و {LIMITS.dimMax} سم
-              </small>
-            </div>
+        
 
             <div className="form-group">
               <label>ملاحظات خاصة بالشحن</label>
@@ -605,6 +517,7 @@ const ShippingPage = () => {
           <div className="card">
             <h3>خيارات الدفع والتسليم</h3>
             <div className="form-group checkbox-group d-flex flex-row gap-3 align-items-center">
+              
               <label>
                 <input
                   type="checkbox"
@@ -622,6 +535,15 @@ const ShippingPage = () => {
                   onChange={handleChange}
                 />
                 فتح الطرد عند الاستلام
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  name="isDelivered"
+                  checked={formData.isDelivered}
+                  onChange={handleChange}
+                />
+               هل تم التوصيل
               </label>
             </div>
 

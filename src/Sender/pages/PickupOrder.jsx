@@ -284,9 +284,7 @@ export default function PickupRequestManagement() {
 PickupDetails.shipmentIds=selectedOrders;
 console.log("Pickup details:", PickupDetails);
 const payload={
-    pickupDate:PickupDetails.pickupDate,
-    windowStart:PickupDetails.windowStart+":00",
-    windowEnd:PickupDetails.windowEnd+":00",
+   
      pickupAddress: {
     street:PickupDetails.street,
     city:PickupDetails.city,
@@ -296,10 +294,6 @@ const payload={
     // googleMapAddressLink: PickupDetails.googleMapAddressLink,
   },
     
-    
-    
-    contactName:PickupDetails.contactName,
-    contactPhone:PickupDetails?.contactPhone,
     shipmentIds:selectedOrders
 
 }
@@ -350,9 +344,7 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
         <h1>
           <Truck size={24}  /> Pickup Request Management
         </h1>
-        {/* <button className="btn add-manual-btn d-flex align-items-center gap-2">
-          <Plus size={16} /> Add Manual Order
-        </button> */}
+   
       </div>
 
       {/* Pickup Details card */}
@@ -362,27 +354,6 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
         </h4>
 
         <div className="row input-row-gap">
-          <div className="col-lg-4 mb-3">
-            <label className="form-label-icon">
-              <Calendar size={16} /> Pickup Date
-            </label>
-            <input type="date" name="pickupDate" value={PickupDetails.pickupDate}  onChange={handleChange} className="form-control form-control-custom" placeholder="mm/dd/yyyy" />
-          
-          </div>
-
-          <div className="col-lg-4 mb-3">
-            <label className="form-label-icon">
-              <Clock size={16} /> Window Start
-            </label>
-            <input type="time"  name="windowStart"  value={PickupDetails.windowStart} onChange={handleChange}       className="form-control form-control-custom" placeholder="--:-- --" />
-          </div>
-
-          <div className="col-lg-4 mb-3">
-            <label className="form-label-icon">
-              <Clock size={16} /> Window End
-            </label>
-            <input type="time" name="windowEnd" value={PickupDetails.windowEnd} onChange={handleChange}    className="form-control form-control-custom" placeholder="--:-- --" />
-          </div>
 
           <div className="col-lg-3 mb-3">
             <label className="form-label-icon">Street Address</label>
@@ -409,24 +380,7 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
             <input className="form-control form-control-custom" name="details" value={PickupDetails.details} onChange={handleChange} placeholder="details" />
           </div>
 
-          <div className="col-lg-6 mb-3">
-            <label className="form-label-icon">
-              <User size={16} /> Contact Name
-            </label>
-            <input className="form-control form-control-custom" placeholder="Contact person name" 
-            name="contactName" value={PickupDetails.contactName} onChange={handleChange} 
-            
-            />
-          </div>
-
-          <div className="col-lg-6 mb-3">
-            <label className="form-label-icon">
-              <Phone size={16} /> Contact Phone <span style={{ color: "#6c757d" }}>*</span>
-            </label>
-            <input className="form-control form-control-custom" placeholder="+20123456789"
-            name="contactPhone" value={PickupDetails.contactPhone} onChange={handleChange}
-            />
-          </div>
+          
         </div>
 
       </div>

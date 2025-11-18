@@ -1,18 +1,15 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { FaBars, FaCube } from "react-icons/fa";
-import axios from "axios";
 import useUserStore from "../Store/UserStore/userStore";
-import "./css/Sidebar.css";
 import api from "../utils/Api";
+import "./css/Sidebar.css";
 
 const Sidebar = ({ title, subtitle, menuItems }) => {
   const [isActive, setIsActive] = useState(false);
-
   const toggleSidebar = () => setIsActive(!isActive);
   const closeSidebar = () => setIsActive(false);
   const user = useUserStore((state) => state.user);
-
   const RevokeToken = async () => {
     const url = "https://stakeexpress.runasp.net/api/Accounts/revokeToken";
 

@@ -44,7 +44,7 @@ margin: 0;
 margin-bottom: 10px;
 }
 
-.nav-link {
+.sidebar .nav-link {
 display: flex;
 align-items: center;
 gap: 10px;
@@ -56,20 +56,20 @@ border-radius: 8px;
 flex-direction: row-reverse;
 }
 
-.nav-link:hover {
+.sidebar .nav-link:hover {
 background: #f4f4f4;
 }
 
-.nav-link.active {
+.sidebar .nav-link.active {
 background: #000;
 color: #fff;
 }
 
-.nav-link.active svg {
+.sidebar .nav-link.active svg {
 color: #fff;
 }
 
-.nav-link svg {
+.sidebar .nav-link svg {
 font-size: 16px;
 color: #000;
 }

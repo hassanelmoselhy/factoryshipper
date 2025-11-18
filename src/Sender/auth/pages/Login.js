@@ -34,14 +34,16 @@ const Login = () => {
   }, [showUnauthorized]);
 
   useEffect(() => {
-    const tt = window.location.origin + "/confirm-email";
-    console.log("name", tt);
-    document.body.classList.add("login-page");
-    return () => {
-      document.body.classList.remove("login-page");
-    };
-  }, []);
+  document.body.classList.add("login-page");
 
+  const img = new Image();
+  img.src = "/hanger.jpg"; 
+  img.onload = () => console.log("background preloaded and used");
+
+  return () => {
+    document.body.classList.remove("login-page");
+  };
+}, []);
   async function RefreshToken() {
     try {
       const response = await fetch(
