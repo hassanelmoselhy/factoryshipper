@@ -14,7 +14,7 @@ const fetchShipmentDetails=async()=>{
       setLoading(true);
       console.log("Fetching details for orderId:",orderId );
         try{
-       const res=await fetch(`https://stakeexpress.runasp.net/api/Shipments/getShipmentById/${orderId}`,{
+       const res=await fetch(`https://stakeexpress.runasp.net/api/Shipments/${orderId}`,{
         method:"Get",
         headers:{
           'Content-Type': 'application/json',

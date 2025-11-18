@@ -185,7 +185,7 @@ const Home = () => {
             const count = ShipmentsStatus[apiKey] || 0;
             
             return (
-              <Link to={"/order"} state={config.key} key={statusKey} className={`summary-card ${config.color}`} style={{textDecoration:'none'}}>
+              <Link to={"/shipments"} state={config.key} key={statusKey} className={`summary-card ${config.color}`} style={{textDecoration:'none'}}>
                 <div>
                   <IconComponent className="summary-icon" />
                   <p className="label">{config.label}</p>

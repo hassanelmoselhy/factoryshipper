@@ -21,9 +21,7 @@ const ShippingPage = () => {
       details: ""// Correctly nested here
     },
     quantity: "",
-    shipmentWeight: 0.1,
-
-    
+    shipmentWeight: "",
     shipmentDescription: "",
     shipmentNotes: "",
     expressDeliveryEnabled: false,
@@ -36,8 +34,6 @@ const ShippingPage = () => {
   const user = useUserStore((state) => state.user);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-
-
 
   // Validation rules constants
   const LIMITS = {
@@ -59,13 +55,14 @@ const ShippingPage = () => {
     collectionRequired: "ادخل قيمة تحصيل صحيحة (أكبر من 0) عند تفعيل الدفع عند الاستلام.",
     invalidEmail: "البريد الإلكتروني غير صالح.",
     invalidUrl: "الرجاء إدخال رابط صالح (مثال: https://example.com).",
+    invalidPhone: "يجب أن يبدأ رقم الهاتف بـ 010 أو 011 أو 012 أو 015 ويتكون من 11 رقماً",
     optional: "", // For fields that are optional but might have format validation
   };
 
   // Basic email regex
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
-
+  const egyptPhoneRegex = /^(010|011|012|015)\d{8}$/;
 
   // helpers to get/set nested path values like "customerAddress.street"
   const getByPath = (obj, path) => {
@@ -109,10 +106,15 @@ const ShippingPage = () => {
 
       case "customerPhone":
         if (!value || String(value).trim() === "") return messages.required;
+        // يجب أن يكون رقمًا يبدأ بواحد من البادئات ويكون طوله 11 رقمًا
+        if (!egyptPhoneRegex.test(String(value))) return messages.invalidPhone;
         return null;
 
       case "customerAdditionalPhone":
-        // This field is optional, no specific validation if empty
+        // هذا الحقل اختياري: إذا كان فارغ لا نتحقق
+        if (!value || String(value).trim() === "") return null;
+        // إذا وُجد، نتحقق بنفس قاعدة الأرقام المصرية
+        if (!egyptPhoneRegex.test(String(value))) return messages.invalidPhone;
         return null;
 
       case "googleMapAddressLink":
@@ -137,10 +139,8 @@ const ShippingPage = () => {
 
       case "shipmentWeight":
         if (value === "" || value === null) return null;
-       
+        // optional: you can add range check here if needed
         return null;
-
-     
 
       case "collectionAmount":
         // only validate strictly when cashOnDeliveryEnabled is true
@@ -177,8 +177,6 @@ const ShippingPage = () => {
 
       "shipmentDescription",
       "quantity",
-     
-   
     ];
 
     fieldsToCheck.forEach((field) => {
@@ -191,6 +189,11 @@ const ShippingPage = () => {
     const colVal = getByPath(data, "collectionAmount");
     const colErr = validateField("collectionAmount", colVal, data);
     if (colErr) newErrors.collectionAmount = colErr;
+
+    // validate additional phone if provided
+    const addPhone = getByPath(data, "customerAdditionalPhone");
+    const addErr = validateField("customerAdditionalPhone", addPhone, data);
+    if (addErr) newErrors.customerAdditionalPhone = addErr;
 
     return newErrors;
   };
@@ -214,6 +217,17 @@ const ShippingPage = () => {
         else newVal = rawValue;
       }
 
+      // --- Special: sanitize phone inputs to digits only (remove spaces, +, - , etc.)
+      if (name === "customerPhone" || name === "customerAdditionalPhone") {
+        if (typeof newVal === "string") {
+          newVal = newVal.replace(/\D/g, ""); // keep digits only
+        } else if (newVal === null || newVal === undefined) {
+          newVal = "";
+        } else {
+          newVal = String(newVal).replace(/\D/g, "");
+        }
+      }
+
       // Special handling for googleMapAddressLink to prepend https:// if missing and valid
       if (name === "customerAddress.googleMapAddressLink" && newVal && typeof newVal === 'string' && !urlRegex.test(newVal)) {
         const autoFixed = `https://${newVal}`;
@@ -221,7 +235,6 @@ const ShippingPage = () => {
           newVal = autoFixed;
         }
       }
-
 
       // If the name contains ".", update nested path immutably
       const updated = name.includes(".") ? setByPath(prev, name, newVal) : { ...prev, [name]: newVal };
@@ -252,7 +265,6 @@ const ShippingPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-
     // Validate all fields
     const newErrors = validateAll(formData);
     if (Object.keys(newErrors).length > 0) {
@@ -260,46 +272,39 @@ const ShippingPage = () => {
       toast.error("يرجى تصحيح الأخطاء قبل المتابعة.");
       return;
     }
-      const payload = { ...formData };
-     if (payload.shipmentWeight === "") {
-  delete payload.shipmentWeight;
-}
-      console.log("from payload", payload);
+    const payload = { ...formData };
+    if (payload.shipmentWeight === "") {
+      delete payload.shipmentWeight;
+    }
+    console.log("from payload", payload);
 
+    setLoading(true)
+    const response = CreateShipment(payload)
+    const  result=await response;
+    console.log('ressss',result)
+    if ( result.Success) {
+      Swal.fire({
+        position: "center-center",
+        icon: "success",
+        title: "Shipment Created Successfully",
+        showConfirmButton: false,
+        timer: 2000
+      });
 
-       setLoading(true)
-      const response = CreateShipment(payload)
-      const  result=await response;
-      console.log('ressss',result)
-      if ( result.Success) {
-            Swal.fire({
-      position: "center-center",
-      icon: "success",
-      title: "Shipment Created Successfully",
-      showConfirmButton: false,
-      timer: 2000
-
-        });
-
-        navigate("/order");
-      }
-      else{
-
+      navigate("/shipments");
+    }
+    else{
       if (result.StatusCode === 400) {
-              toast.error(result.Message||"one or more validation error");
-            } 
-            else if (response.status === 401) {
-              toast.error(result.Message||"one or more validation error");
-            }
-             else {
-              toast.error("خطأ في الخادم. حاول لاحقًا.");
-            }
+        toast.error(result.Message||"one or more validation error");
+      } 
+      else if (response.status === 401) {
+        toast.error(result.Message||"one or more validation error");
       }
-setLoading(false)
-    
-      
-       
-  
+      else {
+        toast.error("خطأ في الخادم. حاول لاحقًا.");
+      }
+    }
+    setLoading(false)
   };
 
   return (
@@ -503,9 +508,6 @@ setLoading(false)
                 الحد المسموح: {LIMITS.weightMin} - {LIMITS.weightMax} كجم
               </small>
             </div>
-
-
-        
 
             <div className="form-group">
               <label>ملاحظات خاصة بالشحن</label>

@@ -37,7 +37,7 @@ const Login = () => {
   document.body.classList.add("login-page");
 
   const img = new Image();
-  img.src = "/hanger.jpg"; 
+  img.src = "/hanger.webp"; 
   img.onload = () => console.log("background preloaded and used");
 
   return () => {

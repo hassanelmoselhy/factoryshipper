@@ -13,6 +13,7 @@ import {
 import "../../Sender/pages/css/Orders2.css"; // adjust path if needed
 import { formatCurrency, formatDate } from "../../utils/Helpers"
 import StatusBadge from "../../Shared/StatusBadge";
+import { toast } from "sonner";
 
 export default function OrderCard({ order, onEdit, onPrint, onDelete, onView }) {
   const navigate = useNavigate();
@@ -115,7 +116,8 @@ export default function OrderCard({ order, onEdit, onPrint, onDelete, onView }) 
             title="تعديل"
             onClick={(e) => {
               e.stopPropagation();
-              onEdit(order.id);
+              // onEdit(order.id);
+              toast.info("this feature will be available soon,you can use it in order details page")
             }}
           >
             <Edit />

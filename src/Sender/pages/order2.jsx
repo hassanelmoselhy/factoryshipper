@@ -1,12 +1,15 @@
 // src/Sender/pages/Orders2.jsx
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Package, Plus, Download, Search, Filter, X } from "lucide-react";
+import { Package, Plus, Download, Search, Filter, X, ChevronDown } from "lucide-react";
 import { statusOptions, egypt_governorates } from "../../Shared/Constants";
 import { toast, Toaster } from "sonner";
 import OrderCard from "../components/OrderCard";
 import "./css/Orders2.css";
 import api from "../../utils/Api";
+import DeleteModal from "../../Components/DeleteModal";
+import useUserStore from "../../Store/UserStore/userStore";
+import Swal from "sweetalert2";
 
 /**
  * Helpers
@@ -59,7 +62,7 @@ const SEARCH_BY_OPTIONS = [
 ];
 
 /* -------------------------
-   SearchAndFilters component
+   SearchAndFilters component (with custom dropdown + internal dropdown search)
    ------------------------- */
 const SearchAndFilters = ({
   searchQuery,
@@ -78,6 +81,33 @@ const SearchAndFilters = ({
 }) => {
   const [open, setOpen] = useState(false);
   const activeCount = selectedStatuses.length + (codOnly ? 1 : 0) + (expressOnly ? 1 : 0);
+
+  // dropdown internal state (for custom dropdown)
+  const ddRef = useRef(null);
+  const [ddOpen, setDdOpen] = useState(false);
+  const [ddFilter, setDdFilter] = useState("");
+
+  // close dropdown when clicking outside
+  useEffect(() => {
+    function onDoc(e) {
+      if (!ddRef.current) return;
+      if (!ddRef.current.contains(e.target)) setDdOpen(false);
+    }
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, []);
+
+  // filtered options for dropdown
+  const filteredSearchByOptions = useMemo(() => {
+    const q = ddFilter.trim().toLowerCase();
+    if (!q) return SEARCH_BY_OPTIONS;
+    return SEARCH_BY_OPTIONS.filter((o) => o.label.toLowerCase().includes(q) || o.value.toLowerCase().includes(q));
+  }, [ddFilter]);
+
+  const currentSearchByLabel = () => {
+    const found = SEARCH_BY_OPTIONS.find((o) => o.value === searchBy);
+    return found ? found.label : searchBy;
+  };
 
   return (
     <div className="d-flex flex-column gap-2">
@@ -139,16 +169,43 @@ const SearchAndFilters = ({
           )}
         </div>
 
-        {/* Search by select + input */}
+        {/* Search by custom dropdown + input */}
         <div className="d-flex flex-grow-1 position-relative">
-          <div className="search-select-wrapper me-2">
-            <select value={searchBy} onChange={(e) => onSearchByChange(e.target.value)} className="search-select" aria-label="Search by">
-              {SEARCH_BY_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
+          <div className="custom-dropdown me-2" ref={ddRef}>
+            <button
+              type="button"
+              className="custom-dropdown-toggle"
+              onClick={() => setDdOpen((p) => !p)}
+              aria-haspopup="listbox"
+              aria-expanded={ddOpen}
+            >
+              <span className="custom-dropdown-label">{currentSearchByLabel()}</span>
+              <ChevronDown className={`custom-dropdown-caret ${ddOpen ? "open" : ""}`} />
+            </button>
+
+            <div className={`custom-dropdown-menu ${ddOpen ? "show" : ""}`} role="listbox">
+              <div style={{ maxHeight: 200, overflow: "auto", padding: "6px" }}>
+                {filteredSearchByOptions.map((opt) => (
+                  <div
+                    key={opt.value}
+                    role="option"
+                    aria-selected={searchBy === opt.value}
+                    className={`custom-dropdown-item ${searchBy === opt.value ? "active" : ""}`}
+                    onClick={() => {
+                      onSearchByChange(opt.value);
+                      setDdOpen(false);
+                      setDdFilter("");
+                    }}
+                  >
+                    {opt.label}
+                  </div>
+                ))}
+
+                {filteredSearchByOptions.length === 0 && (
+                  <div className="text-muted small p-2">لا توجد نتائج</div>
+                )}
+              </div>
+            </div>
           </div>
 
           <div className="position-relative flex-grow-1">
@@ -221,6 +278,9 @@ const Orders2 = ({ initialOrders = [] }) => {
   const [editOrderId, setEditOrderId] = useState(null);
   const [deleteOrderId, setDeleteOrderId] = useState(null);
   const [totalcount, SetTotalcount] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const user = useUserStore((state) => state.user);
+  const [showdeleteModal, setShowDeleteModal] = useState(false);
 
   // pagination
   const [pageNumber, setPageNumber] = useState(1);
@@ -239,7 +299,7 @@ const Orders2 = ({ initialOrders = [] }) => {
     async function fetchshipments() {
       const params = {
         pageNumber,
-        pageSize:pageSize,
+        pageSize,
       };
 
       const status = selectedStatuses[0];
@@ -315,23 +375,6 @@ const Orders2 = ({ initialOrders = [] }) => {
     setPageNumber(1);
   };
 
-  const handleDeleteOrder = () => {
-    if (!deleteOrderId) return;
-    SetShipments((prev) =>
-      prev.filter((s) => {
-        const id = s.id ?? s.shipmentId ?? s.code ?? s.orderNumber;
-        return id !== deleteOrderId && s.id !== deleteOrderId;
-      })
-    );
-    toast.success("تم الحذف بنجاح", { description: `تم حذف الطلب #${deleteOrderId}` });
-    setDeleteOrderId(null);
-  };
-
-  const handlePrintOrder = (orderId) => {
-    toast("طباعة الفاتورة", { description: `جاري تحضير فاتورة الطلب #${orderId} للطباعة...` });
-  };
-  const handleEditOrder = (orderId) => setEditOrderId(orderId);
-
   // pagination helpers
   const totalPages = Math.max(1, Math.ceil((totalcount || 0) / pageSize));
 
@@ -358,101 +401,188 @@ const Orders2 = ({ initialOrders = [] }) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  // DeleteShipment now accepts `id` explicitly
+  const DeleteShipment = async (id) => {
+    if (!id) {
+      toast.error("معرّف الشحنة غير محدد.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      console.log("Deleting Shipment:", id);
+
+      const res = await fetch(
+        `https://stakeexpress.runasp.net/api/Shipments/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Client-Key": "web API",
+            Authorization: `Bearer ${user?.token}`,
+          },
+        }
+      );
+
+      console.log("Response Status:", res.status);
+
+      if (res.ok) {
+        // Remove locally from the list to update UI immediately
+        SetShipments((prev) =>
+          prev.filter((s) => {
+            const idVal = s.id ?? s.shipmentId ?? s.code ?? s.orderNumber;
+            return idVal !== id;
+          })
+        );
+
+        // update total count if present
+        SetTotalcount((prev) => (typeof prev === "number" ? Math.max(0, prev - 1) : prev));
+
+        toast.success("تم إلغاء الطلب بنجاح");
+        Swal.fire({
+          position: "center-center",
+          icon: "success",
+          title: "Shipment Deleted Successfully",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+
+        // close modal and clear selected id
+        setShowDeleteModal(false);
+        setDeleteOrderId(null);
+      } else {
+        const data = await res.json().catch(() => ({}));
+        console.log("data from cancel", data);
+        toast.error(data?.message || "فشل إلغاء الشحنة");
+      }
+    } catch (err) {
+      toast.error("حدث خطأ في الخادم أثناء إلغاء الطلب");
+      console.log("Server Error", err);
+    } finally {
+      setLoading(false);
+        setShowDeleteModal(false);
+    }
+  };
+
+  const handlePrintOrder = (orderId) => {
+    toast("طباعة الفاتورة", { description: `جاري تحضير فاتورة الطلب #${orderId} للطباعة...` });
+  };
+  const handleEditOrder = (orderId) => setEditOrderId(orderId);
+
+  // display counts: show current page count and total shipments
+  const totalDisplay = totalcount ?? (Array.isArray(Shipments) ? Shipments.length : 0);
+
   return (
-    <div className="orders-page min-vh-100 bg-light">
-     
-      <div className="container py-4">
-        <div className="mb-4">
-          <div className="d-flex align-items-center justify-content-between mb-2">
-            <div className="d-flex align-items-center gap-2">
-              <div className="icon-wrap p-2 rounded-lg">
-                <Package className="icon-package" />
-              </div>
-              <h1 className="mb-0 pageheader">الطلبات</h1>
-            </div>
-            <div className="d-flex gap-2 align-items-center">
-              <button className="btn btn-outline-secondary d-flex align-items-center gap-2" onClick={() => toast.info("this feature will be available soon")}>
-                <Download />تصدير
-              </button>
-              <button className="btn btn-dark d-flex align-items-center" onClick={() => navigate("/shipping")}>
-                <Plus className="me-2" /> شحنة جديدة
-              </button>
-            </div>
-          </div>
-          <p className="text-muted mb-0">إدارة ومتابعة جميع الطلبات والشحنات</p>
-        </div>
+    <>
+      {/* Delete modal: onConfirm passes the selected deleteOrderId to DeleteShipment */}
+      <DeleteModal
+        show={showdeleteModal}
+        title="Delete Shipment"
+        message="Are you sure you want to delete this Shipment? This action cannot be undone."
+        onCancel={() => { setShowDeleteModal(false); setDeleteOrderId(null); }}
+        onConfirm={() => DeleteShipment(deleteOrderId)}
+      />
 
-        <div className="mb-3">
-          <SearchAndFilters
-            searchQuery={searchQuery}
-            onSearchChange={handleSearchChange}
-            searchBy={searchBy}
-            onSearchByChange={handleSearchByChange}
-            selectedStatuses={selectedStatuses}
-            onStatusToggle={handleStatusToggle}
-            codOnly={codOnly}
-            onCodToggle={handleCodToggle}
-            expressOnly={expressOnly}
-            onExpressToggle={handleExpressToggle}
-            onClearFilters={handleClearFilters}
-            pageSize={pageSize}
-            onPageSizeChange={handlePageSizeChange}
-          />
-        </div>
-
-        <div className="mb-3 small text-muted">
-          عرض {Math.min(totalcount, pageSize * pageNumber)} من أصل {totalcount} طلب
-        </div>
-
-        {Shipments.length > 0 ? (
-          <>
-            <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
-              {Shipments.map((order, idx) => (
-                <div key={order.id ?? order.shipmentId ?? idx} className="col d-flex">
-                  <OrderCard order={order} onEdit={handleEditOrder} onPrint={handlePrintOrder} onDelete={setDeleteOrderId} onView={(id) => navigate(`/order-details/${id}`)} />
-                </div>
-              ))}
-            </div>
-
-            {/* Pagination controls */}
-            <div className="pagination-controls d-flex justify-content-center align-items-center mt-4">
+      <div className="orders-page min-vh-100 bg-light">
+        {/* <Toaster /> */}
+        <div className="container py-4">
+          <div className="mb-4">
+            <div className="d-flex align-items-center justify-content-between mb-2">
               <div className="d-flex align-items-center gap-2">
-                <button className="btn btn-sm btn-outline-secondary" onClick={() => goToPage(pageNumber - 1)} disabled={pageNumber <= 1}>
-                  السابق
+                <div className="icon-wrap p-2 rounded-lg">
+                  <Package className="icon-package" />
+                </div>
+                <h1 className="mb-0 pageheader">الطلبات</h1>
+              </div>
+              <div className="d-flex gap-2 align-items-center">
+                <button className="btn btn-outline-secondary d-flex align-items-center gap-2" onClick={() => toast.info("this feature will be available soon")}>
+                  <Download />تصدير
                 </button>
-
-                {getVisiblePages().map((p) => (
-                  <button
-                    key={p}
-                    className={`btn btn-sm ${p === pageNumber ? "btn-primary" : "btn-outline-secondary"}`}
-                    onClick={() => goToPage(p)}
-                  >
-                    {p}
-                  </button>
-                ))}
-
-                <button className="btn btn-sm btn-outline-secondary" onClick={() => goToPage(pageNumber + 1)} disabled={pageNumber >= totalPages}>
-                  التالي
+                <button className="btn btn-dark d-flex align-items-center" onClick={() => navigate("/shipping")}>
+                  <Plus className="me-2" /> شحنة جديدة
                 </button>
               </div>
-
-             
             </div>
-          </>
-        ) : (
-          <div className="no-results p-4 text-center">
-            <Package className="no-results-icon mb-3" />
-            <h3 className="h5">لا توجد نتائج</h3>
-            <p className="text-muted">لم يتم العثور على طلبات تطابق معايير البحث</p>
-            {(searchQuery || selectedStatuses.length > 0 || codOnly || expressOnly) && <button className="btn btn-link" onClick={handleClearFilters}>مسح جميع الفلاتر</button>}
+            <p className="text-muted mb-0">إدارة ومتابعة جميع الطلبات والشحنات</p>
           </div>
-        )}
 
-       
+          <div className="mb-3">
+            <SearchAndFilters
+              searchQuery={searchQuery}
+              onSearchChange={handleSearchChange}
+              searchBy={searchBy}
+              onSearchByChange={handleSearchByChange}
+              selectedStatuses={selectedStatuses}
+              onStatusToggle={handleStatusToggle}
+              codOnly={codOnly}
+              onCodToggle={handleCodToggle}
+              expressOnly={expressOnly}
+              onExpressToggle={handleExpressToggle}
+              onClearFilters={handleClearFilters}
+              pageSize={pageSize}
+              onPageSizeChange={handlePageSizeChange}
+            />
+          </div>
 
-       
+          <div className="mb-3 small text-muted">
+            عرض {Shipments.length} من أصل {totalDisplay} شحنة
+          </div>
+
+          {Shipments.length > 0 ? (
+            <>
+              <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+                {Shipments.map((order, idx) => (
+                  <div key={order.id ?? order.shipmentId ?? idx} className="col d-flex">
+                    <OrderCard
+                      order={order}
+                      onEdit={handleEditOrder}
+                      onPrint={handlePrintOrder}
+                      // when delete clicked on the card: set the id and open modal
+                      onDelete={() => {
+                        const idVal = order.id ?? order.shipmentId ?? order.code ?? order.orderNumber;
+                        setDeleteOrderId(idVal);
+                        setShowDeleteModal(true);
+                      }}
+                      onView={(id) => navigate(`/order-details/${id}`)}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              {/* Pagination controls */}
+              <div className="pagination-controls d-flex justify-content-center align-items-center mt-4">
+                <div className="d-flex align-items-center gap-2">
+                  <button className="btn btn-sm btn-outline-secondary" onClick={() => goToPage(pageNumber - 1)} disabled={pageNumber <= 1}>
+                    السابق
+                  </button>
+
+                  {getVisiblePages().map((p) => (
+                    <button
+                      key={p}
+                      className={`btn btn-sm ${p === pageNumber ? "btn-primary" : "btn-outline-secondary"}`}
+                      onClick={() => goToPage(p)}
+                    >
+                      {p}
+                    </button>
+                  ))}
+
+                  <button className="btn btn-sm btn-outline-secondary" onClick={() => goToPage(pageNumber + 1)} disabled={pageNumber >= totalPages}>
+                    التالي
+                  </button>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="no-results p-4 text-center">
+              <Package className="no-results-icon mb-3" />
+              <h3 className="h5">لا توجد نتائج</h3>
+              <p className="text-muted">لم يتم العثور على طلبات تطابق معايير البحث</p>
+              {(searchQuery || selectedStatuses.length > 0 || codOnly || expressOnly) && <button className="btn btn-link" onClick={handleClearFilters}>مسح جميع الفلاتر</button>}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
