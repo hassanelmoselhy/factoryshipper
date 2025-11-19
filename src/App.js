@@ -102,7 +102,6 @@ const App = () => {
             {/* Hanger Auth */}
             <Route path="/hanger/sign-up" element={<SignUp />} />
             <Route path="/hanger/sign-in" element={<SignIn />} />
-            <Route path="/shipping" element={<ShippingPage />} />
             <Route path="/new-request" element={<NewRequestPage />} />
 
             <Route path="/Pickuporder" element={<PickupOrder />} />
@@ -117,6 +116,7 @@ const App = () => {
               <Route path="/home" element={<Home />} />
               <Route path="/order" element={<Order />} />
               <Route path="/actions" element={<Actions />} />
+            <Route path="/shipping" element={<ShippingPage />} />
               <Route path="/shipments" element={<Orders2 />} />
               <Route path="/wallet" element={<Wallet />} />
                <Route path="/profile" element={<ShipperProfile />} />

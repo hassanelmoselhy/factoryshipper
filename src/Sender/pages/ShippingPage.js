@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import "./css/ShippingPage.css";
+import "./css/ShippingPage.css"; // Ensure this matches your CSS file name
 import useUserStore from "../../Store/UserStore/userStore";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import LoadingOverlay from "../components/LoadingOverlay";
 import Swal from 'sweetalert2'
-import {egypt_governorates} from '../../Shared/Constants'
-import {CreateShipment}  from '../Data/ShipmentsService'
+import { egypt_governorates } from '../../Shared/Constants'
+import { CreateShipment } from '../Data/ShipmentsService'
+
 const ShippingPage = () => {
   const navigate = useNavigate();
+  
   const [formData, setFormData] = useState({
     customerName: "",
     customerPhone: "",
@@ -18,565 +19,324 @@ const ShippingPage = () => {
       street: "",
       city: "",
       governorate: "",
-      details: ""// Correctly nested here
+      details: "",
+      googleMapAddressLink: ""
     },
     quantity: "",
     shipmentWeight: "",
     shipmentDescription: "",
     shipmentNotes: "",
+    shipmentLength: "", 
+    shipmentWidth: "", 
+    shipmentHeight: "", 
     expressDeliveryEnabled: false,
     openPackageOnDeliveryEnabled: false,
     cashOnDeliveryEnabled: false,
     collectionAmount: 0,
-    isDelivered:false
+    isDelivered: false
   });
 
-  const user = useUserStore((state) => state.user);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-  // Validation rules constants
-  const LIMITS = {
-    dimMin: 1,
-    dimMax: 200,
-    weightMin: 0.01,
-    weightMax: 70,
-    qtyMin: 1,
-    qtyMax: 1000,
-  };
-
-  // Helper: Arabic error messages
   const messages = {
-    required: "هذا الحقل مطلوب.",
-    dimRange: `القيمة يجب أن تكون بين ${LIMITS.dimMin} و ${LIMITS.dimMax} سم.`,
-    weightRange: `الوزن يجب أن يكون بين ${LIMITS.weightMin} و ${LIMITS.weightMax} كجم.`,
-    qtyRange: `العدد يجب أن يكون بين ${LIMITS.qtyMin} و ${LIMITS.qtyMax}.`,
-    qtyInteger: "العدد يجب أن يكون عددًا صحيحًا.",
-    collectionRequired: "ادخل قيمة تحصيل صحيحة (أكبر من 0) عند تفعيل الدفع عند الاستلام.",
-    invalidEmail: "البريد الإلكتروني غير صالح.",
-    invalidUrl: "الرجاء إدخال رابط صالح (مثال: https://example.com).",
-    invalidPhone: "يجب أن يبدأ رقم الهاتف بـ 010 أو 011 أو 012 أو 015 ويتكون من 11 رقماً",
-    optional: "", // For fields that are optional but might have format validation
+    required: "هذا الحقل مطلوب",
+    qtyInteger: "عدد صحيح فقط",
+    invalidPhone: "رقم غير صحيح",
+    collectionRequired: "مطلوب"
   };
 
-  // Basic email regex
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
   const egyptPhoneRegex = /^(010|011|012|015)\d{8}$/;
 
-  // helpers to get/set nested path values like "customerAddress.street"
-  const getByPath = (obj, path) => {
-    if (!path) return undefined;
-    return path.split(".").reduce((acc, key) => (acc ? acc[key] : undefined), obj);
-  };
-
+  const getByPath = (obj, path) => path.split(".").reduce((acc, key) => (acc ? acc[key] : undefined), obj);
+  
   const setByPath = (obj, path, value) => {
     const parts = path.split(".");
     const copy = { ...obj };
     let cur = copy;
     for (let i = 0; i < parts.length; i++) {
       const p = parts[i];
-      if (i === parts.length - 1) {
-        cur[p] = value;
-      } else {
-        cur[p] = { ...(cur[p] || {}) };
-        cur = cur[p];
-      }
+      if (i === parts.length - 1) cur[p] = value;
+      else { cur[p] = { ...(cur[p] || {}) }; cur = cur[p]; }
     }
     return copy;
   };
 
-  // Validate a single field (used on change to clear/set specific errors)
-  const validateField = (name, value, currentForm = formData) => {
-    // normalize: if name is dotted take last part for field rules
+  const validateField = (name, value, currentForm) => {
     const last = name.includes(".") ? name.split(".").slice(-1)[0] : name;
-
-    switch (last) {
-      case "customerName":
-      case "street":
-      case "city":
-      case "shipmentDescription":
-        if (!value || String(value).trim() === "") return messages.required;
-        return null;
-
-      case "customerEmail":
-        if (!value || String(value).trim() === "") return messages.required;
-        if (!emailRegex.test(String(value))) return messages.invalidEmail;
-        return null;
-
-      case "customerPhone":
-        if (!value || String(value).trim() === "") return messages.required;
-        // يجب أن يكون رقمًا يبدأ بواحد من البادئات ويكون طوله 11 رقمًا
-        if (!egyptPhoneRegex.test(String(value))) return messages.invalidPhone;
-        return null;
-
-      case "customerAdditionalPhone":
-        // هذا الحقل اختياري: إذا كان فارغ لا نتحقق
-        if (!value || String(value).trim() === "") return null;
-        // إذا وُجد، نتحقق بنفس قاعدة الأرقام المصرية
-        if (!egyptPhoneRegex.test(String(value))) return messages.invalidPhone;
-        return null;
-
-      case "googleMapAddressLink":
-        if (!value || String(value).trim() === "") return null; // Optional, so no error if empty
-
-        // Check if it's a valid URL. If not, try prepending https://
-        if (!urlRegex.test(value)) {
-          const autoFixed = `https://${value}`;
-          if (urlRegex.test(autoFixed)) {
-            // It's fixable, so not an error here, but you might want to auto-correct in handleChange
-            return null;
-          }
-          return messages.invalidUrl;
-        }
-        return null;
-
-      case "quantity":
-        if (value === "" || value === null) return messages.required;
-        if (!Number.isInteger(value)) return messages.qtyInteger;
-        if (value < LIMITS.qtyMin || value > LIMITS.qtyMax) return messages.qtyRange;
-        return null;
-
-      case "shipmentWeight":
-        if (value === "" || value === null) return null;
-        // optional: you can add range check here if needed
-        return null;
-
-      case "collectionAmount":
-        // only validate strictly when cashOnDeliveryEnabled is true
-        if (currentForm.cashOnDeliveryEnabled) {
-          if (value === "" || value === null) return messages.collectionRequired;
-          if (typeof value !== "number" || Number.isNaN(value) || value <= 0) return messages.collectionRequired;
-        }
-        return null;
-
-      case "governorate":
-        if (!value || String(value).trim() === "") return messages.required;
-        return null;
-
-      default:
-        return null;
+    if (last === "customerName" && !value) return messages.required;
+    if (last === "customerPhone" && !egyptPhoneRegex.test(String(value))) return messages.invalidPhone;
+    if (last === "street" || last === "city" || last === "governorate") if (!value) return messages.required;
+    if (last === "quantity" && (value < 1 || !Number.isInteger(Number(value)))) return messages.qtyInteger;
+    if (last === "collectionAmount" && currentForm.cashOnDeliveryEnabled) {
+      if (!value || value <= 0) return messages.collectionRequired;
     }
+    return null;
   };
 
-  // Full form validation before submit
   const validateAll = (data) => {
     const newErrors = {};
-
-    // list of fields to validate (top-level and nested with dot paths)
-    const fieldsToCheck = [
-      "customerName",
-      "customerEmail",
-      "customerPhone",
-      // "customerAdditionalPhone", // Optional, so not strictly required
-
-      "customerAddress.street",
-      "customerAddress.city",
-      "customerAddress.governorate",
-      // "customerAddress.googleMapAddressLink", // <--- Updated path for full validation
-
-      "shipmentDescription",
-      "quantity",
-    ];
-
-    fieldsToCheck.forEach((field) => {
-      const val = getByPath(data, field);
-      const err = validateField(field, val, data);
-      if (err) newErrors[field] = err;
+    const fields = ["customerName", "customerPhone", "customerAddress.street", "customerAddress.city", "customerAddress.governorate", "quantity", "shipmentDescription"];
+    fields.forEach(f => {
+      const val = getByPath(data, f);
+      const err = validateField(f, val, data);
+      if (err) newErrors[f] = err;
     });
-
-    // collection amount only if COD on
-    const colVal = getByPath(data, "collectionAmount");
-    const colErr = validateField("collectionAmount", colVal, data);
-    if (colErr) newErrors.collectionAmount = colErr;
-
-    // validate additional phone if provided
-    const addPhone = getByPath(data, "customerAdditionalPhone");
-    const addErr = validateField("customerAdditionalPhone", addPhone, data);
-    if (addErr) newErrors.customerAdditionalPhone = addErr;
-
+    if(data.cashOnDeliveryEnabled && (!data.collectionAmount || data.collectionAmount <= 0)) {
+      newErrors.collectionAmount = messages.collectionRequired;
+    }
     return newErrors;
   };
 
-  // Handle input change
   const handleChange = (e) => {
-    const { name, value: rawValue, type, checked } = e.target;
-
+    const { name, value, type, checked } = e.target;
     setFormData((prev) => {
-      let newVal;
+      let newVal = type === "checkbox" ? checked : value;
+      if (type === "number") newVal = value === "" ? "" : Number(value);
+      if (value === "true") newVal = true;
+      if (value === "false") newVal = false;
 
-      if (type === "checkbox") {
-        newVal = checked;
-      } else if (type === "number") {
-        // keep empty string when input cleared
-        newVal = rawValue === "" ? "" : Number(rawValue);
-      } else {
-        // for selects with boolean-like strings, keep them as boolean if they represent true/false
-        if (rawValue === "true") newVal = true;
-        else if (rawValue === "false") newVal = false;
-        else newVal = rawValue;
-      }
-
-      // --- Special: sanitize phone inputs to digits only (remove spaces, +, - , etc.)
       if (name === "customerPhone" || name === "customerAdditionalPhone") {
-        if (typeof newVal === "string") {
-          newVal = newVal.replace(/\D/g, ""); // keep digits only
-        } else if (newVal === null || newVal === undefined) {
-          newVal = "";
-        } else {
-          newVal = String(newVal).replace(/\D/g, "");
-        }
+         newVal = String(newVal).replace(/\D/g, "");
       }
 
-      // Special handling for googleMapAddressLink to prepend https:// if missing and valid
-      if (name === "customerAddress.googleMapAddressLink" && newVal && typeof newVal === 'string' && !urlRegex.test(newVal)) {
-        const autoFixed = `https://${newVal}`;
-        if (urlRegex.test(autoFixed)) {
-          newVal = autoFixed;
-        }
-      }
-
-      // If the name contains ".", update nested path immutably
       const updated = name.includes(".") ? setByPath(prev, name, newVal) : { ...prev, [name]: newVal };
-
-      // update errors for this field (use dotted key for errors)
-      setErrors((prevErrors) => {
-        const fieldError = validateField(name, newVal, updated);
-        const copy = { ...prevErrors };
-        if (fieldError) copy[name] = fieldError;
-        else delete copy[name];
-
-        // re-validate collectionAmount if toggling cashOnDeliveryEnabled
-        if (name === "cashOnDeliveryEnabled") {
-          const collVal = getByPath(updated, "collectionAmount");
-          const collErr = validateField("collectionAmount", collVal, updated);
-          if (collErr) copy.collectionAmount = collErr;
-          else delete copy.collectionAmount;
-        }
-
+      
+      setErrors(prevErr => {
+        const err = validateField(name, newVal, updated);
+        const copy = { ...prevErr };
+        if(err) copy[name] = err; else delete copy[name];
         return copy;
       });
-
       return updated;
     });
   };
 
-  // Submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Validate all fields
     const newErrors = validateAll(formData);
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      toast.error("يرجى تصحيح الأخطاء قبل المتابعة.");
+      toast.error("يرجى تصحيح الأخطاء");
       return;
     }
+
+    setLoading(true);
     const payload = { ...formData };
-    if (payload.shipmentWeight === "") {
-      delete payload.shipmentWeight;
-    }
-    console.log("from payload", payload);
+    if(payload.shipmentWeight === "") delete payload.shipmentWeight;
 
-    setLoading(true)
-    const response = CreateShipment(payload)
-    const  result=await response;
-    console.log('ressss',result)
-    if ( result.Success) {
-      Swal.fire({
-        position: "center-center",
-        icon: "success",
-        title: "Shipment Created Successfully",
-        showConfirmButton: false,
-        timer: 2000
-      });
-
-      navigate("/shipments");
-    }
-    else{
-      if (result.StatusCode === 400) {
-        toast.error(result.Message||"one or more validation error");
-      } 
-      else if (response.status === 401) {
-        toast.error(result.Message||"one or more validation error");
+    try {
+      const result = await CreateShipment(payload);
+      if (result.Success) {
+        Swal.fire({ icon: "success", title: "تم إنشاء الشحنة بنجاح", timer: 2000, showConfirmButton: false });
+        navigate("/shipments");
+      } else {
+        toast.error(result.Message || "حدث خطأ ما");
       }
-      else {
-        toast.error("خطأ في الخادم. حاول لاحقًا.");
-      }
+    } catch (err) {
+      toast.error("خطأ في الاتصال");
     }
-    setLoading(false)
+    setLoading(false);
   };
 
   return (
-    <>
-
-      <div className="shipping-container">
-        {/* ملخص الطلب */}
-        <div className="order-summary card">
-          <h3>ملخص الطلب</h3>
-          <div className="summary-item">
-            <strong>المستلم</strong>
-            <p>{formData.customerName || "-"}</p>
-            <p>{formData.customerPhone || "-"}</p>
-            <p>{formData.customerAdditionalPhone || "-"}</p>
-            <p>{formData.customerEmail || "-"}</p>
-          </div>
-
-          <div className="summary-item">
-            <strong>العنوان</strong>
-            <p>{formData.customerAddress.street || "-"}</p>
-            <p>{formData.customerAddress.details || "-"}</p>
-            <p>{formData.customerAddress.city || "-"}</p>
-            <p>{formData.customerAddress.governorate || "-"}</p>
-            <p>
-              {formData.customerAddress.googleMapAddressLink ? (
-                <a href={formData.customerAddress.googleMapAddressLink} target="_blank" rel="noopener noreferrer">
-                  رابط الخريطة
-                </a>
-              ) : "-"}
-            </p>
-          </div>
-
-          <div className="summary-item">
-            <span>الوزن</span>
-            <p>{formData.shipmentWeight !== "" ? `${formData.shipmentWeight} كجم` : "-"}</p>
-          </div>
-
-          <div className="summary-item">
-            <span>الأبعاد</span>
-            <p>
-              {formData.shipmentLength || "-"} × {formData.shipmentWidth || "-"} × {formData.shipmentHeight || "-"} سم
-            </p>
-          </div>
-
-          <div className="summary-item">
-            <span>أولوية التوصيل</span>
-            <p>{formData.expressDeliveryEnabled ? "سريع" : "عادي"}</p>
-          </div>
-
-          <button className="submit-btn" onClick={handleSubmit} disabled={loading}>
-            {loading ? "جاري الإرسال..." : "إنشاء الطلب"}
-          </button>
-          <button className="cancel-btn" type="button" onClick={() => navigate(-1)}>
-            إلغاء
-          </button>
-        </div>
-
-        {/* الفورم */}
-        <form className="form-area" onSubmit={handleSubmit}>
-          {/* بيانات المستلم */}
-          <div className="card">
+    <div className="shipping-page-wrapper">
+      
+      <form onSubmit={handleSubmit}>
+        
+        {/* The .cards-container handles the vertical/horizontal layout via CSS */}
+        <div className="cards-container">
+          
+          {/* --- Recipient Data --- */}
+          <div className="design-card">
             <h3>بيانات المستلم</h3>
-            <div className="form-group">
-              <label>اسم المستلم </label>
-              <input type="text" name="customerName" value={formData.customerName} onChange={handleChange} />
-              {errors.customerName && <p className="text-danger">{errors.customerName}</p>}
-            </div>
+            <div className="recipient-grid">
+              
+              <div className="form-group">
+                <label>اسم المستلم</label>
+                <input type="text" name="customerName" value={formData.customerName} onChange={handleChange} />
+                {errors.customerName && <span className="text-danger">{errors.customerName}</span>}
+              </div>
+              <div className="form-group">
+                <label>البريد الإلكتروني</label>
+                <input type="email" name="customerEmail" value={formData.customerEmail} onChange={handleChange} />
+              </div>
 
-            <div className="form-group">
-              <label>البريد الالكتروني </label>
-              <input type="email" name="customerEmail" value={formData.customerEmail} onChange={handleChange} />
-              {errors.customerEmail && <p className="text-danger">{errors.customerEmail}</p>}
-            </div>
+              <div className="form-group">
+                <label>رقم الهاتف</label>
+                <input type="text" name="customerPhone" value={formData.customerPhone} onChange={handleChange} maxLength={11} />
+                {errors.customerPhone && <span className="text-danger">{errors.customerPhone}</span>}
+              </div>
+              <div className="form-group">
+                <label>رقم الهاتف الاحتياطي</label>
+                <input type="text" name="customerAdditionalPhone" value={formData.customerAdditionalPhone} onChange={handleChange} maxLength={11} />
+              </div>
 
-            <div className="form-group">
-              <label>رقم الهاتف </label>
-              <input type="text" name="customerPhone" value={formData.customerPhone} onChange={handleChange} />
-              {errors.customerPhone && <p className="text-danger">{errors.customerPhone}</p>}
-            </div>
+              <div className="form-group full-width">
+                <label>اسم الشارع</label>
+                <input type="text" name="customerAddress.street" value={formData.customerAddress.street} onChange={handleChange} />
+                {errors["customerAddress.street"] && <span className="text-danger">{errors["customerAddress.street"]}</span>}
+              </div>
 
-            <div className="form-group">
-              <label>رقم الهاتف الاضافي </label>
-              <input
-                type="text"
-                name="customerAdditionalPhone"
-                value={formData.customerAdditionalPhone}
-                onChange={handleChange}
-              />
-              {errors.customerAdditionalPhone && <p className="text-danger">{errors.customerAdditionalPhone}</p>}
-            </div>
+              <div className="form-group full-width">
+                <label>تفاصيل العنوان</label>
+                <input type="text" name="customerAddress.details" value={formData.customerAddress.details} onChange={handleChange} />
+              </div>
 
-            <div className="form-group">
-              <label>اسم الشارع </label>
-              <input
-                type="text"
-                name="customerAddress.street"
-                value={formData.customerAddress.street}
-                onChange={handleChange}
-              />
-              {errors["customerAddress.street"] && <p className="text-danger">{errors["customerAddress.street"]}</p>}
-            </div>
+              <div className="form-group">
+                <label>المدينة</label>
+                <input type="text" name="customerAddress.city" value={formData.customerAddress.city} onChange={handleChange} />
+                {errors["customerAddress.city"] && <span className="text-danger">{errors["customerAddress.city"]}</span>}
+              </div>
+              <div className="form-group">
+                <label>المحافظة</label>
+                <select name="customerAddress.governorate" value={formData.customerAddress.governorate} onChange={handleChange}>
+                  <option value="">اختر</option>
+                  {egypt_governorates && egypt_governorates.map((gov) => (
+                    <option key={gov.id} value={gov.name_arabic}>{gov.name_arabic}</option>
+                  ))}
+                </select>
+                {errors["customerAddress.governorate"] && <span className="text-danger">{errors["customerAddress.governorate"]}</span>}
+              </div>
 
-            <div className="form-group">
-              <label>تفاصيل العنوان </label>
-              <input
-                type="text"
-                name="customerAddress.details"
-                value={formData.customerAddress.details}
-                onChange={handleChange}
-              />
-              {errors["customerAddress.details"] && <p className="text-danger">{errors["customerAddress.details"]}</p>}
-            </div>
+              <div className="form-group full-width">
+                <label>رابط العنوان (Google Maps)</label>
+                <input type="text" name="customerAddress.googleMapAddressLink" value={formData.customerAddress.googleMapAddressLink} onChange={handleChange} />
+              </div>
 
-            <div className="form-group">
-              <label>المدينة </label>
-              <input
-                type="text"
-                name="customerAddress.city"
-                value={formData.customerAddress.city}
-                onChange={handleChange}
-              />
-              {errors["customerAddress.city"] && <p className="text-danger">{errors["customerAddress.city"]}</p>}
-            </div>
-
-            <div className="form-group">
-              <label>المحافظه </label>
-              <select
-                name="customerAddress.governorate"
-                className="form-control"
-                value={formData.customerAddress.governorate}
-                onChange={handleChange}
-              >
-                <option value={""} disabled>
-                  اختر المحافظه
-                </option>
-                {egypt_governorates.map((gov) => (
-                  <option key={gov.id} value={gov.name_arabic}>
-                    {gov.name_arabic}
-                  </option>
-                ))}
-              </select>
-
-              {errors["customerAddress.governorate"] && (
-                <p className="text-danger">{errors["customerAddress.governorate"]}</p>
-              )}
-            </div>
-
-            <div className="form-group">
-              <label>رابط العنوان</label>
-              <input
-                type="text"
-                name="customerAddress.googleMapAddressLink" 
-                value={formData.customerAddress.googleMapAddressLink}
-                onChange={handleChange}
-              />
-              {errors["customerAddress.googleMapAddressLink"] && <p className="text-danger">{errors["customerAddress.googleMapAddressLink"]}</p>}
             </div>
           </div>
 
-          {/* تفاصيل الطرد */}
-          <div className="card">
+          {/* --- Parcel Details --- */}
+          <div className="design-card">
             <h3>تفاصيل الطرد</h3>
+            
             <div className="form-group">
-              <label>محتوى الطرد </label>
-              <input
-                type="text"
-                name="shipmentDescription"
-                value={formData.shipmentDescription}
-                onChange={handleChange}
-              />
-              {errors.shipmentDescription && <p className="text-danger">{errors.shipmentDescription}</p>}
+              <label>محتوى الطرد</label>
+              <input type="text" name="shipmentDescription" value={formData.shipmentDescription} onChange={handleChange} />
+              {errors.shipmentDescription && <span className="text-danger">{errors.shipmentDescription}</span>}
             </div>
 
             <div className="form-group">
-              <label>عدد القطع </label>
-              <input
-                type="number"
-                name="quantity"
-                value={formData.quantity}
-                onChange={handleChange}
-                min={LIMITS.qtyMin}
-                max={LIMITS.qtyMax}
-                step={1}
-              />
-              {errors.quantity && <p className="text-danger">{errors.quantity}</p>}
+              <label>عدد القطع</label>
+              <input type="number" name="quantity" value={formData.quantity} onChange={handleChange} />
+              {errors.quantity && <span className="text-danger">{errors.quantity}</span>}
             </div>
 
             <div className="form-group">
-              <label>وزن الطلب (كجم) </label>
-              <input
-                type="number"
-                name="shipmentWeight"
-                value={formData.shipmentWeight}
-                onChange={handleChange}
-                min={LIMITS.weightMin}
-                max={LIMITS.weightMax}
-                step="0.5"
-              />
-              {errors.shipmentWeight && <p className="text-danger">{errors.shipmentWeight}</p>}
-              <small className="hint">
-                الحد المسموح: {LIMITS.weightMin} - {LIMITS.weightMax} كجم
-              </small>
+              <label>وزن الطلب (كجم)</label>
+              <input type="number" name="shipmentWeight" value={formData.shipmentWeight} onChange={handleChange} step="0.1" />
+              <small className="hint">الحد الأدنى: 0.01 - 75.0 كجم</small>
             </div>
+
+            <label style={{fontSize:'13px', fontWeight:'600', color:'#4b5563'}}>الأبعاد (سم)</label>
+            <div className="dimensions-row">
+              <div className="form-group">
+                <input type="number" name="shipmentLength" placeholder="الطول" value={formData.shipmentLength} onChange={handleChange} />
+              </div>
+              <div className="form-group">
+                <input type="number" name="shipmentWidth" placeholder="العرض" value={formData.shipmentWidth} onChange={handleChange} />
+              </div>
+              <div className="form-group">
+                <input type="number" name="shipmentHeight" placeholder="الارتفاع" value={formData.shipmentHeight} onChange={handleChange} />
+              </div>
+            </div>
+            <small className="hint" style={{textAlign: 'center'}}>إلى حد أدنى 1 سم إلى 200 و 3 سم</small>
 
             <div className="form-group">
               <label>ملاحظات خاصة بالشحن</label>
-              <textarea name="shipmentNotes" value={formData.shipmentNotes} onChange={handleChange} />
+              <textarea name="shipmentNotes" value={formData.shipmentNotes} onChange={handleChange} style={{height:'80px'}} />
             </div>
           </div>
 
-          {/* الدفع والتسليم */}
-          <div className="card">
+          {/* --- Payment Options --- */}
+          <div className="design-card">
             <h3>خيارات الدفع والتسليم</h3>
-            <div className="form-group checkbox-group d-flex flex-row gap-3 align-items-center">
-              
-              <label>
-                <input
-                  type="checkbox"
-                  name="cashOnDeliveryEnabled"
-                  checked={formData.cashOnDeliveryEnabled}
-                  onChange={handleChange}
-                />
+            
+            <div className="payment-options">
+              <label className="radio-label">
+                <input type="checkbox" name="cashOnDeliveryEnabled" checked={formData.cashOnDeliveryEnabled} onChange={handleChange} />
                 الدفع عند الاستلام
               </label>
-              <label>
-                <input
-                  type="checkbox"
-                  name="openPackageOnDeliveryEnabled"
-                  checked={formData.openPackageOnDeliveryEnabled}
-                  onChange={handleChange}
-                />
-                فتح الطرد عند الاستلام
+              <label className="radio-label">
+                <input type="checkbox" name="openPackageOnDeliveryEnabled" checked={formData.openPackageOnDeliveryEnabled} onChange={handleChange} />
+                السماح بفتح الطرد
               </label>
-              <label>
-                <input
-                  type="checkbox"
-                  name="isDelivered"
-                  checked={formData.isDelivered}
-                  onChange={handleChange}
-                />
-               هل تم التوصيل
-              </label>
+
             </div>
 
             <div className="form-group">
               <label>قيمة التحصيل</label>
-              <input
-                type="number"
-                name="collectionAmount"
-                value={formData.collectionAmount}
-                onChange={handleChange}
-                min={0}
+              <input 
+                type="number" 
+                name="collectionAmount" 
+                value={formData.collectionAmount} 
+                onChange={handleChange} 
+                disabled={!formData.cashOnDeliveryEnabled}
               />
-              {errors.collectionAmount && <p className="text-danger">{errors.collectionAmount}</p>}
+              {errors.collectionAmount && <span className="text-danger">{errors.collectionAmount}</span>}
             </div>
 
             <div className="form-group">
               <label>أولوية التوصيل *</label>
-              <select
-                name="expressDeliveryEnabled"
-                value={String(formData.expressDeliveryEnabled)}
-                onChange={handleChange}
-              >
-                <option value={false}>عادي</option>
-                <option value={true}>سريع</option>
+              <select name="expressDeliveryEnabled" value={String(formData.expressDeliveryEnabled)} onChange={handleChange}>
+                <option value="false">عادي</option>
+                <option value="true">سريع</option>
               </select>
-              {errors.expressDeliveryEnabled && <p className="text-danger">{errors.expressDeliveryEnabled}</p>}
             </div>
           </div>
-        </form>
-      </div>
-    </>
+
+        </div>
+
+        {/* --- Static Order Summary --- */}
+        <div className="static-summary">
+          <div className="summary-header">
+            <h4>ملخص الطلب</h4>
+          </div>
+          <div className="summary-content">
+            
+            <div className="summary-item">
+              <label>المستلم</label>
+              <span>{formData.customerName || "---"}</span>
+            </div>
+
+            <div className="summary-item">
+              <label>رقم الهاتف</label>
+              <span>{formData.customerPhone || "---"}</span>
+            </div>
+
+            <div className="summary-item">
+              <label>المحافظة</label>
+              <span>{formData.customerAddress.governorate || "---"}</span>
+            </div>
+
+            <div className="summary-item">
+              <label>المدينة</label>
+              <span>{formData.customerAddress.city || "---"}</span>
+            </div>
+
+            <div className="summary-item">
+              <label>قيمة التحصيل</label>
+              <span>{formData.collectionAmount ? `${formData.collectionAmount} ج.م` : "0"}</span>
+            </div>
+
+            <div className="summary-item">
+              <label>أولوية التوصيل</label>
+              <span>{formData.expressDeliveryEnabled ? "سريع" : "عادي"}</span>
+            </div>
+
+            <div className="summary-actions">
+              <button type="button" className="btn-cancel" onClick={() => navigate(-1)}>إلغاء</button>
+              <button type="submit" className="btn-submit" disabled={loading}>
+                {loading ? "جاري..." : "إتمام الطلب"}
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </form>
+    </div>
   );
 };
 

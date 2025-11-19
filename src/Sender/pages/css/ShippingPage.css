@@ -1,262 +1,296 @@
-.shipping-container {
-  display: flex;
-  gap: 30px;
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+:root {
+  --primary-color: #c2bfbf;
+  --bg-color: #ffffff;
+  --card-bg: #ffffff;
+  --border-color: #e5e7eb;
+  --text-dark: #1f2937;
+  --text-muted: #6b7280;
+  --radius: 12px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.shipping-page-wrapper {
+  font-family: 'Cairo', sans-serif;
+  background-color: var(--bg-color);
+  min-height: 100vh;
   padding: 30px;
   direction: rtl;
-  background: #f3f4f6;
-  min-height: 100vh;
-  box-sizing: border-box;
-  font-family: "Segoe UI", Tahoma, sans-serif;
 }
 
-/* === البطاقات العامة === */
-.shipping-container .card {
-  background: #ffffff;
-  padding: 22px;
-  border-radius: 14px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-  margin-bottom: 20px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.shipping-container .card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
-}
-
-.shipping-container h3 {
-  margin-bottom: 18px;
-  font-size: 19px;
-  color: #1f2937;
-  border-bottom: 1px solid #e5e7eb;
-  padding-bottom: 8px;
-  font-weight: 600;
-}
-
-.shipping-container .order-summary {
-  flex: 1;
-  max-width: 340px;
-  align-self: flex-start;
-  position: sticky;
-  top: 25px;
-}
-
-.summary-item {
-  margin-bottom: 15px;
-  padding: 10px 12px;
-  background: #f9fafb;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-}
-
-.summary-item strong {
-  display: block;
-  color: #111827;
-  margin-bottom: 6px;
-  font-size: 14px;
-}
-
-.summary-item span {
-  font-size: 13px;
-  color: #6b7280;
-}
-
-.summary-item .price {
-  font-weight: bold;
-  color: #2563eb;
-  background: #eef2ff;
-  display: inline-block;
-  padding: 6px 14px;
-  border-radius: 8px;
-  font-size: 14px;
-}
-
-/* === منطقة الفورم === */
-.form-area {
-  flex: 3;
-  display: flex;
-  flex-direction: column;
+/* --- Main Grid Layout --- */
+.cards-container {
+  display: grid;
+  /* Payment (Left) - Parcel (Middle) - Recipient (Right) */
+  grid-template-columns: 1fr 1fr 1.1fr; 
   gap: 20px;
+  margin-bottom: 30px;
 }
 
-.form-group {
-  margin-bottom: 15px;
+/* --- Card Styles --- */
+.design-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 25px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
   display: flex;
   flex-direction: column;
+  gap: 15px;
+  height: fit-content;
+}
+
+.design-card h3 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-dark);
+  text-align: right;
+  border-bottom: 1px solid transparent; 
+}
+
+/* --- Form Elements --- */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
 }
 
 .form-group label {
-  font-size: 14px;
-  margin-bottom: 6px;
-  color: #374151;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4b5563;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
-  padding: 11px 13px;
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
+  background-color: #fafafa;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px 12px;
   font-size: 14px;
-  transition: all 0.2s ease-in-out;
-  background: #fafafa;
+  color: #333;
+  font-family: 'Cairo', sans-serif;
+  outline: none;
+  transition: all 0.2s;
+  width: 100%;
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-  border-color: #2563eb;
-  background: #fff;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(37,99,235,0.25);
+  border-color: var(--primary-blue);
+  background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
-/* === الأزرار === */
-.submit-btn,
-.save-btn,
-.cancel-btn {
-  width: 100%;
-  padding: 13px;
-  border-radius: 10px;
-  font-size: 15px;
-  cursor: pointer;
-  margin-bottom: 10px;
-  transition: all 0.25s ease-in-out;
+.text-danger {
+  color: #dc2626;
+  font-size: 11px;
 }
 
-.submit-btn {
-  background: #2563eb;
-  color: white;
-  font-weight: 600;
-  border: none;
+.hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: -5px;
 }
 
-.submit-btn:hover {
-  background: #1e40af;
+/* --- Recipient Card Specific Grid --- */
+.recipient-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
 }
 
-.save-btn {
-  background: #f3f4f6;
-  color: #374151;
-  font-weight: 500;
-  border: none;
+.full-width {
+  grid-column: span 2;
 }
 
-.save-btn:hover {
-  background: #e5e7eb;
+/* --- Dimensions Row (Parcel Card) --- */
+.dimensions-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
 }
 
-.cancel-btn {
-  background: transparent;
-  border: 1px solid #d1d5db;
-  color: #6b7280;
+/* --- Payment Options --- */
+.payment-options {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
 }
 
-.cancel-btn:hover {
-  background: #f9fafb;
-  color: #111827;
-}
-
-/* === تشيك بوكس === */
-.checkbox-group label {
+.radio-label {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   font-size: 14px;
-  font-weight: 500;
-  color: #374151;
+  font-weight: 600;
   cursor: pointer;
 }
 
-.checkbox-group input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-  accent-color: #2563eb;
+.radio-label input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary-color);
 }
 
-/* === Responsive === */
+/* --- Static Bottom Summary --- */
+.static-summary {
+  background: #377dff;
+  color: white;
+  border-radius: var(--radius);
+  padding: 20px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2);
+}
 
-/* تابلت */
-@media (max-width: 992px) {
-  .shipping-container {
+.summary-header h4 {
+  margin: 0;
+  font-size: 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.summary-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 120px;
+}
+
+.summary-item label {
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+.summary-item span {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.summary-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+  align-self: flex-end;
+  margin-right: auto; 
+}
+
+.btn-submit, .btn-cancel {
+  padding: 7px 15px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-family: 'Cairo', sans-serif;
+  cursor: pointer;
+  font-size: 14px;
+  border: none;
+}
+
+.btn-submit {
+  background-color: white;
+  color: #000;
+}
+
+.btn-cancel {
+  background-color: white;
+  color: #000;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+.btn-submit:hover { background-color: #f0f0f0; }
+.btn-cancel:hover { background-color: rgba(255,255,255,0.2); }
+
+/* --- RESPONSIVE DESIGN --- */
+
+/* Tablet (Max Width 1024px) */
+@media (max-width: 1024px) {
+  .cards-container {
+    grid-template-columns: 1fr 1fr; 
+  }
+  /* Recipient card takes full width at the top */
+  .design-card:nth-child(1) { 
+    grid-column: span 2;
+  }
+}
+
+/* Mobile (Max Width 768px) */
+@media (max-width: 768px) {
+  .shipping-page-wrapper {
+    padding: 15px; 
+  }
+
+  .cards-container {
+    display: flex;
     flex-direction: column;
+    gap: 15px;
+  }
+  
+  /* Reset specific grid spans from desktop/tablet */
+  .design-card:nth-child(1) {
+    grid-column: auto;
+    width: 100%;
+  }
+
+  /* Force Recipient Grid inputs to stack vertically (1 column) */
+  .recipient-grid {
+    grid-template-columns: 1fr; 
+    gap: 10px;
+  }
+  
+  /* Reset 'span 2' for full-width inputs since grid is now 1 col */
+  .full-width {
+    grid-column: span 1;
+  }
+  
+  /* Dimensions inputs - adjust gap */
+  .dimensions-row {
+    gap: 8px;
+  }
+
+  /* Summary Section specific mobile styles */
+  .static-summary {
     padding: 20px;
   }
 
-  .order-summary {
-    max-width: 100%;
-    position: static;
+  .summary-content {
+    flex-direction: column;
+    gap: 15px;
   }
-}
-
-/* موبايل متوسط */
-@media (max-width: 768px) {
-  .shipping-container {
-    padding: 15px;
-    gap: 20px;
-  }
-
-  h3 {
-    font-size: 17px;
+  
+  .summary-item {
+    width: 100%;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 8px;
+    flex-direction: row;
+    justify-content: space-between; 
   }
 
-  .form-group label {
-    font-size: 13px;
+  .summary-actions {
+    width: 100%;
+    flex-direction: column;
+    margin-top: 10px;
   }
-
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    font-size: 13px;
-    padding: 10px;
-  }
-
-  .submit-btn,
-  .save-btn,
-  .cancel-btn {
-    font-size: 14px;
-    padding: 11px;
-  }
-}
-
-/* موبايل صغير */
-@media (max-width: 480px) {
-  .shipping-container {
-    padding: 10px;
-  }
-
-  .card {
-    padding: 15px;
-    border-radius: 10px;
-  }
-
-  h3 {
-    font-size: 15px;
-  }
-
-  .form-group label {
-    font-size: 12px;
-  }
-
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    font-size: 12px;
-    padding: 8px;
-  }
-
-  .submit-btn,
-  .save-btn,
-  .cancel-btn {
-    font-size: 13px;
-    padding: 10px;
-  }
-
-  .summary-item strong,
-  .summary-item span,
-  .summary-item .price {
-    font-size: 12px;
+  
+  .btn-submit, .btn-cancel {
+    width: 100%;
+    text-align: center;
   }
 }
