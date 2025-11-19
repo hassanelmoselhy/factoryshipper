@@ -5,21 +5,16 @@ import { FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "sonner";
 import useUserStore from "../Store/UserStore/userStore";
 import LoadingOverlay from "../Sender/components/LoadingOverlay";
+import { forgetpassword } from "../Sender/Data/AuthenticationService";
 export default function ForgetPassword() {
- const [showCurrent, setShowCurrent] = useState(false);
-  const [showNew, setShowNew] = useState(false);
   const [res, Setres] = useState(false);
-const [loading,setloading]=useState(false)
+  const [loading, setloading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     resetPasswordUrl: window.location.origin,
   });
 
   const navigate = useNavigate();
-  const user = useUserStore((state) => state.user);
-
-
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,93 +24,72 @@ const [loading,setloading]=useState(false)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-setloading(true)
-    try {
+    setloading(true);
+    const payload = {
+      email: formData.email,
+      resetPasswordUrl: formData.resetPasswordUrl,
+    };
 
-      const response = await fetch(
-        "https://stakeexpress.runasp.net/api/Accounts/forget-password",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Client-Key": "web API"
-            
-          },
-          body: JSON.stringify({
-            email: formData.email,
-            resetPasswordUrl: formData.resetPasswordUrl
-          }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (response.ok) {
-        console.log('email send success',data)
-        Setres(data?.message)
-
-      } else {
-        console.error("error in sending email", data);
-         Setres(data?.message)
-
-      }
-    } catch (err) {
-      toast.error("⚠️ خطأ في الاتصال بالخادم: " + err.message);
-      console.error("Error:", err);
-    }finally{setloading(false)}
+    const response = await forgetpassword(payload);
+    const result = await response;
+    if (result.Success) {
+      Setres(result.Message);
+    } else {
+      Setres(result.Message);
+    }
+    setloading(false);
   };
 
-    return (
-      <>
-        <LoadingOverlay
+  return (
+    <>
+      <LoadingOverlay
         loading={loading}
         message="please wait..."
         color="#fff"
         size={44}
       />
-    <div className="change-pass-page">
-          <div className="change-pass-card">
-            <div className="lock-icon">
-              <FaLock />
-            </div>
-            <h2 className="change-pass-title">تغيير كلمة السر</h2>
-            <p className="change-pass-subtitle">
-              قم بإدخال البريد الالكتروني الحالي
-            </p>
-
-            <p className="text-success fw-boler fs-5">{res}</p>
-
-            <form className="change-pass-form" onSubmit={handleSubmit}>
-              <label className="change-pass-label">البريد الألكتروني الحالي</label>
-              <div className="change-pass-input">
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="أدخل البريد الألكتروني الحالي"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-                
-              </div>
-   
-    
-              <div className="change-pass-buttons">
-                <button type="submit" className="save-btn">
-                  ارسال
-                </button>
-                <button
-                  type="button"
-                  className="cancel-btn"
-                  onClick={() => navigate("/")}
-                >
-                  إلغاء
-                </button>
-              </div>
-            </form>
+      <div className="change-pass-page">
+        <div className="change-pass-card">
+          <div className="lock-icon">
+            <FaLock />
           </div>
+          <h2 className="change-pass-title">تغيير كلمة السر</h2>
+          <p className="change-pass-subtitle">
+            قم بإدخال البريد الالكتروني الحالي
+          </p>
+
+          <p className="text-success fw-boler fs-5">{res}</p>
+
+          <form className="change-pass-form" onSubmit={handleSubmit}>
+            <label className="change-pass-label">
+              البريد الألكتروني الحالي
+            </label>
+            <div className="change-pass-input">
+              <input
+                type="email"
+                name="email"
+                placeholder="أدخل البريد الألكتروني الحالي"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="change-pass-buttons">
+              <button type="submit" className="save-btn">
+                ارسال
+              </button>
+              <button
+                type="button"
+                className="cancel-btn"
+                onClick={() => navigate("/")}
+              >
+                إلغاء
+              </button>
+            </div>
+          </form>
         </div>
-      </>
-  
-)
+      </div>
+    </>
+  );
 }

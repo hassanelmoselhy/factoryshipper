@@ -5,6 +5,8 @@ import { FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "sonner";
 import Swal from "sweetalert2";
 import LoadingOverlay from "../Sender/components/LoadingOverlay";
+import { FirstLoginChangePassword, ResetPAssword } from "../Sender/Data/AuthenticationService";
+import { getRawQueryParam } from "../utils/Helpers";
 export default function ResetPassword() {
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
@@ -19,27 +21,6 @@ export default function ResetPassword() {
   });
 
   const navigate = useNavigate();
-function getRawQueryParam(name) {
-  const href = window.location.href;
-  const qIndex = href.indexOf('?');
-  if (qIndex === -1) return null;
-
-  // query string without the leading '?', and ignore hash fragment
-  const query = href.slice(qIndex + 1).split('#')[0];
-  if (!query) return null;
-
-  const parts = query.split('&');
-  for (const p of parts) {
-    const eq = p.indexOf('=');
-    if (eq === -1) continue;
-    const key = p.slice(0, eq);
-    if (key === name) {
-      // return value exactly as in URL, including %XX sequences
-      return p.slice(eq + 1);
-    }
-  }
-  return null;
-}
 
 
   const handleChange = (e) => {
@@ -65,29 +46,16 @@ function getRawQueryParam(name) {
 
     const resetShipper=async()=>{
       setloading(true)
-
-      try {
-        const response = await fetch(
-          "https://stakeexpress.runasp.net/api/Accounts/reset-password",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-Client-Key": "web API",
-              
-            },
-            body: JSON.stringify({
-              token:encodeURIComponent(token),
+          const payload={token:encodeURIComponent(token),
               email:email,
               newPassword: formData.newPassword,
-              confirmPassword: formData.confirmPassword,
-            }),
-          }
-        );
+              confirmPassword: formData.confirmPassword}
+      
+        
   
-        const data = await response.json();
+        const response=await ResetPAssword(payload)
   
-        if (response.ok) {
+        if (response.Success) {
           Swal.fire({
               position: "center-center",
               icon: "success",
@@ -95,55 +63,39 @@ function getRawQueryParam(name) {
               showConfirmButton: false,
               timer: 2000
                 });
-  
-  
-  
            navigate("/");
         } else {
-          console.error("❌ Reset password error:", data);
+          
           toast.error(
-            data?.message ||
-              data?.errors?.NewPassword?.[0] ||
+            response.message ||
               "فشل في تغيير كلمة المرور"
           );
         }
-      } catch (err) {
-        toast.error("⚠️ خطأ في الاتصال بالخادم: " + err.message);
-        console.error("Error:", err);
-      }finally{setloading(false)}
+       setloading(false)
     
     }
 
     
     const resetEmp=async()=>{
 
-  try {
-            const { email, password } = location.state ?? {}; // may be undefined if user refreshed/landed directly
+  
+            const { email, password } = location.state ?? {}; 
 
           console.log('emp email',email,password)
           
-        const response = await fetch(
-          "https://stakeexpress.runasp.net/api/Accounts/first-login-change-password",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-Client-Key": "web API",
-              
-            },
-            body: JSON.stringify({
-              
+          const payload={
+   
               email:email,
               currentPassword:password,
               newPassword: formData.newPassword,
-              confirmPassword: formData.confirmPassword,
-            }),
+              confirmPassword: formData.confirmPassword
           }
-        );
+          const response=await FirstLoginChangePassword(payload)
+
+      
+       
   
-        const data = await response.json();
-  
-        if (response.ok) {
+        if (response.Success) {
           Swal.fire({
               position: "center-center",
               icon: "success",
@@ -157,17 +109,14 @@ function getRawQueryParam(name) {
                     navigate("/hanger/orders");
                   }, 1500);
         } else {
-          console.error("❌ Reset password error:", data);
+         
           toast.error(
-            data?.message ||
-              data?.errors?.NewPassword?.[0] ||
+              response.Message||
+             
               "فشل في تغيير كلمة المرور"
           );
         }
-      } catch (err) {
-        toast.error("⚠️ خطأ في الاتصال بالخادم: " + err.message);
-        console.error("Error:", err);
-      }finally{setloading(false)}
+     setloading(false)
     
 
     }

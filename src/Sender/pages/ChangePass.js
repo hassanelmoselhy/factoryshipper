@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "./css/ChangePass.css";
 import { FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "sonner";
 import useUserStore from "../../Store/UserStore/userStore";
 import Swal from "sweetalert2";
+import "./css/ChangePass.css";
 
 export default function ChangePass() {
   const [showCurrent, setShowCurrent] = useState(false);

@@ -5,10 +5,9 @@ import { FaShippingFast } from "react-icons/fa";
 import useUserStore from "../../../Store/UserStore/userStore";
 import { toast } from "sonner";
 import { useLocation } from "react-router-dom";
-import api from "../../../utils/Api";
-import ss from "../../../Sounds/who-VEED.mp3";
 
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { login, RefreshToken } from "../../Data/AuthenticationService";
 const Login = () => {
   const SetUser = useUserStore((state) => state.SetUser);
   const user = useUserStore((state) => state.user);
@@ -44,32 +43,6 @@ const Login = () => {
     document.body.classList.remove("login-page");
   };
 }, []);
-  async function RefreshToken() {
-    try {
-      const response = await fetch(
-        "https://stakeexpress.runasp.net/api/Accounts/refreshToken",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Client-Key": "web API",
-          },
-          credentials: "include",
-        }
-      );
-      const data = await response.json();
-      if (response.status === 200) {
-        SetUser(data.data);
-        console.log("Token refreshed:", data);
-
-        console.log("token data = ", data.data.expiresOn);
-        shceduleRefreshToken(data.data.expiresOn);
-      }
-      console.log("Token ", data);
-    } catch (error) {
-      console.log("Error refreshing token:", error);
-    }
-  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -97,39 +70,35 @@ const Login = () => {
       confirmEmailUrl: window.location.origin + "/confirm-email",
     });
 
-    try {
-      const res = await api.post("/Accounts/login", body,{withCredentials:true});
-      console.log(res)
-      const result=res.data.data;
-      const message=res.data.message
-      // console.log(message)
-      if (message === "Change Password Required") {
-        navigate("/reset-password", {
-          state: {
-            email: formData.email,
-            password: formData.password,
-          },
-        });
-      }
-      else{
-
-        console.log("✅ Login successful:",result);
-         sessionStorage.setItem("user", JSON.stringify(result));
-                SetUser(result);
-                navigate("/home");
-                shceduleRefreshToken(result.expiresOn);
-                toast.success("Welcome back , "+result?.firstName );
-      }
     
-    } catch (err) {
-      const message = err.response?.data.message || "";
-      setError(message);
-      console.error("🚨 Login error:", message);
+      const res = login(body)
+      const response=await res
 
-      
-    } finally {
+      if(response.Success){
+
+        if (response.Message === "Change Password Required") {
+          navigate("/reset-password", {
+            state: {
+              email: formData.email,
+              password: formData.password,
+            },
+          });
+        }
+        else{
+           sessionStorage.setItem("user", JSON.stringify(response.Data));
+                  SetUser(response.Data);
+                  navigate("/home");
+                  shceduleRefreshToken(response.Data.expiresOn);
+                  toast.success("Welcome back , "+response.Data?.firstName );
+        }
+      }else{
+            
+      setError(response.Message);
+      console.error("🚨 Login error:", response.Message);
+
+      }
       setLoading(false);
-    }
+    
   };
   const refreshTokenExpirationhandle = () => {
     navigate("/login");
@@ -161,6 +130,8 @@ const Login = () => {
 
     setTimeout(RefreshToken, expirems);
   };
+
+
   return (
     <>
       <div>

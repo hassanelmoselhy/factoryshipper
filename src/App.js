@@ -91,7 +91,7 @@ const App = () => {
 
       <Router>
         {/* ضع Suspense حول Routes أو حول أجزاء معينة لتتحكم بالـ fallback */}
-        <Suspense fallback={<div style={{ padding: 40, textAlign: "center" }}>Loading...</div>}>
+        <Suspense >
           <Routes>
             {/* Public Auth */}
             <Route path="/signup" element={<Signup />} />

@@ -21,21 +21,26 @@ function getToken() {
 }
 const publicRoutes=[
   "/Accounts/login",
-  "/confirm-email",
   "/Accounts/forget-password",
+  "/Accounts/confirm-email",
   "Accounts/reset-password",
   "Accounts/first-login-change-password",
-  "/shippers"
+  "Accounts/refreshToken",
+  "/Accounts/resend-email-confirmation-link",
+  "/confirm-email",
+  "/shippers",
 ]
-function IsPublicRoute(config){
+function isPublicRoute(config, publicRoutes) {
+  if (!config || typeof config.url !== 'string') return false;
+  if (!Array.isArray(publicRoutes)) return false;
 
-  for( var route in publicRoutes){
-    if(typeof String &&config.url.toString().endsWith(publicRoutes[route])){
-      return true;
-    }
+  for (const route of publicRoutes) {
+    if (!route) continue;
+    if (config.url.includes(route)) return true; // substring match
   }
-  return false
+  return false;
 }
+
 
 api.interceptors.request.use(
 
@@ -50,7 +55,7 @@ api.interceptors.request.use(
     // Add Authorization  headers to private routes
                console.log('token=',getToken())
 
-       if (!IsPublicRoute(config)) {
+       if (!isPublicRoute(config,publicRoutes)) {
         
         config.headers.Authorization=`Bearer ${getToken()}`;
         }
@@ -90,8 +95,7 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    const config = error.config || {};
-    const method = (config.method || "").toLowerCase();
+ 
     
     // Global error handling example
     if (error.response && error.response.status === 401) {
