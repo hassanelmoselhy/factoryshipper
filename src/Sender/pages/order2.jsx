@@ -5,6 +5,7 @@ import { Package, Plus, Download, Search, Filter, X, ChevronDown } from "lucide-
 import { statusOptions, egypt_governorates } from "../../Shared/Constants";
 import { toast, Toaster } from "sonner";
 import OrderCard from "../components/OrderCard";
+import OrderCardSkeleton from "../components/OrderCardSkeleton";
 import "./css/Orders2.css";
 import api from "../../utils/Api";
 import DeleteModal from "../../Components/DeleteModal";
@@ -297,6 +298,7 @@ const Orders2 = ({ initialOrders = [] }) => {
     let mounted = true;
 
     async function fetchshipments() {
+      setLoading(true);
       const params = {
         pageNumber,
         pageSize,
@@ -322,6 +324,8 @@ const Orders2 = ({ initialOrders = [] }) => {
       } catch (error) {
         const message = error?.response?.data?.message || error.message || "";
         console.error("fetchshipments error:", message);
+      } finally {
+        if (mounted) setLoading(false);
       }
     }
 
@@ -528,7 +532,15 @@ const Orders2 = ({ initialOrders = [] }) => {
             عرض {Shipments.length} من أصل {totalDisplay} شحنة
           </div>
 
-          {Shipments.length > 0 ? (
+          {loading ? (
+            <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+              {Array.from({ length: pageSize }).map((_, idx) => (
+                <div key={idx} className="col d-flex">
+                  <OrderCardSkeleton />
+                </div>
+              ))}
+            </div>
+          ) : Shipments.length > 0 ? (
             <>
               <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
                 {Shipments.map((order, idx) => (

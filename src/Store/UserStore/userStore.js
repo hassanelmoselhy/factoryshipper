@@ -2,7 +2,7 @@ import { create } from "zustand";
 const useUserStore=create((set)=>({
     
     
-    user:sessionStorage.getItem("user")?JSON.parse(sessionStorage.getItem("user")):null,
+    user:null,
 
     SetUser:(user)=> set({user}),
 

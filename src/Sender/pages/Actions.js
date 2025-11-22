@@ -5,12 +5,13 @@ import translations from "../../Store/LanguageStore/translations";
 import useUserStore from "../../Store/UserStore/userStore";
 import LoadingOverlay from "../components/LoadingOverlay";
 import ActionsList from "../components/ActionsList";
+import TableSkeleton from "../components/TableSkeleton";
 import CancelModal from "../../Components/CancelModal";
 import axios from "axios";
 import Swal from "sweetalert2";
-import "bootstrap/dist/js/bootstrap.bundle.min.js"; // needed for dropdown behavior
 import "./css/Actions.css";
 import api from "../../utils/Api";
+
 const Actions = () => {
   const { lang } = useLanguageStore();
   const t = translations[lang];
@@ -45,7 +46,9 @@ SetShow(true)
         const message=err.response?.data.message
         console.log('Error', err);
         console.log('fetching requests failed', message);
-      } 
+      } finally {
+        setloading(false);
+      }
     };
 
     fetchRequests();
@@ -223,34 +226,33 @@ SetShow(false)
               </tr>
             </thead>
             <tbody>
-              {FilteredRequests.map((request, index) => (
-                <tr 
-                  key={request.id} 
-                  className="table-row"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <td>{request.id}</td>
-                  <td>{String(request.requestType).replace("Request", " Request")}</td>
-                  <td>{new Date(request.createdAt).toLocaleDateString()}</td>
-                  <td>{new Date(request.updatedAt).toLocaleDateString()}</td>
-                  <td>{request.requestStatus}</td>
-                  <td>
-                    <span className="orders-count">{request.shipmentsCount}</span>
-                  </td>
-                  <td>
-                   
-                <ActionsList 
-
-  id={request?.id}
-  requestype={request?.requestType}
-  showModal={()=>handleshow(request?.id,request?.requestType)}
-
-/>
-
-                  </td>
-                </tr>
-              ))}
-              
+              {loading ? (
+                <TableSkeleton rows={5} columns={7} />
+              ) : (
+                FilteredRequests.map((request, index) => (
+                  <tr 
+                    key={request.id} 
+                    className="table-row"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    <td>{request.id}</td>
+                    <td>{String(request.requestType).replace("Request", " Request")}</td>
+                    <td>{new Date(request.createdAt).toLocaleDateString()}</td>
+                    <td>{new Date(request.updatedAt).toLocaleDateString()}</td>
+                    <td>{request.requestStatus}</td>
+                    <td>
+                      <span className="orders-count">{request.shipmentsCount}</span>
+                    </td>
+                    <td>
+                      <ActionsList 
+                        id={request?.id}
+                        requestype={request?.requestType}
+                        showModal={()=>handleshow(request?.id,request?.requestType)}
+                      />
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

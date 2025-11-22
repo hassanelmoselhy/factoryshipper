@@ -208,7 +208,7 @@
 
 /* Info rows */
 .oc-info { padding-top: 2px; }
-.oc-row { display:flex; gap:12px; justify-content:space-between; flex-wrap:wrap; align-items:center; }
+.oc-row { display:flex;  justify-content:space-between; flex-wrap:wrap; align-items:center; }
 .oc-item { display:flex; align-items:center; gap:10px; min-width: 48%; }
 .oc-item-icon { width:18px; height:18px; color:var(--muted); flex-shrink:0; }
 .oc-item-text { font-size: var(--fs-sm); color:#0f172a; line-height:1; }

@@ -1,3 +1,22 @@
+import UseLoadingStore from "../Store/LoadingController/Loadingstore";
+export const showLoading = () => {
+  try {
+    const store = UseLoadingStore.getState();
+    if (store && typeof store.Show === "function") store.Show();
+  } catch (e) {
+    console.error("Error showing loading:", e);
+  }
+};
+
+export const hideLoading = () => {
+  try {
+    const store = UseLoadingStore.getState();
+    if (store && typeof store.Hide === "function") store.Hide();
+  } catch (e) {
+    console.error("Error hiding loading:", e);
+  }
+};
+
 export function formatDate(iso) {
   if (!iso) return '-';
   const d = new Date(iso);
@@ -29,3 +48,4 @@ export function getRawQueryParam(name) {
   }
   return null;
 }
+

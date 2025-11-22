@@ -1,5 +1,5 @@
 // App.jsx
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -17,6 +17,7 @@ import LoadingOverlay from "./Sender/components/LoadingOverlay";
 import UseLoadingStore from "./Store/LoadingController/Loadingstore";
 import useUserStore from "./Store/UserStore/userStore";
 import "./App.css";
+import { RefreshToken } from "./Sender/Data/AuthenticationService";
 
 // Lazy imports (pages & big components)
 const Order = lazy(() => import("./Sender/pages/Order"));
@@ -76,9 +77,25 @@ const MainLayout = ({ header: HeaderComponent, sidebarData }) => {
 };
 
 const App = () => {
-  const SetUser = useUserStore((state) => state.Setuser);
+  const user = useUserStore((state) => state.User);
   const loading = UseLoadingStore((state) => state.Loading);
+  useEffect(()=>{
+    if(user)
+      return
+    const refresh=async()=>{
 
+      const response=await RefreshToken();
+      console.log("refresh",response)
+      if(response.Success){
+        useUserStore.setState({User:response.Data})
+        console.log('success refresh')
+      }else{
+        console.log('fail refresh')
+      }
+
+    }
+    refresh()
+  },[user])
   return (
     <>
       <Toaster position="top-right" richColors closeButton />

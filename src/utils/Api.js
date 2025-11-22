@@ -1,7 +1,6 @@
 // src/api.js
 import axios from "axios";
 import useUserStore from "../Store/UserStore/userStore";
-import UseLoadingStore from "../Store/LoadingController/Loadingstore";
 const api = axios.create({
   baseURL:  "https://stakeexpress.runasp.net/api",
   timeout: 30000,
@@ -43,42 +42,36 @@ function isPublicRoute(config, publicRoutes) {
 
 
 api.interceptors.request.use(
-
-    (config) => {
-
+  async (config) => {
     config.headers = {
-        ...config.headers,
-        "Content-Type": "application/json",
-            "X-Client-Key": "web API",
-      };
+      ...config.headers,
+      "Content-Type": "application/json",
+      "X-Client-Key": "web API",
+    };
 
-    // Add Authorization  headers to private routes
-               console.log('token=',getToken())
+    // Add Authorization headers to private routes
+    if (!isPublicRoute(config, publicRoutes)) {
+      const token = getToken();
+      console.log('token=', token);
 
-       if (!isPublicRoute(config,publicRoutes)) {
+      // Wait 3 seconds if token is empty to allow time for refresh
+      if (!token || token === "") {
+        console.log('Token is empty, waiting 3 seconds for refresh...');
+        await new Promise(resolve => setTimeout(resolve, 3000));
         
-        config.headers.Authorization=`Bearer ${getToken()}`;
-        }
-
-
-           try {
-      const store = UseLoadingStore.getState(); 
-      if (store && typeof store.Show === "function") store.Show();
-    } catch (e) {
-      console.error("loading store show err", e);
+        // Try to get token again after waiting
+        const newToken = getToken();
+        console.log('Token after waiting:', newToken);
+        config.headers.Authorization = `Bearer ${newToken}`;
+      } else {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
-
 
     return config;
   },
   (error) => {
     // request error
-    
-     try {
-      const store = UseLoadingStore.getState();
-      if (store && typeof store.Hide === "function") store.Hide();
-    } catch (e) {}
-
     return Promise.reject(error);
   }
 );
@@ -87,10 +80,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => {
 
-       try {
-      const store = UseLoadingStore.getState();
-      if (store && typeof store.Hide === "function") store.Hide();
-    } catch (e) {}
+       
 
     return response;
   },
@@ -103,10 +93,7 @@ api.interceptors.response.use(
     }
 
 
-     try {
-      const store = UseLoadingStore.getState();
-      if (store && typeof store.Hide === "function") store.Hide();
-    } catch (e) {}
+
 
     return Promise.reject(error);
   }

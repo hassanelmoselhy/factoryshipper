@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { FaShippingFast } from "react-icons/fa";
 import "../css/Signup.css";
 import { toast } from "sonner";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import api from "../../../utils/Api";
 import {egypt_governorates} from '../../../Shared/Constants'
 import { signup } from "../../Data/AuthenticationService";
 const Signup = () => {

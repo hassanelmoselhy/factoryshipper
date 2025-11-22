@@ -85,7 +85,6 @@ const Login = () => {
           });
         }
         else{
-           sessionStorage.setItem("user", JSON.stringify(response.Data));
                   SetUser(response.Data);
                   navigate("/home");
                   shceduleRefreshToken(response.Data.expiresOn);

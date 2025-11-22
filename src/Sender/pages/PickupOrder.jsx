@@ -7,16 +7,13 @@ import {
   Truck,
   Plus,
   MapPin,
-  Clock,
-  Calendar,
-  User,
-  Phone,
   Search,
   CheckSquare,
   Square,
   MoveLeft 
 } from "lucide-react";
 import LoadingOverlay from '../components/LoadingOverlay'; 
+import { egypt_governorates } from "../../Shared/Constants";
 import { toast } from "sonner";
 export default function PickupRequestManagement() {
   const navigate = useNavigate();
@@ -61,165 +58,7 @@ export default function PickupRequestManagement() {
     }
   ];
 
-   const egypt_governorates= [
-    {
-      "id": 1,
-      "name": "Cairo",
-      "name_arabic": "القاهرة",
-    },
-    {
-      "id": 2,
-      "name": "Alexandria",
-      "name_arabic": "الإسكندرية",
-      "capital": "Alexandria",
-      
-    },
-    {
-      "id": 3,
-      "name": "Port Said",
-      "name_arabic": "بورسعيد",
-      
-    },
-    {
-      "id": 4,
-      "name": "Suez",
-      "name_arabic": "السويس",
-
-    },
-    {
-      "id": 5,
-      "name": "Luxor",
-      "name_arabic": "الأقصر",
-     
-    },
-    {
-      "id": 6,
-      "name": "Dakahlia",
-      "name_arabic": "الدقهلية",
  
-    },
-    {
-      "id": 7,
-      "name": "Sharqia",
-      "name_arabic": "الشرقية",
-     
-    },
-    {
-      "id": 8,
-      "name": "Qalyubia",
-      "name_arabic": "القليوبية",
-      
-    },
-    {
-      "id": 9,
-      "name": "Damietta",
-      "name_arabic": "دمياط",
-  
-    },
-    {
-      "id": 10,
-      "name": "Beheira",
-      "name_arabic": "البحيرة",
-      
-    },
-    {
-      "id": 11,
-      "name": "Gharbia",
-      "name_arabic": "الغربية",
-     
-    },
-    {
-      "id": 12,
-      "name": "Monufia",
-      "name_arabic": "المنوفية",
-     
-    },
-    {
-      "id": 13,
-      "name": "Kafr El Sheikh",
-      "name_arabic": "كفر الشيخ",
-    
-    },
-    {
-      "id": 14,
-      "name": "Giza",
-      "name_arabic": "الجيزة",
-      
-    },
-    {
-      "id": 15,
-      "name": "Faiyum",
-      "name_arabic": "الفيوم",
-      
-    },
-    {
-      "id": 16,
-      "name": "Beni Suef",
-      "name_arabic": "بني سويف",
-      
-    },
-    {
-      "id": 17,
-      "name": "Minya",
-      "name_arabic": "المنيا",
-    
-    },
-    {
-      "id": 18,
-      "name": "Asyut",
-      "name_arabic": "أسيوط",
-   
-    },
-    {
-      "id": 19,
-      "name": "Sohag",
-      "name_arabic": "سوهاج",
-    
-    },
-    {
-      "id": 20,
-      "name": "Qena",
-      "name_arabic": "قنا",
-      
-    },
-    {
-      "id": 21,
-      "name": "Aswan",
-      "name_arabic": "أسوان",
-   
-    },
-    {
-      "id": 22,
-      "name": "Red Sea",
-      "name_arabic": "البحر الأحمر",
-  
-    },
-    {
-      "id": 23,
-      "name": "New Valley",
-      "name_arabic": "الوادي الجديد",
-   
-    },
-    {
-      "id": 24,
-      "name": "Matrouh",
-      "name_arabic": "مطروح",
-     
-    },
-    {
-      "id": 25,
-      "name": "North Sinai",
-      "name_arabic": "شمال سيناء",
-   
-    },
-    {
-      "id": 26,
-      "name": "South Sinai",
-      "name_arabic": "جنوب سيناء",
-   
-    }
-  ];
-
   // Select All functionality
   const handleSelectAll = () => {
     const allOrderIds = PendingOrders.map(order => order.id);

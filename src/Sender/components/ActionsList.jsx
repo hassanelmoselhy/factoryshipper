@@ -1,8 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { MoreVertical } from "react-feather";
 import { FaTimesCircle, FaInfoCircle } from "react-icons/fa";
-import styles from './css/ActionsList.module.css'
-const ActionsList = ({  id,requestype ,showModal}) => {
+import { Dropdown } from "react-bootstrap";
+import styles from './css/ActionsList.module.css';
+
+const ActionsList = ({ id, requestype, showModal }) => {
   const navigate = useNavigate();
 
   const goToDetails = () => {
@@ -11,37 +13,33 @@ const ActionsList = ({  id,requestype ,showModal}) => {
   };
 
   return (
-    <div className="dropdown">
-      <button
-        className={'btn btn-outline-primary btn-sm ' + styles['ts-toggle']}
-
-        data-bs-toggle="dropdown"
+    <Dropdown>
+      <Dropdown.Toggle
+        variant="outline-primary"
+        size="sm"
+        className={styles['ts-toggle']}
       >
         <MoreVertical size={18} />
-      </button>
+      </Dropdown.Toggle>
 
-      <ul className="dropdown-menu dropdown-menu-end ts-menu">
-        <li>
-          <button className="dropdown-item d-flex align-items-center gap-2 ts-item"
+      <Dropdown.Menu align="end" className="ts-menu">
+        <Dropdown.Item
           onClick={showModal}
-          >
-            <FaTimesCircle className="ts-item-icon" />
-            <span>Cancel</span>
-          </button>
-        </li>
+          className="d-flex align-items-center gap-2 ts-item"
+        >
+          <FaTimesCircle className="ts-item-icon" />
+          <span>Cancel</span>
+        </Dropdown.Item>
 
-        
-        <li>
-          <button
-            className="dropdown-item d-flex align-items-center gap-2 ts-item"
-            onClick={goToDetails}
-          >
-            <FaInfoCircle className="ts-item-icon text-muted" />
-            <span>Details</span>
-          </button>
-        </li>
-      </ul>
-    </div>
+        <Dropdown.Item
+          onClick={goToDetails}
+          className="d-flex align-items-center gap-2 ts-item"
+        >
+          <FaInfoCircle className="ts-item-icon text-muted" />
+          <span>Details</span>
+        </Dropdown.Item>
+      </Dropdown.Menu>
+    </Dropdown>
   );
 };
 
