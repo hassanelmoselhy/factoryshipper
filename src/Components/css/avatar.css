@@ -50,7 +50,7 @@
 .dropdown-menu-avatar {
   position: absolute;
   top: 40px;
-  right: 0;
+  left: 1px;
   background: white;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import "./css/ShipperProfile.css";
 import {
   Building2,
@@ -12,20 +12,29 @@ import {
   User,
   UserPen,
   X,
+  Save,
+  RotateCcw,
 } from "lucide-react";
 import useUserStore from "../../Store/UserStore/userStore";
+import Swal from "sweetalert2";
 
 export default function ShipperProfile() {
+  // ================= STATE MANAGEMENT =================
   const [data, setData] = useState(null);
+  const [originalData, setOriginalData] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Track IDs of addresses deleted locally
+  const [deletedAddressIds, setDeletedAddressIds] = useState([]);
+
   const user = useUserStore((state) => state.user);
 
-  // Modal visibility
+  // Modals
   const [isPersonalInfoModalOpen, setIsPersonalInfoModalOpen] = useState(false);
   const [isEditAddressModalOpen, setIsEditAddressModalOpen] = useState(false);
   const [isCompanyInfoModalOpen, setIsCompanyInfoModalOpen] = useState(false);
 
-  // Form states
+  // Forms
   const [personalInfoForm, setPersonalInfoForm] = useState({
     firstName: "",
     lastName: "",
@@ -39,8 +48,10 @@ export default function ShipperProfile() {
     website: "",
   });
 
-  const [currentAddressBeingEdited, setCurrentAddressBeingEdited] = useState(null);
+  const [currentAddressBeingEdited, setCurrentAddressBeingEdited] =
+    useState(null);
   const [addressForm, setAddressForm] = useState({
+    id: null,
     street: "",
     city: "",
     governorate: "",
@@ -48,37 +59,44 @@ export default function ShipperProfile() {
     googleMapLink: "",
   });
 
-  // ================= FETCH REAL DATA =================
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await fetch(
-          "https://stakeexpress.runasp.net/api/Shippers/shipper-profile",
-          {
-            method: "GET",
-            headers: {
-              "X-Client-Key": "web api",
-              Authorization: `Bearer ${user?.token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+  // ================= 1. FETCH DATA =================
+  const fetchProfile = useCallback(async () => {
+    if (!user?.token) return;
 
-        if (!response.ok) throw new Error("Failed to fetch profile data");
+    try {
+      const response = await fetch(
+        "https://stakeexpress.runasp.net/api/Shippers/shipper-profile",
+        {
+          method: "GET",
+          headers: {
+            "X-Client-Key": "web api",
+            Authorization: `Bearer ${user?.token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-        const result = await response.json();
-        setData(result.data || null); // استخدام result.data
-      } catch (error) {
-        console.error("Error fetching profile:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      if (!response.ok) throw new Error("Failed to fetch profile data");
 
-    if (user?.token) fetchProfile();
+      const result = await response.json();
+      const fetchedData = result.data || null;
+
+      setData(fetchedData);
+      setOriginalData(JSON.parse(JSON.stringify(fetchedData)));
+      setDeletedAddressIds([]);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+      Swal.fire("Error", "Failed to load profile data", "error");
+    } finally {
+      setLoading(false);
+    }
   }, [user]);
 
-  // ================= UPDATE FORMS =================
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
+
+  // ================= 2. SYNC FORMS =================
   useEffect(() => {
     if (data) {
       setPersonalInfoForm({
@@ -96,6 +114,229 @@ export default function ShipperProfile() {
     }
   }, [data]);
 
+  // ================= 3. CHANGE DETECTION =================
+  const hasChanges =
+    JSON.stringify(data) !== JSON.stringify(originalData) ||
+    deletedAddressIds.length > 0;
+
+  // ================= 4. GLOBAL SAVE ENGINE =================
+
+  const handleGlobalCancelChanges = () => {
+    if (window.confirm("Are you sure you want to discard all changes?")) {
+      setData(JSON.parse(JSON.stringify(originalData)));
+      setDeletedAddressIds([]);
+    }
+  };
+
+  const handleGlobalSaveChanges = async () => {
+    Swal.fire({
+      title: "Saving...",
+      text: "Updating database records",
+      didOpen: () => Swal.showLoading(),
+      allowOutsideClick: false,
+    });
+
+    const promises = [];
+
+    // ---------------------------------------------------------
+    // 1. PHONE NUMBERS (ADD & DELETE)
+    // ---------------------------------------------------------
+    const originalPhones = originalData.phones || [];
+    const currentPhones = data.phones || [];
+
+    const phonesToAdd = currentPhones.filter((p) => !originalPhones.includes(p));
+    const phonesToDelete = originalPhones.filter((p) => !currentPhones.includes(p));
+
+    // A. Add New Phones
+    phonesToAdd.forEach((phone) => {
+      const url = `https://stakeexpress.runasp.net/api/Shippers/Add-Phone-Number`;
+      const promise = fetch(url, {
+        method: "POST",
+        headers: {
+          "X-Client-Key": "web api",
+          Authorization: `Bearer ${user?.token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ phoneNumber: phone }), 
+      }).then(async (res) => {
+        if (!res.ok) {
+          const txt = await res.text();
+          throw new Error(`Failed to add phone ${phone}: ${txt}`);
+        }
+        return res;
+      });
+      promises.push(promise);
+    });
+
+    // B. Delete Removed Phones
+    phonesToDelete.forEach((phone) => {
+      const url = `https://stakeexpress.runasp.net/api/Shippers/Delete-Phone-Number`;
+      const promise = fetch(url, {
+        method: "DELETE",
+        headers: {
+          "X-Client-Key": "web api",
+          Authorization: `Bearer ${user?.token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ phoneNumber: phone }),
+      }).then(async (res) => {
+        if (!res.ok) {
+          const txt = await res.text();
+          throw new Error(`Failed to delete phone ${phone}: ${txt}`);
+        }
+        return res;
+      });
+      promises.push(promise);
+    });
+
+    // ---------------------------------------------------------
+    // 2. ADDRESSES (DELETE, ADD, UPDATE)
+    // ---------------------------------------------------------
+    
+    // DELETE Addresses
+    deletedAddressIds.forEach((id) => {
+      if (!id) return;
+      const url = `https://stakeexpress.runasp.net/api/Shippers/delete-shipper-address/${id}`;
+      const promise = fetch(url, {
+        method: "DELETE",
+        headers: {
+          "X-Client-Key": "web api",
+          Authorization: `Bearer ${user?.token}`,
+          "Content-Type": "application/json",
+        },
+      }).then(async (res) => {
+        if (!res.ok) {
+          const txt = await res.text();
+          throw new Error(`Failed to delete address: ${txt}`);
+        }
+        return res;
+      });
+      promises.push(promise);
+    });
+
+    // ADD & UPDATE Addresses
+    if (data.addresses) {
+      data.addresses.forEach((address) => {
+        const payload = {
+          street: address.street,
+          city: address.city,
+          governorate: address.governorate,
+          details: address.details,
+          googleMapAddressLink: address.googleMapAddressLink,
+        };
+
+        if (!address.id || address.id < 0) {
+          const url =
+            "https://stakeexpress.runasp.net/api/Shippers/add-shipper-address";
+          const promise = fetch(url, {
+            method: "POST",
+            headers: {
+              "X-Client-Key": "web api",
+              Authorization: `Bearer ${user?.token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          }).then(async (res) => {
+            if (!res.ok) {
+              const txt = await res.text();
+              throw new Error(`Failed to add address: ${txt}`);
+            }
+            return res;
+          });
+          promises.push(promise);
+        }
+        else {
+          const originalAddr = originalData.addresses.find(
+            (a) => a.id === address.id || a.addressId === address.id
+          );
+
+          if (JSON.stringify(originalAddr) !== JSON.stringify(address)) {
+            const url = `https://stakeexpress.runasp.net/api/Shippers/update-shipper-address/${address.id}`;
+            const promise = fetch(url, {
+              method: "PUT",
+              headers: {
+                "X-Client-Key": "web api",
+                Authorization: `Bearer ${user?.token}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(payload),
+            }).then(async (res) => {
+              if (!res.ok) {
+                const txt = await res.text();
+                throw new Error(`Failed to update address: ${txt}`);
+              }
+              return res;
+            });
+            promises.push(promise);
+          }
+        }
+      });
+    }
+
+    // ---------------------------------------------------------
+    // 3. PERSONAL & COMPANY INFO CHANGES
+    // ---------------------------------------------------------
+    const isProfileChanged =
+      data.firstName !== originalData.firstName ||
+      data.lastName !== originalData.lastName ||
+      data.email !== originalData.email ||
+      data.companyName !== originalData.companyName ||
+      data.typeOfProduction !== originalData.typeOfProduction ||
+      data.companyLink !== originalData.companyLink;
+
+    if (isProfileChanged) {
+      const profilePayload = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        companyName: data.companyName,
+        typeOfProduction: data.typeOfProduction,
+        companyLink: data.companyLink,
+      };
+
+      const url =
+        "https://stakeexpress.runasp.net/api/Shippers/edit-shipper-profile";
+
+      const promise = fetch(url, {
+        method: "PUT",
+        headers: {
+          "X-Client-Key": "web api",
+          Authorization: `Bearer ${user?.token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(profilePayload),
+      }).then(async (res) => {
+        if (!res.ok) {
+          const txt = await res.text();
+          throw new Error(txt || "Failed to update profile info");
+        }
+        return res;
+      });
+      promises.push(promise);
+    }
+
+    try {
+      await Promise.all(promises);
+
+      Swal.fire({
+        icon: "success",
+        title: "All Changes Saved!",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+
+      fetchProfile();
+    } catch (error) {
+      console.error("Global Save Error:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Save Incomplete",
+        text: "Some changes might not have been saved. Check connection.",
+      });
+      fetchProfile();
+    }
+  };
+
   if (loading) return <p className="loading">Loading...</p>;
   if (!data) return <p className="error">Failed to load profile data.</p>;
 
@@ -110,7 +351,11 @@ export default function ShipperProfile() {
     setCurrentAddressBeingEdited(addressIndex);
     if (addressIndex !== -1 && data.addresses?.[addressIndex]) {
       const address = data.addresses[addressIndex];
+      const existingId =
+        address.id || address.addressId || address.shipperAddressId || null;
+
       setAddressForm({
+        id: existingId,
         street: address.street || "",
         city: address.city || "",
         governorate: address.governorate || "",
@@ -118,7 +363,14 @@ export default function ShipperProfile() {
         googleMapLink: address.googleMapAddressLink || "",
       });
     } else {
-      setAddressForm({ street: "", city: "", governorate: "", details: "", googleMapLink: "" });
+      setAddressForm({
+        id: null,
+        street: "",
+        city: "",
+        governorate: "",
+        details: "",
+        googleMapLink: "",
+      });
     }
     setIsEditAddressModalOpen(true);
   };
@@ -137,10 +389,12 @@ export default function ShipperProfile() {
   };
 
   const addPhoneInput = () => {
-    setPersonalInfoForm((prev) => ({
-      ...prev,
-      phones: [...prev.phones, ""],
-    }));
+    // 1. LIMIT CHECK: Prevent adding if already 3
+    if (personalInfoForm.phones.length < 3) {
+      setPersonalInfoForm((prev) => ({ ...prev, phones: [...prev.phones, ""] }));
+    } else {
+       Swal.fire("Limit Reached", "Maximum 3 phone numbers allowed.", "warning");
+    }
   };
 
   const removePhoneInput = (index) => {
@@ -158,7 +412,7 @@ export default function ShipperProfile() {
     setAddressForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // ================= FORM SUBMIT =================
+  // ================= LOCAL UI UPDATES =================
   const handleSavePersonalInfo = (e) => {
     e.preventDefault();
     setData((prev) => ({
@@ -185,57 +439,103 @@ export default function ShipperProfile() {
   const handleSaveAddress = (e) => {
     e.preventDefault();
     const updatedAddresses = [...(data.addresses || [])];
-    const newAddress = { ...addressForm };
+    const newAddressData = {
+      street: addressForm.street,
+      city: addressForm.city,
+      governorate: addressForm.governorate,
+      details: addressForm.details,
+      googleMapAddressLink: addressForm.googleMapLink,
+    };
 
     if (currentAddressBeingEdited !== -1) {
-      updatedAddresses[currentAddressBeingEdited] = newAddress;
+      const existingAddress = updatedAddresses[currentAddressBeingEdited];
+      updatedAddresses[currentAddressBeingEdited] = {
+        ...newAddressData,
+        id: existingAddress.id,
+      };
     } else {
-      updatedAddresses.push(newAddress);
+      updatedAddresses.push({
+        ...newAddressData,
+        id: -Date.now(),
+      });
     }
 
-    setData((prev) => ({
-      ...prev,
-      addresses: updatedAddresses,
-    }));
+    setData((prev) => ({ ...prev, addresses: updatedAddresses }));
     closeEditAddressModal();
   };
 
   const handleDeleteAddress = (index) => {
-    if (window.confirm("Are you sure you want to delete this address?")) {
-      const updatedAddresses = (data.addresses || []).filter((_, i) => i !== index);
-      setData((prev) => ({
-        ...prev,
-        addresses: updatedAddresses,
-      }));
+    const addresses = data.addresses || [];
+    if (addresses.length <= 1) {
+      Swal.fire({
+        icon: "error",
+        title: "Cannot Delete",
+        text: "You must have at least one address.",
+      });
+      return;
     }
+    const addressToDelete = addresses[index];
+    const id = addressToDelete.id || addressToDelete.addressId;
+    if (id && id > 0) {
+      setDeletedAddressIds((prev) => [...prev, id]);
+    }
+    const newAddresses = addresses.filter((_, i) => i !== index);
+    setData((prev) => ({ ...prev, addresses: newAddresses }));
   };
 
   // ================= RENDER =================
   return (
     <div className="shipper-profile">
-      {/* ================= HEADER ================= */}
       <div className="profile-header">
-        <div className="avatar-circle">
-          <span>{data.firstName?.[0] || ""}{data.lastName?.[0] || ""}</span>
-        </div>
-        <div className="header-text">
-          <div className="name-id">
-            <h1>{data.firstName || ""} {data.lastName || ""}</h1>
-            <div className="shipper-id-badge">
-              <span>ID:</span> {data.shipperId || "-"}
-            </div>
+        <div className="header-left-section">
+          <div className="avatar-circle">
+            <span>
+              {data.firstName?.[0] || ""}
+              {data.lastName?.[0] || ""}
+            </span>
           </div>
-          <p className="sub-title">Shipper Account</p>
+          <div className="header-text">
+            <div className="name-id">
+              <h1>
+                {data.firstName || ""} {data.lastName || ""}
+              </h1>
+              <div className="shipper-id-badge">
+                <span>ID:</span> {data.shipperId || "-"}
+              </div>
+            </div>
+            <p className="sub-title">Shipper Account</p>
+          </div>
         </div>
+
+        {/* BUTTONS */}
+        {hasChanges && (
+          <div className="header-right-section">
+            <button
+              className="btn-header-cancel"
+              onClick={handleGlobalCancelChanges}
+            >
+              <RotateCcw size={16} /> Cancel
+            </button>
+            <button
+              className="btn-header-save"
+              onClick={handleGlobalSaveChanges}
+            >
+              <Save size={16} /> Save Changes
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* ================= 3 COLUMNS ================= */}
       <div className="cards-grid">
-        {/* PERSONAL INFORMATION */}
+        {/* PERSONAL INFO */}
         <div className="profile-card">
           <div className="card-header">
-            <h3><User className="card-icon" /> Personal Information</h3>
-            <button className="edit-btn-small" onClick={openPersonalInfoModal}><PencilLine /> Edit</button>
+            <h3>
+              <User className="card-icon" /> Personal Information
+            </h3>
+            <button className="edit-btn-small" onClick={openPersonalInfoModal}>
+              <PencilLine /> Edit
+            </button>
           </div>
           <p className="card-subtitle">Your contact details</p>
           <div className="full-name">
@@ -244,6 +544,9 @@ export default function ShipperProfile() {
               <strong>First Name</strong>
               <p>{data.firstName || "Not provided"}</p>
             </div>
+          </div>
+          <div className="full-name">
+            <UserPen className="icon" />
             <div>
               <strong>Last Name</strong>
               <p>{data.lastName || "Not provided"}</p>
@@ -256,20 +559,44 @@ export default function ShipperProfile() {
               <p>{data.email || "Not provided"}</p>
             </div>
           </div>
-          <div className="info-row">
-            <Phone className="icon" />
+          <div className="info-row" style={{ alignItems: 'flex-start' }}>
+            <Phone className="icon" style={{ marginTop: '4px' }} />
             <div>
-              <strong>Phone</strong>
-              <p>{(data.phones || []).join(", ") || "No phone provided"}</p>
+              <strong>Phone(s)</strong>
+              {/* FIXED VIEW: Show list if length > 0, NOT > 2 */}
+              <div className="phones-list-vertical" style={{ display: 'flex', flexDirection: 'column', gap: '5px', marginTop: '5px' }}>
+                {(data.phones && data.phones.length > 0) ? (
+                    data.phones.map((phone, idx) => (
+                        <span key={idx} className="phone-badge" style={{ 
+                            background: '#f3f4f6', 
+                            padding: '4px 8px', 
+                            borderRadius: '4px', 
+                            width: 'fit-content',
+                            fontSize: '0.9rem'
+                        }}>
+                            {phone}
+                        </span>
+                    ))
+                ) : (
+                    <p>No phone provided</p>
+                )}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* ADDRESS INFORMATION */}
+        {/* ADDRESSES */}
         <div className="profile-card">
           <div className="card-header">
-            <h3><MapPin className="card-icon" /> Addresses</h3>
-            <button className="add-btn" onClick={() => openEditAddressModal(-1)}><Plus /> Add</button>
+            <h3>
+              <MapPin className="card-icon" /> Addresses
+            </h3>
+            <button
+              className="add-btn"
+              onClick={() => openEditAddressModal(-1)}
+            >
+              <Plus /> Add
+            </button>
           </div>
           <p className="card-subtitle">Shipping location details</p>
           <div className="addresses-container">
@@ -277,52 +604,93 @@ export default function ShipperProfile() {
               <div className="address-box" key={index}>
                 <div className="address-header">
                   <strong>Address {index + 1}</strong>
+                  {(!address.id || address.id < 0) && (
+                    <span
+                      style={{
+                        fontSize: "0.75rem",
+                        color: "#e67e22",
+                        marginLeft: "5px",
+                      }}
+                    >
+                      (Pending Save)
+                    </span>
+                  )}
                   <div className="address-actions">
-                    <button className="edit-icon" onClick={() => openEditAddressModal(index)}><Pencil /></button>
-                    <button className="delete-icon" onClick={() => handleDeleteAddress(index)}><Trash size={16} /></button>
+                    <button
+                      className="edit-icon"
+                      onClick={() => openEditAddressModal(index)}
+                    >
+                      <Pencil />
+                    </button>
+                    <button
+                      className="delete-icon"
+                      onClick={() => handleDeleteAddress(index)}
+                    >
+                      <Trash size={16} />
+                    </button>
                   </div>
                 </div>
-                <p><strong>Street</strong><br />{address.street || "Not provided"}</p>
-                <p><strong>City</strong><br />{address.city || "Not provided"}</p>
-                <p><strong>Governorate</strong><br />{address.governorate || "Not provided"}</p>
-                {address.details && <p><strong>Details</strong><br />{address.details}</p>}
-                <p><strong>Google Map</strong><br />
-                  {address.googleMapAddressLink ? (
-                    <a href={address.googleMapAddressLink} target="_blank" rel="noopener noreferrer">View on Map</a>
-                  ) : (
-                    <span className="muted">No map link provided</span>
-                  )}
+                <p>
+                  <strong>Street</strong>
+                  <br />
+                  {address.street}
+                </p>
+                <p>
+                  <strong>City</strong>
+                  <br />
+                  {address.city}
+                </p>
+                <p>
+                  <strong>Governorate</strong>
+                  <br />
+                  {address.governorate}
+                </p>
+                <p>
+                  <strong>Details</strong>
+                  <br />
+                  {address.details}
+                </p>
+                <p>
+                  <strong>Google Map</strong>
+                  <br />
+                  {address.googleMapAddressLink}
                 </p>
               </div>
             ))}
-            {(data.addresses || []).length === 0 && <p className="muted">No addresses added yet.</p>}
           </div>
         </div>
 
-        {/* COMPANY INFORMATION */}
+        {/* COMPANY INFO */}
         <div className="profile-card">
           <div className="card-header">
-            <h3><Building2 /> Company Information</h3>
-            <button className="edit-btn-small" onClick={openCompanyInfoModal}><PencilLine /> Edit</button>
+            <h3>
+              <Building2 /> Company Information
+            </h3>
+            <button className="edit-btn-small" onClick={openCompanyInfoModal}>
+              <PencilLine /> Edit
+            </button>
           </div>
-          <p className="card-subtitle">Business details</p>
           <div className="card-body">
-            <p><strong>Company Name</strong><br />{data.companyName || "Not provided"}</p>
-            <p><strong>Type of Production</strong><br /><span className="muted">{data.typeOfProduction || "Not provided"}</span></p>
-            <p><strong>Website</strong><br />
-              {data.companyLink ? (
-                <a href={data.companyLink} target="_blank" rel="noopener noreferrer">{data.companyLink}</a>
-              ) : (
-                <span className="muted">No website provided</span>
-              )}
+            <p>
+              <strong>Company Name</strong>
+              <br />
+              {data.companyName}
+            </p>
+            <p>
+              <strong>Type of Production</strong>
+              <br />
+              {data.typeOfProduction}
+            </p>
+            <p>
+              <strong>Website</strong>
+              <br />
+              {data.companyLink}
             </p>
           </div>
         </div>
       </div>
 
-      {/* ================= MODALS ================= */}
-
-      {/* Personal Information Edit Modal */}
+      {/* MODALS */}
       {isPersonalInfoModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -331,124 +699,183 @@ export default function ShipperProfile() {
               <h4>Edit Personal Information</h4>
             </div>
             <form onSubmit={handleSavePersonalInfo}>
-              <p className="modal-subtitle">Update your name, email, and phone numbers</p>
+              <p className="modal-subtitle">
+                Update your name, email, and phone numbers
+              </p>
               <div className="form-group inline">
                 <div>
                   <label htmlFor="firstName">First Name</label>
-                  <input type="text" id="firstName" name="firstName" value={personalInfoForm.firstName} onChange={handlePersonalInfoChange} required />
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    value={personalInfoForm.firstName}
+                    onChange={handlePersonalInfoChange}
+                    required
+                  />
                 </div>
                 <div>
                   <label htmlFor="lastName">Last Name</label>
-                  <input type="text" id="lastName" name="lastName" value={personalInfoForm.lastName} onChange={handlePersonalInfoChange} required />
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    value={personalInfoForm.lastName}
+                    onChange={handlePersonalInfoChange}
+                    required
+                  />
                 </div>
               </div>
               <div className="form-group">
                 <label htmlFor="email">Email</label>
-                <input type="email" id="email" name="email" value={personalInfoForm.email} onChange={handlePersonalInfoChange} required />
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={personalInfoForm.email}
+                  onChange={handlePersonalInfoChange}
+                  required
+                />
               </div>
               <div className="form-group">
-                <label>Phone Numbers</label>
+                <label>Phone Numbers <small>(Max 3)</small></label>
                 <div id="phoneNumbersContainer">
                   {personalInfoForm.phones.map((phone, index) => (
                     <div className="phone-input-group" key={index}>
-                      {personalInfoForm.phones.length > 1 ? (
-                        <button type="button" className="remove-phone" onClick={() => removePhoneInput(index)}>
-                          <Trash  size={20} />
-                        </button>
-                      ) : (
-                        <button type="button" className="add-phone" onClick={addPhoneInput}>
-                          <Plus size={20} />
-                        </button>
-                      )}
+                      <button
+                        type="button"
+                        className="remove-phone"
+                        onClick={() => removePhoneInput(index)}
+                      >
+                        <Trash size={20} />
+                      </button>
                       <input
                         type="text"
                         className="phone-number-input"
                         placeholder="Phone number"
                         value={phone}
                         onChange={(e) => handlePhoneChange(index, e)}
-                        required={index === 0}
+                        required
                       />
                     </div>
                   ))}
-                  {personalInfoForm.phones.length === 0 && (
-                      <button type="button" className="add-phone-initial" onClick={addPhoneInput}>
-                        <Plus size={20} /> Add Phone
-                      </button>
+                  
+                  {/* 2. LIMIT CHECK: Only show Add button if less than 3 */}
+                  {personalInfoForm.phones.length < 3 && (
+                    <button
+                      type="button"
+                      className="add-phone-initial"
+                      onClick={addPhoneInput}
+                      style={{ marginTop: '10px' }}
+                    >
+                      <Plus size={20} /> Add Phone
+                    </button>
                   )}
                 </div>
               </div>
-              <button type="submit" className="btn-save-changes">Save Changes</button>
+              <button type="submit" className="btn-save-changes">
+                Update Personal Info
+              </button>
             </form>
           </div>
         </div>
       )}
 
-      {/* Edit/Add Address Modal */}
       {isEditAddressModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content">
             <div className="modal-header">
               <X className="close-button" onClick={closeEditAddressModal} />
-              <h4>{currentAddressBeingEdited !== -1 ? "Edit Address" : "Add New Address"}</h4>
+              <h4>Edit Address</h4>
             </div>
             <form onSubmit={handleSaveAddress}>
-              <p className="modal-subtitle">Update your shipping location details</p>
               <div className="form-group">
-                <label htmlFor="addressStreet">Street</label>
-                <input type="text" id="addressStreet" name="street" value={addressForm.street} onChange={handleAddressChange} required />
-              </div>
-              <div className="form-group inline">
-                <div>
-                  <label htmlFor="addressCity">City</label>
-                  <input type="text" id="addressCity" name="city" value={addressForm.city} onChange={handleAddressChange} required />
-                </div>
-                <div>
-                  <label htmlFor="addressGovernorate">Governorate</label>
-                  <input type="text" id="addressGovernorate" name="governorate" value={addressForm.governorate} onChange={handleAddressChange} required />
-                </div>
+                <label>Street</label>
+                <input
+                  name="street"
+                  value={addressForm.street}
+                  onChange={handleAddressChange}
+                />
               </div>
               <div className="form-group">
-                <label htmlFor="addressDetails">Details (Optional)</label>
-                <textarea id="addressDetails" name="details" rows="3" value={addressForm.details} onChange={handleAddressChange}></textarea>
+                <label>City</label>
+                <input
+                  name="city"
+                  value={addressForm.city}
+                  onChange={handleAddressChange}
+                />
               </div>
               <div className="form-group">
-                <label htmlFor="googleMapLink">Google Map Link (Optional)</label>
-                <input type="text" id="googleMapLink" name="googleMapLink" value={addressForm.googleMapLink} onChange={handleAddressChange} />
+                <label>Governorate</label>
+                <input
+                  name="governorate"
+                  value={addressForm.governorate}
+                  onChange={handleAddressChange}
+                />
               </div>
-              <button type="submit" className="btn-save-changes">Save Changes</button>
+              <div className="form-group">
+                <label>Details</label>
+                <textarea
+                  name="details"
+                  value={addressForm.details}
+                  onChange={handleAddressChange}
+                />
+              </div>
+              <div className="form-group">
+                <label>Map Link</label>
+                <input
+                  name="googleMapLink"
+                  value={addressForm.googleMapLink}
+                  onChange={handleAddressChange}
+                />
+              </div>
+              <button type="submit" className="btn-save-changes">
+                Update Address Info
+              </button>
             </form>
           </div>
         </div>
       )}
 
-      {/* Company Information Edit Modal */}
       {isCompanyInfoModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content">
             <div className="modal-header">
               <X className="close-button" onClick={closeCompanyInfoModal} />
-              <h4>Edit Company Information</h4>
+              <h4>Edit Company Info</h4>
             </div>
             <form onSubmit={handleSaveCompanyInfo}>
-              <p className="modal-subtitle">Update your business details</p>
               <div className="form-group">
-                <label htmlFor="companyName">Company Name</label>
-                <input type="text" id="companyName" name="companyName" value={companyInfoForm.companyName} onChange={handleCompanyInfoChange} required />
+                <label>Company Name</label>
+                <input
+                  name="companyName"
+                  value={companyInfoForm.companyName}
+                  onChange={handleCompanyInfoChange}
+                />
               </div>
               <div className="form-group">
-                <label htmlFor="typeOfProduction">Type of Production</label>
-                <input type="text" id="typeOfProduction" name="typeOfProduction" value={companyInfoForm.typeOfProduction} onChange={handleCompanyInfoChange} required />
+                <label>Type</label>
+                <input
+                  name="typeOfProduction"
+                  value={companyInfoForm.typeOfProduction}
+                  onChange={handleCompanyInfoChange}
+                />
               </div>
               <div className="form-group">
-                <label htmlFor="website">Website (Optional)</label>
-                <input type="text" id="website" name="website" value={companyInfoForm.website} onChange={handleCompanyInfoChange} />
+                <label>Website</label>
+                <input
+                  name="website"
+                  value={companyInfoForm.website}
+                  onChange={handleCompanyInfoChange}
+                />
               </div>
-              <button type="submit" className="btn-save-changes">Save Changes</button>
+              <button type="submit" className="btn-save-changes">
+                Update Company Info
+              </button>
             </form>
           </div>
         </div>
       )}
-
     </div>
   );
 }

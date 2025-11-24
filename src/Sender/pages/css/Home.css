@@ -16,7 +16,7 @@
 
 /* البطاقة الرئيسية */
 .balance-card {
-  background: linear-gradient(to left, #2a6ef4, #377dff);
+background: linear-gradient(135deg, #0846AA 0%, #00B4D8 100%);
   border-radius: 15px;
   padding: 20px;
   color: white;

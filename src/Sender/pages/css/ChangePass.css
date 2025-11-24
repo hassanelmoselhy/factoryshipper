@@ -91,7 +91,7 @@ margin-top: 25px;
 }
 
 .save-btn {
-background-color: #000;
+background: linear-gradient(135deg, #0846AA 0%, #00B4D8 100%);
 color: #fff;
 border: none;
 padding: 10px 16px;
@@ -102,7 +102,7 @@ transition: background 0.2s ease;
 }
 
 .save-btn:hover {
-background-color: #222;
+background-color: #0056b3;
 }
 
 .cancel-btn {
