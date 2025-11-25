@@ -160,3 +160,174 @@ export async function FirstLoginChangePassword(payload) {
     hideLoading();
   }
 }
+
+// import api from "../../utils/Api"; 
+// import { ApiResponse } from "../../Shared/Models/ApiResponse.ts";
+// import { showLoading, hideLoading } from "../../utils/Helpers";
+
+// // Helper to safely extract error messages
+// const getErrorMessage = (error) => {
+//   return (
+//     error?.response?.data?.message || 
+//     error?.response?.data ||          
+//     error?.message ||                 
+//     "An unexpected error occurred."
+//   );
+// };
+
+// // ... (signup, login, RefreshToken, forgetpassword functions remain the same) ...
+// export async function signup(payload) {
+//   try {
+//     showLoading();
+//     const response = await api.post("/shippers", payload, { withCredentials: true });
+//     return new ApiResponse(response.status, response.data.data, response.data.message, true);
+//   } catch (error) {
+//     const message = getErrorMessage(error);
+//     return new ApiResponse(error?.response?.status || 500, null, message, false);
+//   } finally {
+//     hideLoading();
+//   }
+// }
+
+// export async function login(Payload) {
+//   try {
+//     showLoading();
+//     const response = await api.post("/Accounts/login", Payload, { withCredentials: true });
+//     return new ApiResponse(response.status, response.data.data, response.data.message, true);
+//   } catch (error) {
+//     const message = getErrorMessage(error);
+//     return new ApiResponse(error?.response?.status || 500, null, message, false);
+//   } finally {
+//     hideLoading();
+//   }
+// }
+
+// export async function RefreshToken() {
+//   try {
+//     const response = await api.get("/Accounts/refreshToken", { withCredentials: true });
+//     return new ApiResponse(response.status, response.data.data, response.data.message, true);
+//   } catch (error) {
+//     return new ApiResponse(error?.response?.status || 401, null, false);
+//   }
+// }
+
+// export async function forgetpassword(payload) {
+//   try {
+//     showLoading();
+//     const response = await api.post("/Accounts/forget-password", payload);
+//     return new ApiResponse(response.status, response.data.data, response.data.message, true);
+//   } catch (error) {
+//     const message = getErrorMessage(error);
+//     return new ApiResponse(error?.response?.status || 500, null, message, false);
+//   } finally {
+//     hideLoading();
+//   }
+// }
+
+// // ==========================================================
+// // 1. EXISTING: Confirm Email (For Initial Signup)
+// // Matches Screenshot 3: /api/Accounts/confirm-email
+// // ==========================================================
+// export async function confirmEmail(email, token) {
+//   try {
+//     showLoading();
+//     // Swagger shows Query Params for this
+//     const response = await api.post(`/Accounts/confirm-email?Email=${email}&Token=${encodeURIComponent(token)}`);
+//     return new ApiResponse(response.status, response.data.data, response.data.message, true);
+//   } catch (error) {
+//     const message = getErrorMessage(error);
+//     return new ApiResponse(error?.response?.status || 500, null, message, false);
+//   } finally {
+//     hideLoading();
+//   }
+// }
+
+// // ==========================================================
+// // 2. NEW: Confirm Changed Email (For Shipper Profile)
+// // Matches Screenshot 1: /api/Shippers/change-email
+// // ⚠️ IMPORTANT: Swagger says "query" for these params, not body
+// // ==========================================================
+// export async function confirmEmailChange(oldEmail, newEmail, token) {
+//   try {
+//     showLoading();
+    
+//     // Construct URL with Query Parameters because Swagger says (query)
+//     const url = `/Shippers/change-email?OldEmail=${encodeURIComponent(oldEmail)}&NewEmail=${encodeURIComponent(newEmail)}&Token=${encodeURIComponent(token)}`;
+
+//     // It's a POST request, but params are in the URL
+//     const response = await api.post(url);
+    
+//     return new ApiResponse(response.status, response.data.data, response.data.message, true);
+//   } catch (error) {
+//     console.error("Confirm Change Error:", error);
+//     const message = getErrorMessage(error);
+//     return new ApiResponse(error?.response?.status || 500, null, message, false);
+//   } finally {
+//     hideLoading();
+//   }
+// }
+
+// // ==========================================================
+// // 3. NEW: Resend Change Email Link
+// // Matches Screenshot 2: /api/Shippers/change-email-request
+// // ==========================================================
+// export async function ResendChangeEmailLink(newEmail) {
+//   try {
+//     showLoading();
+//     const payload = {
+//       newEmail: newEmail,
+//       confirmNewEmailUrl: `${window.location.origin}/confirm-changed-email`
+//     };
+
+//     // Note the suffix "-request" here based on Screenshot 2
+//     const response = await api.post("/Shippers/change-email-request", payload);
+    
+//     return new ApiResponse(response.status, response.data.data, response.data.message, true);
+//   } catch (error) {
+//     console.error("Resend Error:", error);
+//     const message = getErrorMessage(error);
+//     return new ApiResponse(error?.response?.status || 500, null, message, false);
+//   } finally {
+//     hideLoading();
+//   }
+// }
+
+// // ... (Rest of your functions: ResendEmail, ResetPAssword, etc.) ...
+// export async function ResendEmail(email) {
+//   try {
+//     showLoading();
+//     const response = await api.get(`/Accounts/resend-email-confirmation-link?email=${email}`);
+//     return new ApiResponse(response.status, response.data.data, response.data.message, true);
+//   } catch (error) {
+//     const message = getErrorMessage(error);
+//     return new ApiResponse(error?.response?.status || 500, null, message, false);
+//   } finally {
+//     hideLoading();
+//   }
+// }
+
+// export async function ResetPAssword(payload) {
+//   try {
+//     showLoading();
+//     const response = await api.post(`/Accounts/reset-password`, payload);
+//     return new ApiResponse(response.status, response.data.data, response.data.message, true);
+//   } catch (error) {
+//     const message = getErrorMessage(error);
+//     return new ApiResponse(error?.response?.status || 500, null, message, false);
+//   } finally {
+//     hideLoading();
+//   }
+// }
+
+// export async function FirstLoginChangePassword(payload) {
+//   try {
+//     showLoading();
+//     const response = await api.post(`/Accounts/first-login-change-password`, payload);
+//     return new ApiResponse(response.status, response.data.data, response.data.message, true);
+//   } catch (error) {
+//     const message = getErrorMessage(error);
+//     return new ApiResponse(error?.response?.status || 500, null, message, false);
+//   } finally {
+//     hideLoading();
+//   }
+// }

@@ -18,6 +18,7 @@ import UseLoadingStore from "./Store/LoadingController/Loadingstore";
 import useUserStore from "./Store/UserStore/userStore";
 import "./App.css";
 import { RefreshToken } from "./Sender/Data/AuthenticationService";
+import ConfirmChangedEmail from "./Sender/pages/ConfirmChangedEmail";
 
 // Lazy imports (pages & big components)
 const Order = lazy(() => import("./Sender/pages/Order"));
@@ -149,6 +150,8 @@ const App = () => {
             </Route>
 
             <Route path="/confirm-email" element={<ConfirmEmailPage />} />
+            <Route path="/confirm-changed-email" element={<ConfirmChangedEmail />} />
+            
 
             {/* Hanger Layout */}
             <Route
