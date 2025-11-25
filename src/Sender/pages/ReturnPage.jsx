@@ -18,12 +18,15 @@ import {
 import { egypt_governorates } from "../../Shared/Constants";
 import LoadingOverlay from '../components/LoadingOverlay'; 
 import { toast } from "sonner";
+import { getShipperAddresses } from "../Data/ShipperService";
+
 export default function ReturnPage() {
   const navigate = useNavigate();
   const [selectedOrders, setSelectedOrders] = useState([]);
   const user = useUserStore((state) => state.user);
   const [ReturnOrders, SetReturnOrders] = useState([]);
   const [loading, setLoading] = useState(false);  
+  const [savedAddresses, setSavedAddresses] = useState([]);  
   const [CustomerDetails, SetCostomerDetails] = useState({
    
     customerStreet:"",
@@ -104,6 +107,18 @@ export default function ReturnPage() {
 
     fetchReturnOrders();
 
+    const fetchAddresses = async () => {
+      try {
+        const response = await getShipperAddresses();
+        if (response.Success) {
+          setSavedAddresses(response.Data);
+        }
+      } catch (error) {
+        console.error("Error fetching addresses:", error);
+      }
+    };
+    fetchAddresses();
+
   },[])
 
  const HandleSubmit=async ()=>{
@@ -171,7 +186,24 @@ SetCostomerDetails((prev)=>({...prev,[name]:value}));
  const ShipperhandleChange=(e)=>{
 const {name,value}=e.target;
 SetShipperDetails((prev)=>({...prev,[name]:value}));
- }
+  }
+  
+  const handleAddressSelect = (e) => {
+    const selectedIndex = e.target.value;
+    if (selectedIndex === "" || selectedIndex === null) return;
+    
+    const selectedAddress = savedAddresses[selectedIndex];
+    
+    if (selectedAddress) {
+      SetShipperDetails(prev => ({
+        ...prev,
+        ShipperStreet: selectedAddress.street || selectedAddress.Street || "",
+        ShipperCity: selectedAddress.city || selectedAddress.City || "",
+        ShipperGovernorate: selectedAddress.governorate || selectedAddress.Governorate || "",
+        ShipperAddressDetails: selectedAddress.details || selectedAddress.Details || ""
+      }));
+    }
+  };
  
   return (
 
@@ -262,6 +294,22 @@ SetShipperDetails((prev)=>({...prev,[name]:value}));
         <h4 className="mb-3" style={{ fontWeight: 700 }}>
           <MapPin size={24} className="me-2" color="#3182ed"/> Shipper  Details
         </h4>
+
+        {savedAddresses.length > 0 && (
+          <div className="row mb-3">
+            <div className="col-md-6">
+              <label className="form-label-icon">Select Saved Address</label>
+              <select className="form-select form-control-custom" onChange={handleAddressSelect} defaultValue="">
+                <option value="" disabled>Choose an address...</option>
+                {savedAddresses.map((addr, idx) => (
+                  <option key={idx} value={idx}>
+                    {addr.street}, {addr.city}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
 
         <div className="row input-row-gap">
          

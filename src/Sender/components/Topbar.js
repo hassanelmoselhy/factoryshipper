@@ -6,12 +6,10 @@ import { useNavigate } from "react-router-dom";
 import useUserStore from "../../Store/UserStore/userStore";
 import useLanguageStore from "../../Store/LanguageStore/languageStore";
 import Avatar from "../../Components/Avatar";
-import RescheduleModal from "../../Components/RescheduleModal";
 import ReplaceModal from "../../Components/ReplaceModal";
 
 const TopBar = () => {
   const user = useUserStore((state) => state.user);
-  const Setuser = useUserStore((state) => state.SetUser);
   const [showActions, setShowActions] = useState(false);
   const [isRescheduleOpen, SetisRescheduleOpen] = useState(false);
   const [isReplaceOpen, SetisReplaceOpen] = useState(false);
@@ -21,7 +19,6 @@ const TopBar = () => {
   const handleCreateClick = () => {
     setShowActions((prev) => !prev);
   };
-
 
   const goToPage = (type) => {
     setShowActions(false);
@@ -58,7 +55,7 @@ const TopBar = () => {
                   className="dropdown-item d-flex justify-content-between align-items-center"
                   onClick={() => goToPage("shipping")}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLineCap="round" strokeLinejoin="round" className="lucide lucide-package-plus-icon lucide-package-plus"><path d="M16 16h6"/><path d="M19 13v6"/><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/><path d="m7.5 4.27 9 5.15"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" x2="12" y1="22" y2="12"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-package-plus-icon lucide-package-plus"><path d="M16 16h6"/><path d="M19 13v6"/><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/><path d="m7.5 4.27 9 5.15"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" x2="12" y1="22" y2="12"/></svg>
                   {lang === "ar" ? "طلب إنشاء شحنه" : "New Shipment"}
                 </button>
 
@@ -70,14 +67,6 @@ const TopBar = () => {
                   <FaUndo /> {lang === "ar" ? "طلب استرجاع" : "Return Request"}
                 </button>
 
-                <button
-                  type="button"
-                  className="dropdown-item d-flex justify-content-between align-items-center"
-                  onClick={() => SetisRescheduleOpen(true)}
-                >
-                  <Calendar1 />
-                  {lang === "ar" ? "طلب جدولة" : "Reschedule Request"}
-                </button>
 
                 <button
                   type="button"

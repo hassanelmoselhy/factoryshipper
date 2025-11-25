@@ -1,6 +1,7 @@
 // src/api.js
 import axios from "axios";
 import useUserStore from "../Store/UserStore/userStore";
+
 const api = axios.create({
   baseURL:  "https://stakeexpress.runasp.net/api",
   timeout: 30000,
@@ -9,15 +10,16 @@ const api = axios.create({
 // Request interceptor
 function getToken() {
   try {
-    if (typeof useUserStore.getState === "function") {
-      const state = useUserStore.getState();
-      return state?.user?.token ||  "";
-    }
+    const user = useUserStore.getState().GetUser();
+    console.log('user', user);
+    const token = user?.token;
+    return token;
   } catch (e) {
     // ignore and fallback
   }
-  return  "";
+  return "";
 }
+
 const publicRoutes=[
   "/Accounts/login",
   "/Accounts/forget-password",
@@ -29,6 +31,7 @@ const publicRoutes=[
   "/confirm-email",
   "/shippers",
 ]
+
 function isPublicRoute(config, publicRoutes) {
   if (!config || typeof config.url !== 'string') return false;
   if (!Array.isArray(publicRoutes)) return false;
@@ -51,19 +54,25 @@ api.interceptors.request.use(
 
     // Add Authorization headers to private routes
     if (!isPublicRoute(config, publicRoutes)) {
-      const token = getToken();
+      let token = getToken();
       console.log('token=', token);
 
-      // Wait 3 seconds if token is empty to allow time for refresh
-      if (!token || token === "") {
-        console.log('Token is empty, waiting 3 seconds for refresh...');
-        await new Promise(resolve => setTimeout(resolve, 3000));
-        
-        // Try to get token again after waiting
-        const newToken = getToken();
-        console.log('Token after waiting:', newToken);
-        config.headers.Authorization = `Bearer ${newToken}`;
-      } else {
+      if (!token) {
+        try {
+          // Dynamic import to avoid circular dependency
+          const { RefreshToken } = await import("../Sender/Data/AuthenticationService");
+          const response = await RefreshToken();
+          
+          if (response.Success) {
+            useUserStore.getState().SetUser(response.Data);
+            token = getToken(); // Get the new token
+          }
+        } catch (error) {
+          console.error("Error refreshing token in interceptor:", error);
+        }
+      }
+
+      if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
     }
@@ -79,21 +88,18 @@ api.interceptors.request.use(
 // Response interceptor
 api.interceptors.response.use(
   (response) => {
-
-       
-
     return response;
   },
-  (error) => {
- 
+  async (error) => {
+    const originalRequest = error.config;
     
-    // Global error handling example
-    if (error.response && error.response.status === 401) {
-    
+    // Handle 401 errors - retry once
+    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      
+      // Retry the same request once
+      return api(originalRequest);
     }
-
-
-
 
     return Promise.reject(error);
   }

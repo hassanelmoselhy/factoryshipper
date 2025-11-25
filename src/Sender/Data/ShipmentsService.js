@@ -1,5 +1,6 @@
 import api from "../../utils/Api";
 import { ApiResponse } from "../../Shared/Models/ApiResponse.ts";
+
 export async function CreateShipment(payload) {
      try{
         const response=await api.post("/Shipments",payload)
@@ -16,6 +17,59 @@ export async function CreateShipment(payload) {
       
     } catch (err) {
         console.log('failed to submit shipment',err)
+        
+        const result=null
+        const message=err.response.data.message;
+        const code=err.response.status
+         let ret=new ApiResponse(code,result,message,false)
+                 console.log('falied',ret)
+
+         return ret
+    }
+}
+
+export async function GetShipmentById(id){
+    try{
+        const response=await api.get(`/Shipments/${id}`)
+        const result=response.data.data;
+        const message=response.data.message;
+        const code=response.status
+
+        console.log('shipment fetched successsfully',response.data)
+        let ret=new ApiResponse(code,result,message,true)
+        console.log('shipment fetched successsfully',ret)
+        
+    return ret
+      
+      
+    } catch (err) {
+        console.log('failed to submit shipment',err)
+        
+        const result=null
+        const message=err.response.data.message;
+        const code=err.response.status
+         let ret=new ApiResponse(code,result,message,false)
+                 console.log('falied',ret)
+
+         return ret
+    }
+}
+export async function GetShipmentsStatuses(){
+    try{
+          const response = await api.get('/Shipments/get-shipment-status-statistics');
+          const result = response.data.data;
+          const message=response.data.message;
+        const code=response.status
+
+        
+        let ret=new ApiResponse(code,result,message,true)
+        console.log('statuses fetched successsfully',ret)
+        
+    return ret
+      
+      
+    } catch (err) {
+        console.log('failed to fetch statuses',err)
         
         const result=null
         const message=err.response.data.message;

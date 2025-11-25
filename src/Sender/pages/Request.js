@@ -79,7 +79,7 @@ useEffect(()=>{
         {/* ✅ Request Info Bar */}
         <div className="request-info-bar align-items-center">
           <p><strong>Request ID:</strong> REQ-{id} •</p>
-          <span className="date">📅Created At: {RequestDetails.createdAt.split("T")[0]}</span>
+          <span className="date">📅Created At: {RequestDetails?.createdAt?.split("T")[0]}</span>
         </div>
 
         {requestype==="ReturnRequest"&&(

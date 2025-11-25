@@ -49,6 +49,7 @@ export async function login(Payload) {
 
 export async function RefreshToken() {
   try {
+    console.log("Refreshing token...");
     const response = await api.get("/Accounts/refreshToken", {
       withCredentials: true,
     });
@@ -133,9 +134,10 @@ export async function ResetPAssword(payload) {
     const ret = new ApiResponse(response.status, result, message, true);
     return ret;
   } catch (error) {
+    
     console.error("Error:", error);
-    const message = error.data.message || "Failed to Reset Password";
-    const ret = new ApiResponse(error.response.status, null, message, true);
+    const message = error?.data?.message || "Failed to Reset Password";
+    const ret = new ApiResponse(error?.response?.status, null, message, true);
     return ret;
   } finally {
     hideLoading();

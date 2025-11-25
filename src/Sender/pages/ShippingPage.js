@@ -26,9 +26,6 @@ const ShippingPage = () => {
     shipmentWeight: "",
     shipmentDescription: "",
     shipmentNotes: "",
-    shipmentLength: "", 
-    shipmentWidth: "", 
-    shipmentHeight: "", 
     expressDeliveryEnabled: false,
     openPackageOnDeliveryEnabled: false,
     cashOnDeliveryEnabled: false,
@@ -123,7 +120,9 @@ const ShippingPage = () => {
 
     setLoading(true);
     const payload = { ...formData };
+    console.log('payload',payload);
     if(payload.shipmentWeight === "") delete payload.shipmentWeight;
+    if(payload.customerAddress.googleMapAddressLink === "") delete payload.customerAddress.googleMapAddressLink;
 
     try {
       const result = await CreateShipment(payload);
@@ -228,20 +227,6 @@ const ShippingPage = () => {
               <input type="number" name="shipmentWeight" value={formData.shipmentWeight} onChange={handleChange} step="0.1" />
               <small className="hint">الحد الأدنى: 0.01 - 75.0 كجم</small>
             </div>
-
-            <label style={{fontSize:'13px', fontWeight:'600', color:'#4b5563'}}>الأبعاد (سم)</label>
-            <div className="dimensions-row">
-              <div className="form-group">
-                <input type="number" name="shipmentLength" placeholder="الطول" value={formData.shipmentLength} onChange={handleChange} />
-              </div>
-              <div className="form-group">
-                <input type="number" name="shipmentWidth" placeholder="العرض" value={formData.shipmentWidth} onChange={handleChange} />
-              </div>
-              <div className="form-group">
-                <input type="number" name="shipmentHeight" placeholder="الارتفاع" value={formData.shipmentHeight} onChange={handleChange} />
-              </div>
-            </div>
-            <small className="hint" style={{textAlign: 'center'}}>إلى حد أدنى 1 سم إلى 200 و 3 سم</small>
 
             <div className="form-group">
               <label>ملاحظات خاصة بالشحن</label>

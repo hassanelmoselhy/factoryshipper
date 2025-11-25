@@ -10,7 +10,6 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { login, RefreshToken } from "../../Data/AuthenticationService";
 const Login = () => {
   const SetUser = useUserStore((state) => state.SetUser);
-  const user = useUserStore((state) => state.user);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
@@ -85,6 +84,7 @@ const Login = () => {
           });
         }
         else{
+              console.log("🚀 Login successful:", response.Data);
                   SetUser(response.Data);
                   navigate("/home");
                   shceduleRefreshToken(response.Data.expiresOn);

@@ -78,24 +78,30 @@ const MainLayout = ({ header: HeaderComponent, sidebarData }) => {
 
 const App = () => {
   const user = useUserStore((state) => state.User);
+  const SetUser=useUserStore((state)=>state.SetUser)
   const loading = UseLoadingStore((state) => state.Loading);
   useEffect(()=>{
-    if(user)
-      return
-    const refresh=async()=>{
+  //     const nav = performance.getEntriesByType("navigation")[0];
+  // if (nav?.type === "reload") {
+  //   console.log("Page was reloadedaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+  //   const refresh=async()=>{
 
-      const response=await RefreshToken();
-      console.log("refresh",response)
-      if(response.Success){
-        useUserStore.setState({User:response.Data})
-        console.log('success refresh')
-      }else{
-        console.log('fail refresh')
-      }
+  //     const response=await RefreshToken();
+  //     console.log("refresh",response)
+  //     if(response.Success){
+  //       SetUser(response.Data)
+  //       console.log('success refresh')
+  //     }else{
+  //       console.log('fail refresh')
+  //     }
 
-    }
-    refresh()
-  },[user])
+  //   }
+  //   refresh()
+  // }
+  
+    
+
+  },[])
   return (
     <>
       <Toaster position="top-right" richColors closeButton />

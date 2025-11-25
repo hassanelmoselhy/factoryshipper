@@ -28,7 +28,7 @@ export const egypt_governorates = [
 ];
 
 export const statusOptions = [
-  { value: "Pending", label: "قيد الانتظار" },
+  { value: "NewShipment", label: "شحنه جديده" },
   { value: "InWarehouse", label: "في المخزن" },
   { value: "PickedUp", label: "تم الالتقاط" },
   { value: "Returned", label: "تم الإرجاع" },

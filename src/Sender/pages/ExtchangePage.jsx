@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import api from "../../utils/Api";
 import axios from "axios";
+import { getShipperAddresses } from "../Data/ShipperService";
 
 function ExtchangePage() {
   const user = useUserStore((state) => state.user);
@@ -27,6 +28,7 @@ function ExtchangePage() {
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [PendingShipments, SetPendingShipments] = useState([]);
   const [DeliveredShipments, SetDeliveredShipments] = useState([]);
+  const [savedAddresses, setSavedAddresses] = useState([]);
 
   // store each table ids separately
   const [selectedPendingIds, setSelectedPendingIds] = useState([]);
@@ -123,6 +125,18 @@ function ExtchangePage() {
     };
     fetchDeliveredShipments();
     fetchPendingShipments();
+
+    const fetchAddresses = async () => {
+      try {
+        const response = await getShipperAddresses();
+        if (response.Success) {
+          setSavedAddresses(response.Data);
+        }
+      } catch (error) {
+        console.error("Error fetching addresses:", error);
+      }
+    };
+    fetchAddresses();
   }, []);
 
   // when an order row (or link) is clicked, populate the form with order details
@@ -288,6 +302,20 @@ function ExtchangePage() {
     }
   };
 
+  const handleAddressSelect = (e) => {
+    const selectedIndex = e.target.value;
+    if (selectedIndex === "" || selectedIndex === null) return;
+    
+    const selectedAddress = savedAddresses[selectedIndex];
+    
+    if (selectedAddress) {
+      setValue("pickupStreet", selectedAddress.street || selectedAddress.Street || "");
+      setValue("pickupCity", selectedAddress.city || selectedAddress.City || "");
+      setValue("pickupGovernorate", selectedAddress.governorate || selectedAddress.Governorate || "");
+      setValue("pickupAddressDetails", selectedAddress.details || selectedAddress.Details || "");
+    }
+  };
+
   return (
     <>
       <div className="container my-4">
@@ -408,6 +436,22 @@ function ExtchangePage() {
               <MapPin size={24} className="me-2" color="#3182ed" />
               Pickup Details
             </h4>
+
+            {savedAddresses.length > 0 && (
+              <div className="row mb-3">
+                <div className="col-md-6">
+                  <label className="form-label-icon">Select Saved Address</label>
+                  <select className="form-select form-control-custom" onChange={handleAddressSelect} defaultValue="">
+                    <option value="" disabled>Choose an address...</option>
+                    {savedAddresses.map((addr, idx) => (
+                      <option key={idx} value={idx}>
+                        {addr.street}, {addr.city}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            )}
 
             <div className="row input-row-gap">
               <div className="col-lg-3 mb-3">

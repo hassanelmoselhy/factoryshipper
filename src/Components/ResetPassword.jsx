@@ -46,7 +46,7 @@ export default function ResetPassword() {
 
     const resetShipper=async()=>{
       setloading(true)
-          const payload={token:encodeURIComponent(token),
+          const payload={token:token,
               email:email,
               newPassword: formData.newPassword,
               confirmPassword: formData.confirmPassword}

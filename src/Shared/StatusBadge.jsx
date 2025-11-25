@@ -7,7 +7,7 @@ import React from "react";
  */
 
 const statusMap = {
-  Pending: { label: "قيد الانتظار", slug: "pending" },
+  NewShipment: { label: "شحنه جديده", slug: "new-shipment" },
   InTransit: { label: "قيد التوصيل", slug: "in-transit" },
   Delivered: { label: "تم التوصيل", slug: "delivered" },
   Cancelled: { label: "ملغي", slug: "cancelled" },

@@ -15,12 +15,15 @@ import {
 import LoadingOverlay from '../components/LoadingOverlay'; 
 import { egypt_governorates } from "../../Shared/Constants";
 import { toast } from "sonner";
+import { getShipperAddresses } from "../Data/ShipperService";
+
 export default function PickupRequestManagement() {
   const navigate = useNavigate();
   const [selectedOrders, setSelectedOrders] = useState([]);
   const user = useUserStore((state) => state.user);
   const [PendingOrders, setPendingOrders] = useState([]);
-  const [loading, setLoading] = useState(false);  
+  const [loading, setLoading] = useState(false);
+  const [savedAddresses, setSavedAddresses] = useState([]);
   const [PickupDetails, setPickupDetails] = useState({
     pickupDate:"",
     windowStart:"",
@@ -34,31 +37,7 @@ export default function PickupRequestManagement() {
     contactPhone:"",
     shipmentIds:[]
   });
-  // dummy data for the pending orders table
-  const pending = [
-    {
-      id: "ORD-1001",
-      receiver: "Sarah Johnson",
-      phone: "+201112223334",
-      desc: "Premium T-shirt Collection",
-      qty: 2,
-      weight: "0.3kg",
-      cod: "$250.00",
-      status: "Yes"
-    },
-    {
-      id: "ORD-1002",
-      receiver: "Omar Ali",
-      phone: "+201098765432",
-      desc: "Sneakers - Running",
-      qty: 1,
-      weight: "0.8kg",
-      cod: "$120.00",
-      status: "No"
-    }
-  ];
 
- 
   // Select All functionality
   const handleSelectAll = () => {
     const allOrderIds = PendingOrders.map(order => order.id);
@@ -82,8 +61,6 @@ export default function PickupRequestManagement() {
       }
     });
   };
-
-  
 
   // Check if an individual order is selected
   const isOrderSelected = (orderId) => selectedOrders.includes(orderId);
@@ -116,6 +93,21 @@ export default function PickupRequestManagement() {
       }finally{setLoading(false);}
     }
     fetchPendingOrders();
+
+    const fetchAddresses = async () => {
+      try {
+        const response = await getShipperAddresses();
+        if (response.Success) {
+          console.log("Fetched addresses raw:", response.Data);
+          setSavedAddresses(response.Data);
+        } else {
+          console.error("Failed to fetch addresses:", response.Message);
+        }
+      } catch (error) {
+        console.error("Error fetching addresses:", error);
+      }
+    };
+    fetchAddresses();
 
   },[])
 
@@ -174,6 +166,37 @@ console.error("Error in submitting pickup request:", err);
 const {name,value}=e.target;
 setPickupDetails((prev)=>({...prev,[name]:value}));
  }
+
+ const handleAddressSelect = (e) => {
+   const selectedIndex = e.target.value;
+   console.log("Selected Index:", selectedIndex);
+   
+   if (selectedIndex === "" || selectedIndex === null) return;
+   
+   const selectedAddress = savedAddresses[selectedIndex];
+   console.log("Found Address Object:", selectedAddress);
+   
+   if (selectedAddress) {
+     const newDetails = {
+       street: selectedAddress.street || selectedAddress.Street || "",
+       city: selectedAddress.city || selectedAddress.City || "",
+       governorate: selectedAddress.governorate || selectedAddress.Governorate || "",
+       addressDetails: selectedAddress.details || selectedAddress.Details || ""
+     };
+     console.log("Setting PickupDetails to:", newDetails);
+     
+     setPickupDetails(prev => ({
+       ...prev,
+       ...newDetails
+     }));
+   }
+ };
+
+ // Log PickupDetails changes to verify state update
+ useEffect(() => {
+   console.log("PickupDetails updated:", PickupDetails);
+ }, [PickupDetails]);
+
   return (
 
     <>
@@ -191,6 +214,22 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
         <h4 className="mb-3" style={{ fontWeight: 700 }}>
           <MapPin size={24} className="me-2" color="#3182ed"/> Pickup Details
         </h4>
+
+        {savedAddresses.length > 0 && (
+          <div className="row mb-3">
+            <div className="col-md-6">
+              <label className="form-label-icon">Select Saved Address</label>
+              <select className="form-select form-control-custom" onChange={handleAddressSelect} defaultValue="">
+                <option value="" disabled>Choose an address...</option>
+                {savedAddresses.map((addr, idx) => (
+                  <option key={idx} value={idx}>
+                    {addr.street}, {addr.city}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
 
         <div className="row input-row-gap">
 
@@ -216,7 +255,7 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
           </div>
           <div className="col-lg-3 mb-3">
             <label className="form-label-icon">address Details</label>
-            <input className="form-control form-control-custom" name="details" value={PickupDetails.details} onChange={handleChange} placeholder="details" />
+            <input className="form-control form-control-custom" name="addressDetails" value={PickupDetails.addressDetails} onChange={handleChange} placeholder="details" />
           </div>
 
           

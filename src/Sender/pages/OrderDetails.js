@@ -247,7 +247,7 @@ export const OrderDetails = () => {
           </button>
           <button
             className="print-button primary"
-            onClick={() => navigate(`/print/${Shipment.id}`)}
+            onClick={() => navigate(`/invoice/${Shipment.id}`)}
           >
             طباعة بوليصة الشحن
             <i className="fa-solid fa-print"></i>

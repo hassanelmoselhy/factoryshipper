@@ -18,26 +18,33 @@ import useLanguageStore from '../../Store/LanguageStore/languageStore';
 import translations from '../../Store/LanguageStore/translations';
 import { Link } from 'react-router-dom';
 import api from '../../utils/Api'
-
+import useUserStore from '../../Store/UserStore/userStore'; 
+import { GetShipmentsStatuses } from '../Data/ShipmentsService';
 const Home = () => {
   const { lang } = useLanguageStore();
   const t = translations[lang];
   const [ShipmentsStatus, SetShipmentsStatus] = useState(null);
-
+  const user=useUserStore((state)=>state.User);
   useEffect(() => {
+   
+    if(user){
+      return;
+    } 
     const fetchShipmentsStatus = async () => {
-      try {
-          const response = await api.get('/Shipments/get-shipment-status-statistics');
-          const result = response.data.data;
-          SetShipmentsStatus(result);
-      } catch (err) {
-        const message = err.response?.data.message;
-        console.log('error in fetching shipments status', err);
-        console.log(message);
-      } 
+      
+         console.log("fetching  status...");
+          const res = await  GetShipmentsStatuses();
+          if(res.Success)
+          SetShipmentsStatus(res.Data);
+      else{
+
+        console.log('error in fetching shipments status', res.Message);
+     
+      }
+        
     }
     fetchShipmentsStatus();
-  }, []);
+  }, [user]);
 
   const statusConfig = {
     // --- Initial Stages ---
@@ -242,7 +249,7 @@ const Home = () => {
             
             return (
               <Link 
-                to={"/order"} 
+                to={"/shipments"} 
                 state={config.key} 
                 key={statusKey} 
                 className={`summary-card ${config.color}`} 
