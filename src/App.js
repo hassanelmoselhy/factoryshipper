@@ -5,6 +5,7 @@ import {
   Routes,
   Route,
   Outlet,
+  useNavigate,
 } from "react-router-dom";
 
 // Sidebar data can stay normal imports (they're small plain objects)
@@ -77,32 +78,35 @@ const MainLayout = ({ header: HeaderComponent, sidebarData }) => {
   );
 };
 
-const App = () => {
+const SessionRestorer = () => {
   const user = useUserStore((state) => state.User);
-  const SetUser=useUserStore((state)=>state.SetUser)
+  const SetUser = useUserStore((state) => state.SetUser);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const restoreSession = async () => {
+      if (!user) {
+        try {
+          const response = await RefreshToken();
+          if (response.Success && response.Data) {
+            console.log("Session restored successfully");
+            SetUser(response.Data);
+            navigate("/home");
+          }
+        } catch (error) {
+          console.log("Failed to restore session", error);
+        }
+      }
+    };
+    restoreSession();
+  }, []);
+
+  return null;
+};
+
+const App = () => {
   const loading = UseLoadingStore((state) => state.Loading);
-  useEffect(()=>{
-  //     const nav = performance.getEntriesByType("navigation")[0];
-  // if (nav?.type === "reload") {
-  //   console.log("Page was reloadedaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-  //   const refresh=async()=>{
-
-  //     const response=await RefreshToken();
-  //     console.log("refresh",response)
-  //     if(response.Success){
-  //       SetUser(response.Data)
-  //       console.log('success refresh')
-  //     }else{
-  //       console.log('fail refresh')
-  //     }
-
-  //   }
-  //   refresh()
-  // }
   
-    
-
-  },[])
   return (
     <>
       <Toaster position="top-right" richColors closeButton />
@@ -114,6 +118,7 @@ const App = () => {
       />
 
       <Router>
+        <SessionRestorer />
         {/* ضع Suspense حول Routes أو حول أجزاء معينة لتتحكم بالـ fallback */}
         <Suspense >
           <Routes>

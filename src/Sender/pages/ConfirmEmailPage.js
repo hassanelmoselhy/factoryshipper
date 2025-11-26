@@ -21,6 +21,7 @@ const [ShowResendbtn,SetShowResendbtn]=useState(false)
   const [message, setMessage] = useState("");
 
    const confirm =async (email,token)=>{
+    
         const response=confirmEmail(email,token)
         const result=await response
         
@@ -50,7 +51,7 @@ const [ShowResendbtn,SetShowResendbtn]=useState(false)
       token: token,
     };
 
-  
+
 
      if (!payload.email || !payload.token) {
       console.warn("Missing email or token in URL params:", payload);
