@@ -242,7 +242,7 @@ const HangerOrders = () => {
       {/* Orders Section and Sidebar Container */}
       <div className="orders-main-content">
         <div className="orders-section-wrapper">
-          <h4 className="mb-3 text-end">الطلبات</h4>
+          <h4 className="mb-3 text-end">اخر الطلبات</h4>
           <div className="orders-list">
             {orders.map((order) => (
               <div

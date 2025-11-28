@@ -50,6 +50,8 @@ const PageNotFound = lazy(() => import("./Components/PageNotFound"));
 const WarehouseList = lazy(() => import("./Hanger/pages/WarehouseList"));
 const OrdersPage = lazy(() => import("./Hanger/pages/OrdersPage"));
 const OrderRelease = lazy(() => import("./Hanger/pages/OrdersRelease"));
+const RequestsReview = lazy(() => import("./Hanger/pages/RequestsReview"));
+const HangerRequestDetails = lazy(() => import("./Hanger/pages/HangerRequestDetails"));
 const Safe = lazy(() => import("./Hanger/pages/Safe"));
 const ForgetPassword = lazy(() => import("./Components/ForgetPassword"));
 const ResetPassword = lazy(() => import("./Components/ResetPassword"));
@@ -118,7 +120,7 @@ const App = () => {
       />
 
       <Router>
-        <SessionRestorer />
+        {/* <SessionRestorer /> */}
         {/* ضع Suspense حول Routes أو حول أجزاء معينة لتتحكم بالـ fallback */}
         <Suspense >
           <Routes>
@@ -176,6 +178,8 @@ const App = () => {
               <Route path="warehouseList" element={<WarehouseList />} />
               <Route path="operations" element={<OrdersPage />} />
               <Route path="release-orders" element={<OrderRelease />} />
+              <Route path="requests-review" element={<RequestsReview />} />
+              <Route path="request/:id" element={<HangerRequestDetails />} />
               <Route path="safe" element={<Safe />} />
             </Route>
 
