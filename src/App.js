@@ -1,34 +1,27 @@
-// App.jsx
 import React, { Suspense, lazy, useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Outlet,
-  useNavigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Outlet, useNavigate } from "react-router-dom";
+import { Toaster } from "sonner";
 
-// Sidebar data can stay normal imports (they're small plain objects)
+// --- STORES & SERVICES ---
+import UseLoadingStore from "./Store/LoadingController/Loadingstore";
+import useUserStore from "./Store/UserStore/userStore";
+import { RefreshToken } from "./Sender/Data/AuthenticationService";
+
+// --- COMPONENTS ---
+import LoadingOverlay from "./Components/LoadingOverlay";
 import { senderSidebarData } from "./Sender/components/Rightsidebar";
 import { hangerSidebarData } from "./Hanger/components/Sidebar";
 import { adminSidebarData } from "./Admin/components/AdminSidebar";
-
-import { Toaster } from "sonner";
-import LoadingOverlay from "./Sender/components/LoadingOverlay";
-import UseLoadingStore from "./Store/LoadingController/Loadingstore";
-import useUserStore from "./Store/UserStore/userStore";
 import "./App.css";
-import { RefreshToken } from "./Sender/Data/AuthenticationService";
-import ConfirmChangedEmail from "./Sender/pages/ConfirmChangedEmail";
-import Login from "./Sender/auth/pages/Login";
-// Lazy imports (pages & big components)
+
+// --- LAZY IMPORTS ---
 const Order = lazy(() => import("./Sender/pages/Order"));
 const Actions = lazy(() => import("./Sender/pages/Actions"));
 const Wallet = lazy(() => import("./Sender/pages/Wallet"));
 const Home = lazy(() => import("./Sender/pages/Home"));
 const TopBar = lazy(() => import("./Sender/components/Topbar"));
 const Signup = lazy(() => import("./Sender/auth/pages/Signup"));
-// const Login = lazy(() => import("./Sender/auth/pages/Login"));
+const Login = lazy(() => import("./Sender/auth/pages/Login"));
 const PickupOrder = lazy(() => import("./Sender/pages/PickupOrder"));
 const ReturnPage = lazy(() => import("./Sender/pages/ReturnPage"));
 const Request = lazy(() => import("./Sender/pages/Request"));
@@ -40,9 +33,7 @@ const SignUp = lazy(() => import("./Hanger/auth/pages/HangerSignup"));
 const SignIn = lazy(() => import("./Hanger/auth/pages/HangerSignin"));
 const NewRequestPage = lazy(() => import("./Sender/pages/NewRequestPage"));
 const ShippingPage = lazy(() => import("./Sender/pages/ShippingPage"));
-const OrderDetails = lazy(() =>
-  import("./Sender/pages/OrderDetails").then((mod) => ({ default: mod.OrderDetails }))
-);
+const OrderDetails = lazy(() => import("./Sender/pages/OrderDetails").then((mod) => ({ default: mod.OrderDetails })));
 const ChangePass = lazy(() => import("./Sender/pages/ChangePass"));
 const Print = lazy(() => import("./Sender/pages/Print"));
 const HangerOrders = lazy(() => import("./Hanger/pages/Orders"));
@@ -63,15 +54,13 @@ const ShippingPricing = lazy(() => import("./Admin/pages/ShippingPricing"));
 const Settings = lazy(() => import("./Admin/pages/SettingsPage"));
 const Sidebar = lazy(() => import("./Components/Sidebar"));
 const Orders2 = lazy(() => import("./Sender/pages/order2"));
-const ShipperProfile=lazy(()=>import("./Sender/pages/ShipperProfile"))
+const ShipperProfile = lazy(() => import("./Sender/pages/ShipperProfile"));
+const ConfirmChangedEmail = lazy(() => import("./Sender/pages/ConfirmChangedEmail"));
+
 const MainLayout = ({ header: HeaderComponent, sidebarData }) => {
   return (
     <div className="layout">
-      <Sidebar
-        title="Stake Express"
-        subtitle="لوحة التحكم"
-        menuItems={sidebarData}
-      />
+      <Sidebar title="Stake Express" subtitle="لوحة التحكم" menuItems={sidebarData} />
       <div className="content">
         {HeaderComponent && <HeaderComponent />}
         <Outlet />
@@ -109,22 +98,28 @@ const SessionRestorer = () => {
 };
 
 const App = () => {
-  const loading = UseLoadingStore((state) => state.Loading);
+  // 1. Get Control Functions
+  const { Show, Hide } = UseLoadingStore();
+
+  // 2. Test Function
+  const handleTest = () => {
+    Show(); 
+    setTimeout(() => {
+      Hide();
+    }, 3000);
+  };
   
   return (
     <>
+      {/* --- GLOBAL OVERLAYS --- */}
       <Toaster position="top-right" richColors closeButton />
-      <LoadingOverlay
-        loading={loading}
-        message="please wait..."
-        color="#fff"
-        size={44}
-      />
+      <LoadingOverlay />
 
+
+      {/* --- ROUTER & APP CONTENT --- */}
       <Router>
         <SessionRestorer />
-        {/* ضع Suspense حول Routes أو حول أجزاء معينة لتتحكم بالـ fallback */}
-        <Suspense >
+        <Suspense fallback={<div>Loading...</div>}>
           <Routes>
             {/* Public Auth */}
             <Route path="/signup" element={<Signup />} />
@@ -136,23 +131,18 @@ const App = () => {
             <Route path="/hanger/sign-up" element={<SignUp />} />
             <Route path="/hanger/sign-in" element={<SignIn />} />
             <Route path="/new-request" element={<NewRequestPage />} />
-
             <Route path="/Pickuporder" element={<PickupOrder />} />
             <Route path="/return" element={<ReturnPage />} />
 
             {/* Sender Layout */}
-            <Route
-              element={
-                <MainLayout header={TopBar} sidebarData={senderSidebarData} />
-              }
-            >
+            <Route element={<MainLayout header={TopBar} sidebarData={senderSidebarData} />}>
               <Route path="/home" element={<Home />} />
               <Route path="/order" element={<Order />} />
               <Route path="/actions" element={<Actions />} />
-            <Route path="/shipping" element={<ShippingPage />} />
+              <Route path="/shipping" element={<ShippingPage />} />
               <Route path="/shipments" element={<Orders2 />} />
               <Route path="/wallet" element={<Wallet />} />
-               <Route path="/profile" element={<ShipperProfile />} />
+              <Route path="/profile" element={<ShipperProfile />} />
             </Route>
 
             {/* Misc sender routes */}
@@ -167,14 +157,8 @@ const App = () => {
             <Route path="/confirm-email" element={<ConfirmEmailPage />} />
             <Route path="/confirm-changed-email" element={<ConfirmChangedEmail />} />
             
-
             {/* Hanger Layout */}
-            <Route
-              path="/hanger"
-              element={
-                <MainLayout header={TopBar} sidebarData={hangerSidebarData} />
-              }
-            >
+            <Route path="/hanger" element={<MainLayout header={TopBar} sidebarData={hangerSidebarData} />}>
               <Route path="orders" element={<HangerOrders />} />
               <Route path="scan" element={<Scan />} />
               <Route path="warehouseList" element={<WarehouseList />} />
@@ -186,12 +170,7 @@ const App = () => {
             </Route>
 
             {/* Admin Layout */}
-            <Route
-              path="/admin"
-              element={
-                <MainLayout header={TopBar} sidebarData={adminSidebarData} />
-              }
-            >
+            <Route path="/admin" element={<MainLayout header={TopBar} sidebarData={adminSidebarData} />}>
               <Route path="orders" element={<OrderPage />} />
               <Route path="branches" element={<BranchesPage />} />
               <Route path="shipping-pricing" element={<ShippingPricing />} />
