@@ -5,7 +5,35 @@ height: 100vh;
 padding: 10px;
 direction: rtl;
 border-left: 1px solid #ccc;
-transition: transform 0.3s ease-in-out;
+transition: transform 0.25s ease-in-out, width 0.25s ease-in-out;
+position: relative;
+}
+
+/* Collapsed state */
+.sidebar.collapsed {
+width: 80px;
+}
+
+.sidebar.collapsed .sidebar-header h2,
+.sidebar.collapsed .sidebar-header p {
+display: none;
+}
+
+.sidebar.collapsed .collapsed-header {
+display: none;
+}
+
+.sidebar.collapsed .logo-icon {
+margin: 0 auto;
+}
+
+.sidebar.collapsed .nav-link {
+justify-content: center;
+padding: 10px 5px;
+}
+
+.sidebar.collapsed .nav-link span {
+display: none;
 }
 
 .sidebar-header {
@@ -74,9 +102,64 @@ font-size: 16px;
 color: #000;
 }
 
-/* Toggle button */
+/* Toggle button - Hidden on mobile since we have bottom nav */
 .toggle-btn {
 display: none;
+}
+
+/* Collapse button - Desktop only */
+.collapse-btn {
+position: absolute;
+left: 5px;
+top: 50%;
+transform: translateY(-50%);
+background: #000;
+color: #fff;
+border: none;
+padding: 8px 10px;
+font-size: 18px;
+border-radius: 6px;
+cursor: pointer;
+z-index: 10;
+transition: all 0.3s ease;
+display: block;
+}
+
+.collapse-btn:hover {
+background: #333;
+}
+
+.sidebar.collapsed .collapse-btn {
+left: 50%;
+transform: translate(-50%, -50%);
+}
+
+/* Overlay */
+.overlay {
+position: fixed;
+inset: 0;
+background: rgba(0, 0, 0, 0.5);
+z-index: 900;
+}
+
+/* Mobile View - Slide-in from Right */
+@media (max-width: 991px) {
+.sidebar {
+position: fixed;
+top: 0;
+right: 0;
+transform: translateX(100%);
+z-index: 1100;
+width: 220px;
+height: 100vh;
+}
+
+.sidebar.active {
+transform: translateX(0);
+}
+
+.toggle-btn {
+display: block;
 position: fixed;
 top: 15px;
 right: 15px;
@@ -90,30 +173,8 @@ cursor: pointer;
 z-index: 1100;
 }
 
-/* Overlay */
-.overlay {
-position: fixed;
-inset: 0;
-background: rgba(0, 0, 0, 0.5);
-z-index: 900;
-}
-
-/* Mobile View */
-@media (max-width: 991px) {
-.sidebar {
-position: fixed;
-top: 0;
-right: 0;
-transform: translateX(100%);
-z-index: 1000;
-}
-
-.sidebar.active {
-transform: translateX(0);
-}
-
-.toggle-btn {
-display: block;
+.collapse-btn {
+display: none; /* Hide collapse button on mobile */
 }
 }
 

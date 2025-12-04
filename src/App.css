@@ -117,24 +117,48 @@ max-width: 16.666667%;
 
 .layout {
   display: flex;
+  direction: rtl;
 }
 
 .sidebar {
-  width: 15%;          
+  width: 250px;          
   min-height: 100vh;
   position: fixed;
   right: 0;
   top: 0;
   background: #fff;     
   border-left: 1px solid #eee;
+  z-index: 1100;
+  transition: width 0.3s ease-in-out;
+}
+
+.sidebar.collapsed {
+  width: 80px;
 }
 
 .content {
-  
- width: 84%;
+  margin-right: 250px;
+  width: calc(100% - 250px);
+  min-height: 100vh;
+  transition: margin-right 0.3s ease-in-out, width 0.3s ease-in-out;
 }
 
+/* When sidebar is collapsed, adjust content */
+body:has(.sidebar.collapsed) .content {
+  margin-right: 80px;
+  width: calc(100% - 80px);
+}
 
+/* Tablet View */
+@media (max-width: 991px) {
+  .content {
+    margin-right: 0;
+    width: 100%;
+    padding-top: 60px; /* Space for toggle button */
+  }
+}
+
+/* Mobile View */
 @media (max-width: 768px) {
   .role-buttons {
     flex-direction: column;
@@ -144,6 +168,12 @@ max-width: 16.666667%;
   .role-btn {
     width: 200px;
     text-align: center;
+  }
+  
+  .content {
+    margin-right: 0;
+    width: 100%;
+    padding-top: 60px;
   }
 }
 

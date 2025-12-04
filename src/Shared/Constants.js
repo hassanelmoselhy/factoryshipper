@@ -25,6 +25,7 @@ export const egypt_governorates = [
   { id: 24, name: "Matrouh", name_arabic: "مطروح" },
   { id: 25, name: "North Sinai", name_arabic: "شمال سيناء" },
   { id: 26, name: "South Sinai", name_arabic: "جنوب سيناء" },
+  { id: 27, name: "Ismailia", name_arabic: "الإسماعيلية" }
 ];
 
 export const statusOptions = [

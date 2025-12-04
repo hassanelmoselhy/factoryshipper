@@ -146,7 +146,7 @@ export const OrderDetails = () => {
       console.log("Saving updated order:", payload);
       setLoading(true);
       const res = await fetch(
-        `https://stakeexpress.runasp.net/api/Shipments/updateShipment/${Shipment.id}`,
+        `https://stakeexpress.runasp.net/api/Shipments/updateShipment/${Shipment?.id}`,
         {
           method: "PUT",
           headers: {
@@ -212,7 +212,7 @@ export const OrderDetails = () => {
       <div className="order-details-page">
         <div className="order-details-header">
           <h2>تفاصيل الطلب</h2>
-          <p>إدارة ومتابعة تفاصيل الطلب #{Shipment.id}</p>
+          <p>إدارة ومتابعة تفاصيل الطلب #{Shipment?.id}</p>
         </div>
 
         <div className="order-actions-bar">
@@ -224,7 +224,7 @@ export const OrderDetails = () => {
             <Trash2 size={14} />
           </button>
           {(Shipment?.shipmentStatuses[0].status === "InWarehouse" ||
-            Shipment.shipmentStatuses[0].status === "Delivered") && (
+            Shipment?.shipmentStatuses[0].status === "Delivered") && (
             <button
               className="cancel-button"
               onClick={() => {
@@ -247,7 +247,7 @@ export const OrderDetails = () => {
           </button>
           <button
             className="print-button primary"
-            onClick={() => navigate(`/invoice/${Shipment.id}`)}
+            onClick={() => navigate(`/invoice/${Shipment?.id}`)}
           >
             طباعة بوليصة الشحن
             <i className="fa-solid fa-print"></i>
@@ -255,13 +255,13 @@ export const OrderDetails = () => {
         </div>
 
         <div className="order-details-section">
-          <h3>تفاصيل الطلب والعميل</h3>
+          <h3 className="d-flex justify-content-center align-items-center">تفاصيل الطلب والعميل</h3>
 
           <div className="order-info-grid">
             <div className="info-item1">
               <span className="info-label">حالة الطلب</span>
-              <div className={`status-badge ${Shipment.status} text-black`}>
-                {Shipment.shipmentStatuses[0].status}
+              <div className={`status-badge ${Shipment?.status} text-black`}>
+                {Shipment?.shipmentStatuses[0].status}
               </div>
             </div>
             <div className="info-item2">
@@ -285,114 +285,117 @@ export const OrderDetails = () => {
             </div>
           </div>
 
-          <div className="customer-info-section">
-            <h3>معلومات العميل</h3>
-            <div className="customer-info-grid">
-              <div className="info-item">
-                {Shipment.customerName}
-                <span className="info-label">
-                  اسم العميل <i className="fas fa-user"></i>{" "}
-                </span>
-              </div>
-              <div className="info-item">
-                {Shipment.customerPhone}
-                <span className="info-label">
-                  {" "}
-                  رقم الهاتق الاضافي <i className="fas fa-phone"></i>{" "}
-                </span>
-              </div>
-              <div className="info-item">
-                {Shipment.customerAdditionalPhone}
-                <span className="info-label">
-                  رقم هاتف اخر <i className="fas fa-phone"></i>{" "}
-                </span>
-              </div>
-              <div className="info-item">
-                {Shipment.customerAddress.governorate +
-                  " - " +
-                  Shipment.customerAddress.city +
-                  " - " +
-                  Shipment.customerAddress.street +
-                  " - " +
-                  Shipment.customerAddress.details}
-                <span className="info-label">
-                  العنوان الكامل <i className="fas fa-map-marker-alt"></i>{" "}
-                </span>
-              </div>
-              <div className="info-item">
-                {Shipment.customerAddress.googleMapAddressLink}
-                <span className="info-label">
-                  رابط العنوان<i className="fas fa-map-marker-alt"></i>
-                </span>
-              </div>
-              <div className="info-item">
-                {Shipment.shipmentDescription}
-                <span className="info-label">
-                  محتوى الطرد <i className="fas fa-box"></i>{" "}
-                </span>
+          {/* Customer Info and Shipment Info in Same Row */}
+          <div className="order-extra-sections">
+            <div className="customer-info-section">
+              <h3 className="d-flex justify-content-center align-items-center">معلومات العميل</h3>
+              <div className="customer-info-grid">
+                <div className="info-item">
+                  {Shipment?.customerName}
+                  <span className="info-label">
+                    اسم العميل <i className="fas fa-user"></i>{" "}
+                  </span>
+                </div>
+                <div className="info-item">
+                  {Shipment?.customerPhone}
+                  <span className="info-label">
+                    {" "}
+                    رقم الهاتق الاضافي <i className="fas fa-phone"></i>{" "}
+                  </span>
+                </div>
+                <div className="info-item">
+                  {Shipment?.customerAdditionalPhone}
+                  <span className="info-label">
+                    رقم هاتف اخر <i className="fas fa-phone"></i>{" "}
+                  </span>
+                </div>
+                <div className="info-item">
+                  {Shipment?.customerAddress.governorate +
+                    " - " +
+                    Shipment?.customerAddress.city +
+                    " - " +
+                    Shipment?.customerAddress.street +
+                    " - " +
+                    Shipment?.customerAddress.details}
+                  <span className="info-label">
+                    العنوان الكامل <i className="fas fa-map-marker-alt"></i>{" "}
+                  </span>
+                </div>
+                <div className="info-item">
+                  {Shipment?.customerAddress.googleMapAddressLink}
+                  <span className="info-label">
+                    رابط العنوان<i className="fas fa-map-marker-alt"></i>
+                  </span>
+                </div>
+                <div className="info-item">
+                  {Shipment?.shipmentDescription}
+                  <span className="info-label">
+                    محتوى الطرد <i className="fas fa-box"></i>{" "}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="order-extra-sections">
             <div className="delivery-section">
-              <h3> معلومات الشحنة</h3>
+              <h3 className="d-flex justify-content-center align-items-center"> معلومات الشحنة</h3>
               <div className="delivery-box">
                 <div className="delivery-row">
-                  <strong>{Shipment.shipmentDescription} </strong>
+                  <strong>{Shipment?.shipmentDescription} </strong>
                   <span>تفاصيل الشحنة</span>
                 </div>
                 <div className="delivery-row">
-                  <strong>{Shipment.shipmentWeight} كجم</strong>
+                  <strong>{Shipment?.shipmentWeight} كجم</strong>
                   <span> وزن الشحنة</span>
                 </div>
                 <div className="delivery-row">
-                  <strong>{Shipment.shipmentLength} سم</strong>
+                  <strong>{Shipment?.shipmentLength} سم</strong>
                   <span> طول الشحنة</span>
                 </div>
                 <div className="delivery-row">
-                  <strong>{Shipment.shipmentWidth} سم</strong>
+                  <strong>{Shipment?.shipmentWidth} سم</strong>
                   <span> عرض الشحنة</span>
                 </div>
                 <div className="delivery-row">
-                  <strong>{Shipment.shipmentHeight} سم</strong>
+                  <strong>{Shipment?.shipmentHeight} سم</strong>
                   <span> ارتفاع الشحنة</span>
                 </div>
                 <div className="delivery-row">
-                  <strong>{Shipment.quantity} قطعة</strong>
+                  <strong>{Shipment?.quantity} قطعة</strong>
                   <span> عدد قطع الشحنة</span>
                 </div>
                 <div className="delivery-row">
-                  <strong>{Shipment.shipmentNotes}</strong>
+                  <strong>{Shipment?.shipmentNotes}</strong>
                   <span> ملاحظات الشحنة</span>
                 </div>
               </div>
             </div>
           </div>
 
+
+          {/* Financial Summary and Status Timeline in Same Row */}
           <div className="order-extra-sections">
             <div className="finance-section">
-              <h3>المعلومات المالية</h3>
+              <h3 className="d-flex justify-content-center align-items-center">المعلومات المالية</h3>
               <div className="finance-box">
                 <div className="finance-row">
-                  <strong>{Shipment.collectionAmount} جنيه</strong>
+                  <strong>{Shipment?.collectionAmount} جنيه</strong>
                   <span>قيمة التحصيل</span>
                 </div>
                 <div className="finance-row">
-                  <strong>{Shipment.shippingCost} جنيه</strong>
+                  <strong>{Shipment?.shippingCost} جنيه</strong>
                   <span>قيمة الشحن</span>
                 </div>
                 <div className="finance-row">
-                  <strong>{Shipment.additionalCost} جنيه</strong>
+                  <strong>{Shipment?.additionalCost} جنيه</strong>
                   <span>رسوم اضافيه</span>
                 </div>
                 <div className="finance-row">
                   <strong>
-                    {Shipment.cashOnDeliveryEnabled && "الدفع عند الاستلام"}
-                    {Shipment.openPackageOnDeliveryEnabled &&
+                    {Shipment?.cashOnDeliveryEnabled && "الدفع عند الاستلام"}
+                    {Shipment?.openPackageOnDeliveryEnabled &&
                       "فتح الطرد عند الاستلام"}
-                    {!Shipment.cashOnDeliveryEnabled &&
-                      !Shipment.openPackageOnDeliveryEnabled &&
+                    {!Shipment?.cashOnDeliveryEnabled &&
+                      !Shipment?.openPackageOnDeliveryEnabled &&
                       "غير محدد"}
                   </strong>
                   <span>طريقة الدفع</span>
@@ -400,12 +403,12 @@ export const OrderDetails = () => {
 
                 <div className="finance-row">
                   <strong>
-                    {Shipment.expressDeliveryEnabled ? "سريع" : "عادي"}
+                    {Shipment?.expressDeliveryEnabled ? "سريع" : "عادي"}
                   </strong>
                   <span>نوع الشحن</span>
                 </div>
                 <div className="finance-row">
-                  <strong>{Shipment.additionalWeightCost} جنيه</strong>
+                  <strong>{Shipment?.additionalWeightCost} جنيه</strong>
                   <span> وزن زائد</span>
                 </div>
 
@@ -420,47 +423,37 @@ export const OrderDetails = () => {
               </div>
             </div>
 
-            {/* <div className="tracking-section">
-            <h3>تتبع مسار الطلب</h3>
-            <ul className="tracking-list">
-              {orderDetails.tracking.map((t, i) => (
-                <li key={i} className={`tracking-item ${i === orderDetails.tracking.length - 1 ? "pending" : "done"}`}>
-                  <div className="status">{t.status}</div>
-                  <div className="location">{t.location}</div>
-                  <div className="time">{t.date} - {t.time}</div>
-                </li>
-              ))}
-            </ul>
-          </div> */}
-          </div>
-          <div className="tracking-section">
-            <h3>تفاصيل حالة الشحنة</h3>
-            <table className="tracking-table">
-              <thead>
-                <tr>
-                  <th>حالة الشحنة</th>
-                  <th>الوقت</th>
-                  <th>ملاحظات</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Shipment.shipmentStatuses &&
-                Shipment.shipmentStatuses.length > 0 ? (
-                  Shipment.shipmentStatuses.map((s, index) => (
-                    <tr key={index}>
-                      <td>{s.status}</td>
-                      <td>{new Date(s.timestamp).toLocaleString("ar-EG")}</td>
-                      <td>{s.notes}</td>
-                    </tr>
-                  ))
-                ) : (
+
+            <div className="tracking-section">
+              <h3 className="d-flex justify-content-center align-items-center">تفاصيل حالة الشحنة</h3>
+              <table className="tracking-table">
+                <thead>
                   <tr>
-                    <td colSpan={3}>لا توجد بيانات لحالة الشحنة</td>
+                    <th>حالة الشحنة</th>
+                    <th>الوقت</th>
+                    <th>ملاحظات</th>
                   </tr>
-                )}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {Shipment?.shipmentStatuses &&
+                  Shipment?.shipmentStatuses.length > 0 ? (
+                    Shipment?.shipmentStatuses.map((s, index) => (
+                      <tr key={index}>
+                        <td>{s.status}</td>
+                        <td>{new Date(s.timestamp).toLocaleString("ar-EG")}</td>
+                        <td>{s.notes}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={3}>لا توجد بيانات لحالة الشحنة</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
+
         </div>
 
         <button onClick={() => navigate(-1)} className="back-button">

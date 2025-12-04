@@ -5,48 +5,47 @@ import BranchesTable from "../components/BranchesTable";
 import AddHubModal from "../components/AddHubModal";
 import './css/BranchesPage.css';
 import { toast } from "sonner";
+import { GetAllHubs } from "../Data/HubsService";
 
 const BranchesPage = () => {
   const [branches, setBranches] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const fetchBranches = async () => {
-  try {
-    const response = await fetch('https://stakeexpress.runasp.net/api/Hubs', {
-      headers: { 'x-client-key': 'web API' }
-    });
+    setLoading(true);
+    try {
+      const response = await GetAllHubs();
+      console.log("response", response.Data);
 
-    if (!response.ok) throw new Error("فشل جلب الفروع");
+      const hubsData = Array.isArray(response.Data) ? response.Data : response.Data.data;
+      if (!Array.isArray(hubsData)) throw new Error("بيانات الفروع غير صالحة");
 
-    const result = await response.json();
+      const formattedBranches = hubsData.map(hub => ({
+        branch: hub.type,
+        data: { name: hub.name, id: hub.id },
+        city: hub.city || "غير محدد",
+        governorate: hub.governorate || "غير محدد",
+        street: hub.street || "",
+        details: hub.details || "",
+        googleMapAddressLink: hub.googleMapAddressLink || "",
+        managerName: hub.managerName || "غير متاح",
+        managerPhone: hub.phoneNumber || "",
+        area: `${hub.areaInSquareMeters || 0} م²`,
+        employees: hub.employeeCount || 0,
+        status: hub.hubStatus === 1 ? "نشط" : "معطل"
+      }));
 
+      setBranches(formattedBranches);
 
-    const hubsData = Array.isArray(result) ? result : result.data;
-    if (!Array.isArray(hubsData)) throw new Error("بيانات الفروع غير صالحة");
-
-    const formattedBranches = hubsData.map(hub => ({
-      branch: hub.type,
-      data: { name: hub.name, id: hub.id },
-      city: hub.city || "غير محدد",
-      governorate: hub.governorate || "غير محدد",
-      street: hub.street || "",
-      details: hub.details || "",
-      googleMapAddressLink: hub.googleMapAddressLink || "",
-      managerName: hub.managerName || "غير متاح",
-      managerPhone: hub.phoneNumber || "",
-      area: `${hub.areaInSquareMeters || 0} م²`,
-      employees: hub.employeeCount || 0,
-      status: hub.hubStatus === 1 ? "نشط" : "معطل"
-    }));
-
-    setBranches(formattedBranches);
-
-  } catch (error) {
-    console.error("Error fetching hubs:", error);
-    toast.error(error.message || "فشل جلب الفروع");
-  }
-};
+    } catch (error) {
+      console.error("Error fetching hubs:", error);
+      toast.error(error.message || "فشل جلب الفروع");
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
   useEffect(() => {
@@ -98,6 +97,7 @@ const BranchesPage = () => {
       <BranchesTable
         branches={filteredBranches}
         onViewDetails={openModal}
+        loading={loading}
       />
 
       <AddHubModal

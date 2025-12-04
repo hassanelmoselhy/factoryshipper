@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { FaBars, FaCube } from "react-icons/fa";
+import { FaBars, FaCube, FaAngleDoubleLeft, FaAngleDoubleRight } from "react-icons/fa";
 import useUserStore from "../Store/UserStore/userStore";
 import api from "../utils/Api";
 import "./css/Sidebar.css";
 
 const Sidebar = ({ title, subtitle, menuItems }) => {
   const [isActive, setIsActive] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const toggleSidebar = () => setIsActive(!isActive);
   const closeSidebar = () => setIsActive(false);
+  const toggleCollapse = () => setIsCollapsed(!isCollapsed);
   const user = useUserStore((state) => state.user);
   const RevokeToken = async () => {
     const url = "https://stakeexpress.runasp.net/api/Accounts/revokeToken";
@@ -55,14 +57,23 @@ const Sidebar = ({ title, subtitle, menuItems }) => {
       </button>
 
       {/* Sidebar */}
-      <aside className={`sidebar ${isActive ? "active" : ""}`}>
+      <aside className={`sidebar ${isActive ? "active" : ""} ${isCollapsed ? "collapsed" : ""}`}>
         <div className="sidebar-header">
-          <div>
-            <h2>{title}</h2>
-            <p>{subtitle}</p>
+          <div className={isCollapsed ? "collapsed-header" : ""}>
+            {!isCollapsed && (
+              <>
+                <h2>{title}</h2>
+                <p>{subtitle}</p>
+              </>
+            )}
           </div>
           <FaCube className="logo-icon" />
         </div>
+
+        {/* Collapse Button - Desktop Only */}
+        <button className="collapse-btn" onClick={toggleCollapse} title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}>
+          {isCollapsed ? <FaAngleDoubleLeft /> : <FaAngleDoubleRight />}
+        </button>
 
         <nav className="sidebar-nav">
           <ul>
@@ -74,8 +85,9 @@ const Sidebar = ({ title, subtitle, menuItems }) => {
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }
+                  title={item.name}
                 >
-                  <span>{item.name}</span>
+                  {!isCollapsed && <span>{item.name}</span>}
                   {item.icon}
                 </NavLink>
               </li>

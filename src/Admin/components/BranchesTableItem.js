@@ -21,7 +21,7 @@ const BranchesTableItem = ({ branch, onViewDetails }) => {
         <span>{branch.data.name}</span>
         <span className="data-id">{branch.data.id}</span>
       </div>
-      <div className="cell-content city">
+      {/* <div className="cell-content city">
         <MapPin /> {branch.city}
       </div>
       <div className="cell-content governorate">{branch.governorate}</div>
@@ -31,8 +31,8 @@ const BranchesTableItem = ({ branch, onViewDetails }) => {
         <a href={branch.googleMapAddressLink} target="_blank" rel="noreferrer">
           رابط الخريطة
         </a>
-      </div>
-      <div className="cell-content manager-name">{branch.managerName}</div>
+      </div> */}
+      <div className="cell-content manager-name">{branch.managerName.trim()?branch.managerName.trim():"لم يحدد بعد"}</div>
       <div className="cell-content manager-phone">
         <Phone /> {branch.managerPhone}
       </div>

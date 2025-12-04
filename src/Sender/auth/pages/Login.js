@@ -8,6 +8,7 @@ import { useLocation } from "react-router-dom";
 
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { login, RefreshToken } from "../../Data/AuthenticationService";
+
 const Login = () => {
   const SetUser = useUserStore((state) => state.SetUser);
   const [showPassword, setShowPassword] = useState(false);
@@ -42,6 +43,27 @@ const Login = () => {
     document.body.classList.remove("login-page");
   };
 }, []);
+
+  // Try to refresh token on mount - if successful, auto-login and redirect
+  useEffect(() => {
+    const tryRefreshToken = async () => {
+      try {
+        const response = await RefreshToken();
+        if (response.Success && response.Data) {
+          console.log("🚀 Auto-login successful via refresh token:", response.Data);
+          SetUser(response.Data);
+          shceduleRefreshToken(response.Data.expiresOn, response.Data.refreshTokenExpiration);
+          navigate("/home");
+          toast.success("Welcome back, " + response.Data?.firstName);
+        }
+      } catch (error) {
+        // If refresh fails, user stays on login page
+        console.log("No valid refresh token, user needs to login");
+      }
+    };
+
+    tryRefreshToken();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -130,7 +152,6 @@ const Login = () => {
     setTimeout(RefreshToken, expirems);
   };
 
-
   return (
     <>
       <div>
@@ -203,7 +224,7 @@ const Login = () => {
                   {loading ? "Signing In..." : "Sign In & Continue"}
                 </button>
                 <p className="login-footer-text">
-                  Are you shipper?,Don’t have an account?{" "}
+                  Are you shipper?,Don't have an account?{" "}
                   <a href="/signup">Sign up here</a>
                 </p>
               </form>

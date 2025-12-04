@@ -20,7 +20,7 @@ import useUserStore from "./Store/UserStore/userStore";
 import "./App.css";
 import { RefreshToken } from "./Sender/Data/AuthenticationService";
 import ConfirmChangedEmail from "./Sender/pages/ConfirmChangedEmail";
-
+import Login from "./Sender/auth/pages/Login";
 // Lazy imports (pages & big components)
 const Order = lazy(() => import("./Sender/pages/Order"));
 const Actions = lazy(() => import("./Sender/pages/Actions"));
@@ -28,7 +28,7 @@ const Wallet = lazy(() => import("./Sender/pages/Wallet"));
 const Home = lazy(() => import("./Sender/pages/Home"));
 const TopBar = lazy(() => import("./Sender/components/Topbar"));
 const Signup = lazy(() => import("./Sender/auth/pages/Signup"));
-const Login = lazy(() => import("./Sender/auth/pages/Login"));
+// const Login = lazy(() => import("./Sender/auth/pages/Login"));
 const PickupOrder = lazy(() => import("./Sender/pages/PickupOrder"));
 const ReturnPage = lazy(() => import("./Sender/pages/ReturnPage"));
 const Request = lazy(() => import("./Sender/pages/Request"));
@@ -93,7 +93,9 @@ const SessionRestorer = () => {
           if (response.Success && response.Data) {
             console.log("Session restored successfully");
             SetUser(response.Data);
-            navigate("/home");
+            if (window.location.pathname === "/") {
+              navigate("/home");
+            }
           }
         } catch (error) {
           console.log("Failed to restore session", error);
@@ -120,7 +122,7 @@ const App = () => {
       />
 
       <Router>
-        {/* <SessionRestorer /> */}
+        <SessionRestorer />
         {/* ضع Suspense حول Routes أو حول أجزاء معينة لتتحكم بالـ fallback */}
         <Suspense >
           <Routes>

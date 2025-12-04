@@ -1,93 +1,372 @@
-import React from "react";
-import { User,SquarePen,MapPin,Search   } from "lucide-react";
+import React, { useState, useMemo } from "react";
+import { User, Search, CheckCircle, Clock, Package, Zap, Truck, Phone, MapPin, Box } from "lucide-react";
 import './css/WarehouseList.css';
 
-const orders = [
+const shipments = [
   {
     id: 1,
-    orderNumber: 'ORD-000842',
+    shipmentId: 'SHP-000842',
+    customerName: 'أحمد محمد علي',
+    customerPhone: '01012345678',
+    governorate: 'القاهرة',
+    city: 'المعادي',
+    street: 'شارع 9',
+    addressDetails: 'عمارة 5، الدور 3، شقة 12',
+    content: 'حذاء رياضي',
+    deliveryType: 'express',
     status: 'ready',
-    product: 'حذاء رياضي',
-    weight: '2.4 كجم',
-    sku: 'MERCH-001',
-    location: 'A-12',
     arrived: '2025/01/15',
   },
   {
     id: 2,
-    orderNumber: 'ORD-000843',
+    shipmentId: 'SHP-000843',
+    customerName: 'فاطمة حسن',
+    customerPhone: '01198765432',
+    governorate: 'الجيزة',
+    city: '6 أكتوبر',
+    street: 'المحور المركزي',
+    addressDetails: 'الحي الأول، فيلا 12',
+    content: 'كتب وقرطاسية',
+    deliveryType: 'normal',
     status: 'waiting',
-    product: 'كتب وقرطاسية',
-    weight: '1.2 كجم',
-    sku: 'MERCH-002',
-    location: 'B-05',
+    arrived: '2025/01/15',
+  },
+  {
+    id: 3,
+    shipmentId: 'SHP-000844',
+    customerName: 'محمود سعيد',
+    customerPhone: '01234567890',
+    governorate: 'الإسكندرية',
+    city: 'سموحة',
+    street: 'شارع فوزي معاذ',
+    addressDetails: 'بجوار كوبري الإبراهيمية',
+    content: 'أجهزة إلكترونية',
+    deliveryType: 'express',
+    status: 'ready',
+    arrived: '2025/01/14',
+  },
+  {
+    id: 4,
+    shipmentId: 'SHP-000845',
+    customerName: 'سارة أحمد',
+    customerPhone: '01555555555',
+    governorate: 'القاهرة',
+    city: 'مدينة نصر',
+    street: 'شارع عباس العقاد',
+    addressDetails: 'أمام وندر لاند، برج النخيل',
+    content: 'ملابس وإكسسوارات',
+    deliveryType: 'normal',
+    status: 'ready',
     arrived: '2025/01/15',
   },
 ];
 
 export default function WarehouseList() {
+  const [selectedItems, setSelectedItems] = useState(new Set());
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [deliveryFilter, setDeliveryFilter] = useState('all');
+
+  // Toggle individual item selection
+  const toggleSelection = (id) => {
+    const newSelected = new Set(selectedItems);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedItems(newSelected);
+  };
+
+  // Toggle all items selection
+  const toggleSelectAll = () => {
+    if (selectedItems.size === filteredShipments.length) {
+      setSelectedItems(new Set());
+    } else {
+      setSelectedItems(new Set(filteredShipments.map(s => s.id)));
+    }
+  };
+
+  // Handle shipment click to view details
+  const handleShipmentClick = (shipmentId) => {
+    console.log('View shipment details:', shipmentId);
+    // TODO: Navigate to shipment details or open modal
+    // navigate(`/hanger/shipment/${shipmentId}`);
+  };
+
+  // Filter shipments
+  const filteredShipments = useMemo(() => {
+    return shipments.filter(shipment => {
+      const matchesSearch = 
+        shipment.shipmentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        shipment.customerName.includes(searchTerm) ||
+        shipment.customerPhone.includes(searchTerm) ||
+        shipment.content.includes(searchTerm);
+      
+      const matchesStatus = 
+        statusFilter === 'all' || shipment.status === statusFilter;
+
+      const matchesDelivery = 
+        deliveryFilter === 'all' || shipment.deliveryType === deliveryFilter;
+
+      return matchesSearch && matchesStatus && matchesDelivery;
+    });
+  }, [searchTerm, statusFilter, deliveryFilter]);
+
+  // Calculate stats
+  const stats = useMemo(() => ({
+    total: shipments.length,
+    ready: shipments.filter(s => s.status === 'ready').length,
+    waiting: shipments.filter(s => s.status === 'waiting').length,
+    express: shipments.filter(s => s.deliveryType === 'express').length,
+  }), []);
+
   return (
-    <div className="warehouse-wrapper p-4" >
-      <div className="warehouse-card p-4">
-        <div className="d-flex align-items-center justify-content-between mb-3">
-          <h4 className="m-0">المخزون</h4>
-          <button className="assign-btn btn btn-secondary d-flex align-items-center gap-2">
-            <User className="h-4 w-4 ml-2" aria-hidden="true"/>   تعيين لمندوب (0)
+    <div className="warehouse-wrapper-improved">
+      <div className="warehouse-container">
+        
+        {/* Header */}
+        <div className="warehouse-header">
+          <div className="header-content">
+            <h2 className="page-title">الشحنات</h2>
+            <p className="page-subtitle">إدارة ومتابعة الشحنات في المخزن</p>
+          </div>
+          <button className="btn-assign">
+            <User size={18} />
+            تعيين لمندوب ({selectedItems.size})
           </button>
         </div>
 
-        <div className="filters d-flex align-items-center gap-3 mb-4 flex-column flex-md-row">
-          
-          
-
-          <div className="search-wrapper flex-grow-1 position-relative">
-            <input className="form-control search-input" placeholder="ابحث بالباركود أو رقم الطلب أو المحتوى" />
-            <Search className="search-icon" />
+        {/* Stats Cards */}
+        <div className="stats-grid">
+          <div className="stat-card stat-primary">
+            <div className="stat-icon-wrapper">
+              <Package size={24} />
+            </div>
+            <div className="stat-content">
+              <div className="stat-value">{stats.total}</div>
+              <div className="stat-label">إجمالي الشحنات</div>
+            </div>
           </div>
           
-          <select className="form-select w-auto">
-            <option>جميع الحالات</option>
-            <option>جاهز</option>
-            <option>قيد الانتظار</option>
-          </select>
-        </div>
-
-        <div className="orders-list">
-          {orders.map((o) => (
-            <div key={o.id} className="order-item d-flex flex-column flex-md-row justify-content-between align-items-center p-3 mb-3 rounded rounded-md-lg">
-              
-
-              <div className="order-right d-flex align-items-center justify-content-between p-3 w-100 w-md-60">
-                <div className="actions d-flex align-items-center gap-3">
-                  
-                  <input type="checkbox" className="form-check-input" />
-                </div>
-                <div className="product-info text-end">
-                  <div className="d-flex align-items-center gap-2">
-                    <span className={`status-badge ${o.status === 'ready' ? 'badge-ready' : 'badge-waiting'}`}>{o.status === 'ready' ? 'جاهز' : 'قيد الانتظار'}</span>
-                    <strong className="order-number">{o.orderNumber}</strong>
-                  </div>
-                  <div className="product-name text-muted mt-2">{o.product} • {o.weight}</div>
-                  <div className="sku text-muted small mt-1">{o.sku}</div>
-                </div>
-
-               
-                
-              </div>
-
-              <div className="order-left d-flex flex-column align-items-end p-3 me-md-3 w-100 w-md-40">
-                <div className="location d-flex align-items-center mb-2">
-                  <MapPin className="me-2 text-muted"/>  الموقع :{o.location}
-                </div>
-                <div className="arrived text-muted">وصل: {o.arrived}</div>
-                <div className="mt-3">
-                  <button className="btn  p-2 d-inline-flex align-items-center edit-btn"><SquarePen  className="ms-2" /> تعديل</button>
-                </div>
-              </div>
-
+          <div className="stat-card stat-success">
+            <div className="stat-icon-wrapper">
+              <CheckCircle size={24} />
             </div>
-          ))}
+            <div className="stat-content">
+              <div className="stat-value">{stats.ready}</div>
+              <div className="stat-label">جاهز للشحن</div>
+            </div>
+          </div>
+          
+          <div className="stat-card stat-warning">
+            <div className="stat-icon-wrapper">
+              <Clock size={24} />
+            </div>
+            <div className="stat-content">
+              <div className="stat-value">{stats.waiting}</div>
+              <div className="stat-label">قيد الانتظار</div>
+            </div>
+          </div>
+          
+          <div className="stat-card stat-info">
+            <div className="stat-icon-wrapper">
+              <Zap size={24} />
+            </div>
+            <div className="stat-content">
+              <div className="stat-value">{stats.express}</div>
+              <div className="stat-label">توصيل سريع</div>
+            </div>
+          </div>
         </div>
+
+        {/* Filters */}
+        <div className="filters-section">
+          <div className="search-wrapper">
+            <Search className="search-icon" size={20} />
+            <input 
+              className="search-input" 
+              placeholder="ابحث برقم الشحنة، اسم العميل، رقم الهاتف أو المحتوى"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          
+          <select 
+            className="filter-select"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="all">جميع الحالات</option>
+            <option value="ready">جاهز</option>
+            <option value="waiting">قيد الانتظار</option>
+          </select>
+
+          <select 
+            className="filter-select"
+            value={deliveryFilter}
+            onChange={(e) => setDeliveryFilter(e.target.value)}
+          >
+            <option value="all">جميع أنواع التوصيل</option>
+            <option value="express">توصيل سريع</option>
+            <option value="normal">توصيل عادي</option>
+          </select>
+
+          {selectedItems.size > 0 && (
+            <div className="selection-info">
+              تم تحديد {selectedItems.size} شحنة
+            </div>
+          )}
+        </div>
+
+        {/* Bulk Actions Bar */}
+        {selectedItems.size > 0 && (
+          <div className="bulk-actions-bar">
+            <span className="bulk-count">تم تحديد {selectedItems.size} من {filteredShipments.length}</span>
+            <div className="bulk-actions">
+              <button className="bulk-btn bulk-btn-primary">
+                <User size={16} />
+                تعيين لمندوب
+              </button>
+              <button className="bulk-btn bulk-btn-secondary">
+                <Truck size={16} />
+                تغيير نوع التوصيل
+              </button>
+              <button 
+                className="bulk-btn bulk-btn-ghost"
+                onClick={() => setSelectedItems(new Set())}
+              >
+                إلغاء التحديد
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Shipments Table */}
+        <div className="table-container">
+          <div className="table-wrapper">
+            <table className="shipments-table">
+              <thead>
+                <tr>
+                  <th className="th-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={selectedItems.size === filteredShipments.length && filteredShipments.length > 0}
+                      onChange={toggleSelectAll}
+                      className="checkbox-input"
+                    />
+                  </th>
+                  <th className="th-shipment-id">رقم الشحنة</th>
+                  <th className="th-customer">اسم العميل</th>
+                  <th className="th-phone">رقم الهاتف</th>
+                  <th className="th-address">العنوان الكامل</th>
+                  <th className="th-content">محتوى الشحنة</th>
+                  <th className="th-delivery">نوع التوصيل</th>
+                  <th className="th-status">الحالة</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredShipments.length === 0 ? (
+                  <tr>
+                    <td colSpan="8" className="empty-row">
+                      <div className="empty-state-table">
+                        <Package size={48} className="empty-icon" />
+                        <p className="empty-title">لا توجد شحنات</p>
+                        <p className="empty-subtitle">جرب تغيير معايير البحث أو الفلتر</p>
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  filteredShipments.map((shipment) => (
+                    <tr 
+                      key={shipment.id}
+                      className={`table-row ${selectedItems.has(shipment.id) ? 'selected' : ''}`}
+                    >
+                      <td className="td-checkbox" onClick={(e) => e.stopPropagation()}>
+                        <input
+                          type="checkbox"
+                          checked={selectedItems.has(shipment.id)}
+                          onChange={() => toggleSelection(shipment.id)}
+                          className="checkbox-input"
+                          aria-label={`تحديد ${shipment.shipmentId}`}
+                        />
+                      </td>
+                      <td 
+                        className="td-shipment-id"
+                        onClick={() => handleShipmentClick(shipment.shipmentId)}
+                      >
+                        <span className="shipment-id-link">
+                          <Box size={16} />
+                          {shipment.shipmentId}
+                        </span>
+                      </td>
+                      <td className="td-customer">
+                        <div className="customer-info">
+                          <span className="customer-name">{shipment.customerName}</span>
+                        </div>
+                      </td>
+                      <td className="td-phone">
+                        <div className="phone-info">
+                          <Phone size={14} />
+                          <span className="phone-number">{shipment.customerPhone}</span>
+                        </div>
+                      </td>
+                      <td className="td-address">
+                        <div className="address-info">
+                          <MapPin size={14} className="address-icon" />
+                          <div className="address-text">
+                            <span className="address-main">{shipment.governorate} - {shipment.city}</span>
+                            <span className="address-details">{shipment.street}، {shipment.addressDetails}</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="td-content">
+                        <span className="content-text">{shipment.content}</span>
+                      </td>
+                      <td className="td-delivery">
+                        <span className={`delivery-badge delivery-${shipment.deliveryType}`}>
+                          {shipment.deliveryType === 'express' ? (
+                            <>
+                              <Zap size={14} />
+                              توصيل سريع
+                            </>
+                          ) : (
+                            <>
+                              <Truck size={14} />
+                              توصيل عادي
+                            </>
+                          )}
+                        </span>
+                      </td>
+                      <td className="td-status">
+                        <span className={`status-badge status-${shipment.status}`}>
+                          {shipment.status === 'ready' ? (
+                            <>
+                              <CheckCircle size={14} />
+                              جاهز
+                            </>
+                          ) : (
+                            <>
+                              <Clock size={14} />
+                              قيد الانتظار
+                            </>
+                          )}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Results Summary */}
+        {filteredShipments.length > 0 && (
+          <div className="results-summary">
+            عرض {filteredShipments.length} من {shipments.length} شحنة
+          </div>
+        )}
       </div>
     </div>
   );

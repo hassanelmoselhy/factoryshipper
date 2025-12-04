@@ -7,33 +7,33 @@ export default function OrderEditSidebar({ open, onClose, order = {}, onSave }) 
   const [errors, setErrors] = useState({});
   const drawerRef = useRef(null);
 
-  useEffect(() => {
-    // Clone order to local form state
+  // useEffect(() => {
+  //   // Clone order to local form state
     
-    setForm({
-      customerName: order.customerName ?? "",
-      customerPhone: order.customerPhone ?? "",
-      customerEmail: order.customerEmail ?? "",
-      street: order.customerAddress.street ?? "",
-      city: order.customerAddress.city ?? "",
-      governorate: order.customerAddress.governorate ?? "",
-      addressDetails: order.customerAddress.details ?? "",
-      shipmentDescription: order.shipmentDescription ?? "",
-      shipmentWeight: order.shipmentWeight ?? "",
-      shipmentLength: order.shipmentLength ?? "",
-      shipmentWidth: order.shipmentWidth ?? "",
-      shipmentHeight: order.shipmentHeight ?? "",
-      quantity: order.quantity ?? 1,
-      shipmentNotes: order.shipmentNotes ?? "",
-      cashOnDeliveryEnabled: !!order.cashOnDeliveryEnabled,
-      openPackageOnDeliveryEnabled: !!order.openPackageOnDeliveryEnabled,
-      expressDeliveryEnabled: !!order.expressDeliveryEnabled,
-      collectionAmount: order.collectionAmount ?? "",
+  //   setForm({
+  //     customerName: order.customerName ?? "",
+  //     customerPhone: order.customerPhone ?? "",
+  //     customerEmail: order.customerEmail ?? "",
+  //     street: order?.customerAddress?.street ?? "",
+  //     city: order?.customerAddress?.city ?? "",
+  //     governorate: order?.customerAddress?.governorate ?? "",
+  //     addressDetails: order?.customerAddress?.details ?? "",
+  //     shipmentDescription: order.shipmentDescription ?? "",
+  //     shipmentWeight: order.shipmentWeight ?? "",
+  //     shipmentLength: order.shipmentLength ?? "",
+  //     shipmentWidth: order.shipmentWidth ?? "",
+  //     shipmentHeight: order.shipmentHeight ?? "",
+  //     quantity: order.quantity ?? 1,
+  //     shipmentNotes: order.shipmentNotes ?? "",
+  //     cashOnDeliveryEnabled: !!order.cashOnDeliveryEnabled,
+  //     openPackageOnDeliveryEnabled: !!order.openPackageOnDeliveryEnabled,
+  //     expressDeliveryEnabled: !!order.expressDeliveryEnabled,
+  //     collectionAmount: order.collectionAmount ?? "",
       
-    });
-    setDirty(false);
-    setErrors({});
-  }, [order, open]);
+  //   });
+  //   setDirty(false);
+  //   setErrors({});
+  // }, [order, open]);
 
   useEffect(() => {
     function handleKey(e) {

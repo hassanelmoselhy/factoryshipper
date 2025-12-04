@@ -81,7 +81,7 @@ const Orders2 = ({ initialOrders = [] }) => {
     let statusFromHome = useLocation().state;
   // pagination
   const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize, setPageSize] = useState(6);
+  const [pageSize, setPageSize] = useState(9);
 
 
   // fetch shipments when filters/search/pagination change
