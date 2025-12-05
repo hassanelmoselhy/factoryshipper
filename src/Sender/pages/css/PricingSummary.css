@@ -1,0 +1,127 @@
+/* Pricing Summary Card - Enhanced Clean Layout */
+.pricing-summary-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 20px;
+  margin-top: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+.pricing-summary-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.pricing-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.pricing-row:last-of-type:not(.pricing-total) {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.pricing-label {
+  color: #6b7280;
+  font-weight: 500;
+  font-size: 0.9rem;
+  order: 2;
+  text-align: right;
+}
+
+.pricing-value {
+  color: #1f2937;
+  font-weight: 600;
+  font-size: 0.95rem;
+  order: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  direction: ltr;
+}
+
+.value-number {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.value-currency {
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.pricing-row.pricing-total {
+  border-top: 2px solid #e5e7eb;
+  border-bottom: none;
+  padding-top: 16px;
+  padding-bottom: 0;
+  margin-top: 8px;
+}
+
+.pricing-label-total {
+  color: #111827;
+  font-weight: 700;
+  font-size: 1.05rem;
+  order: 2;
+  text-align: right;
+}
+
+.pricing-value-total {
+  color: #111827;
+  font-weight: 700;
+  font-size: 1.1rem;
+  order: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  direction: ltr;
+}
+
+.pricing-value-total .value-number {
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.pricing-value-total .value-currency {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .pricing-summary-card {
+    padding: 16px;
+  }
+  
+  .pricing-row {
+    padding: 10px 0;
+  }
+  
+  .pricing-label,
+  .pricing-value {
+    font-size: 0.85rem;
+  }
+  
+  .value-number {
+    font-size: 0.95rem;
+  }
+  
+  .pricing-label-total {
+    font-size: 1rem;
+  }
+  
+  .pricing-value-total {
+    font-size: 1.05rem;
+  }
+  
+  .pricing-value-total .value-number {
+    font-size: 1.1rem;
+  }
+}
+

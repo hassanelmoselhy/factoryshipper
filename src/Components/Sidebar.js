@@ -26,6 +26,8 @@ const Sidebar = ({ title, subtitle, menuItems }) => {
 
       console.log("success", response.data);
       sessionStorage.clear();
+      // Prevent session restore after logout
+      sessionStorage.setItem('sessionRestoreAttempted', 'true');
       return response.data;
     } catch (err) {
       if (err.response) {
@@ -58,8 +60,13 @@ const Sidebar = ({ title, subtitle, menuItems }) => {
 
       {/* Sidebar */}
       <aside className={`sidebar ${isActive ? "active" : ""} ${isCollapsed ? "collapsed" : ""}`}>
+        {/* Collapse Button - Desktop Only - Positioned on the left */}
+        <button className="collapse-btn" onClick={toggleCollapse} title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}>
+          {isCollapsed ? <FaAngleDoubleLeft /> : <FaAngleDoubleRight />}
+        </button>
+
         <div className="sidebar-header">
-          <div className={isCollapsed ? "collapsed-header" : ""}>
+          <div className={`header-content ${isCollapsed ? "collapsed-header" : ""}`}>
             {!isCollapsed && (
               <>
                 <h2>{title}</h2>
@@ -70,13 +77,8 @@ const Sidebar = ({ title, subtitle, menuItems }) => {
           <FaCube className="logo-icon" />
         </div>
 
-        {/* Collapse Button - Desktop Only */}
-        <button className="collapse-btn" onClick={toggleCollapse} title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}>
-          {isCollapsed ? <FaAngleDoubleLeft /> : <FaAngleDoubleRight />}
-        </button>
-
         <nav className="sidebar-nav">
-          <ul>
+          <ul className="d-flex flex-column align-items-start">
             {menuItems?.map((item, index) => (
               <li key={item.path ?? item.id ?? index}>
                 <NavLink

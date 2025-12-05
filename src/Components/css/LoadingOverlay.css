@@ -1,54 +1,269 @@
 .loading-overlay {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100vh;
-background-color: #ffffff;
-z-index: 9999999;
-
-
-display: flex;
-justify-content: center;
-align-items: center;
-
-
-transform: translateX(100%);
-transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-will-change: transform;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: #ffffff;
+  z-index: 9999999;
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  
+  /* Smooth entrance/exit */
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.95);
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              visibility 0.4s;
+  will-change: opacity, transform;
 }
 
-
 .loading-overlay.active {
-transform: translateX(0);
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
 }
 
 .loading-content {
-display: flex;
-flex-direction: row;
-align-items: center;
-gap: 15px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  z-index: 1;
+  animation: contentFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.2s backwards;
+}
+
+@keyframes contentFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Logo wrapper with spinner */
+.loading-logo-wrapper {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .loading-logo {
-width: 50px;
-height: 50px;
-object-fit: contain;
-animation: pulse 1.5s infinite ease-in-out;
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  position: relative;
+  z-index: 2;
+  animation: logoFloat 3s ease-in-out infinite;
+  filter: drop-shadow(0 4px 16px rgba(102, 126, 234, 0.25));
 }
 
-
-.loading-text {
-font-size: 28px;
-font-weight: 800;
-color: #1a1a1a;
-letter-spacing: -0.5px;
-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+@keyframes logoFloat {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-12px) scale(1.08);
+  }
 }
 
-/* Animation Keyframes */
-@keyframes pulse {
-0% { transform: scale(1); opacity: 1; }
-50% { transform: scale(1.05); opacity: 0.8; }
-100% { transform: scale(1); opacity: 1; }
+/* Circular spinner behind logo */
+.loading-spinner {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border: 3px solid rgba(102, 126, 234, 0.1);
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 1.2s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Text wrapper */
+.loading-text-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Brand name with letter animation */
+.loading-brand-name {
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  display: flex;
+  gap: 2px;
+}
+
+.loading-letter {
+  display: inline-block;
+  color: #1a1a1a;
+  opacity: 0;
+  transform: translateY(20px) scale(0.8);
+  animation: letterReveal 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes letterReveal {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Add a subtle ambient pulse to all letters after they appear */
+.loading-letter {
+  animation: letterReveal 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards,
+             letterPulse 2s ease-in-out 0.6s infinite;
+}
+
+@keyframes letterPulse {
+  0%, 100% {
+    color: #1a1a1a;
+  }
+  50% {
+    color: #667eea;
+  }
+}
+
+/* Loading dots animation */
+.loading-dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  height: 20px;
+  margin-top: 4px;
+}
+
+.loading-dots .dot {
+  width: 8px;
+  height: 8px;
+  background-color: #667eea;
+  border-radius: 50%;
+  animation: dotBounce 1.4s ease-in-out infinite;
+  box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
+}
+
+.loading-dots .dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.loading-dots .dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loading-dots .dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes dotBounce {
+  0%, 60%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.7;
+  }
+  30% {
+    transform: translateY(-12px) scale(1.2);
+    opacity: 1;
+  }
+}
+
+/* Progress bar at bottom */
+.loading-progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: rgba(102, 126, 234, 0.1);
+  overflow: hidden;
+}
+
+.loading-progress-fill {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(102, 126, 234, 0.3),
+    rgba(102, 126, 234, 0.8),
+    rgba(102, 126, 234, 0.3)
+  );
+  background-size: 200% 100%;
+  animation: progressSlide 1.5s ease-in-out infinite;
+  width: 50%;
+  box-shadow: 0 0 10px rgba(102, 126, 234, 0.4);
+}
+
+@keyframes progressSlide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(300%);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .loading-logo-wrapper {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .loading-logo {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .loading-spinner {
+    width: 65px;
+    height: 65px;
+  }
+  
+  .loading-brand-name {
+    font-size: 28px;
+  }
+  
+  .loading-dots .dot {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .loading-overlay,
+  .loading-logo,
+  .loading-spinner,
+  .loading-letter,
+  .loading-dots .dot,
+  .loading-progress-fill {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .loading-overlay.active {
+    opacity: 1;
+    transform: none;
+  }
+  
+  .loading-letter {
+    opacity: 1;
+    transform: none;
+    color: #1a1a1a;
+  }
 }

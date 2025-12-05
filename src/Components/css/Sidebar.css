@@ -37,101 +37,125 @@ display: none;
 }
 
 .sidebar-header {
-display: flex;
-align-items: center;
-gap: 5px;
-margin-bottom: 30px;
-flex-direction: row-reverse;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 30px;
+  padding: 5px 10px;
+  position: relative;
 }
 
 .sidebar-header .logo-icon {
-font-size: 28px;
-color: #000;
+  font-size: 28px;
+  color: #000;
+  order: 3; /* Logo on the far right */
+}
+
+.sidebar-header .header-content {
+  text-align: right;
+  flex: 1;
+  order: 2; /* Content in the middle */
 }
 
 .sidebar-header h2 {
-font-size: 16px;
-font-weight: bold;
-margin: 0;
-color: #000;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+  color: #000;
 }
 
 .sidebar-header p {
-font-size: 12px;
-color: #666;
-margin: 0;
+  font-size: 12px;
+  color: #666;
+  margin: 0;
 }
 
 .sidebar-nav ul {
-list-style: none;
-padding: 0;
-margin: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Align items to the right */
 }
 
 .sidebar-nav li {
-margin-bottom: 10px;
+  margin-bottom: 10px;
+  width: 100%; /* Full width for proper alignment */
+  display: flex;
+  justify-content: flex-end; /* Align to the right */
 }
 
 .sidebar .nav-link {
-display: flex;
-align-items: center;
-gap: 10px;
-text-decoration: none;
-font-size: 14px;
-color: #000;
-padding: 10px 15px;
-border-radius: 8px;
-flex-direction: row-reverse;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  font-size: 14px;
+  color: #000;
+  padding: 10px 15px;
+  border-radius: 8px;
+  flex-direction: row-reverse;
+  width: 100%;
+  justify-content: flex-start; /* Content starts from right */
 }
 
 .sidebar .nav-link:hover {
-background: #f4f4f4;
+  background: #f4f4f4;
 }
 
 .sidebar .nav-link.active {
-background: #000;
-color: #fff;
+  background: #000;
+  color: #fff;
 }
 
 .sidebar .nav-link.active svg {
-color: #fff;
+  color: #fff;
 }
 
 .sidebar .nav-link svg {
-font-size: 16px;
-color: #000;
+  font-size: 16px;
+  color: #000;
 }
 
 /* Toggle button - Hidden on mobile since we have bottom nav */
 .toggle-btn {
-display: none;
+  display: none;
 }
 
-/* Collapse button - Desktop only */
+/* Collapse button - Positioned on the left border */
 .collapse-btn {
-position: absolute;
-left: 5px;
-top: 50%;
-transform: translateY(-50%);
-background: #000;
-color: #fff;
-border: none;
-padding: 8px 10px;
-font-size: 18px;
-border-radius: 6px;
-cursor: pointer;
-z-index: 10;
-transition: all 0.3s ease;
-display: block;
+  position: absolute;
+  left: -14px; /* Half outside the sidebar */
+  top: 50%;
+  transform: translateY(-50%);
+  background: #ffffff;
+  color: #000;
+  border: 1px solid #e0e0e0;
+  padding: 6px 4px;
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 48px;
+  z-index: 10;
+  box-shadow: -2px 0 6px rgba(0, 0, 0, 0.08);
 }
 
 .collapse-btn:hover {
-background: #333;
+  background: #f8f8f8;
+  border-color: #ccc;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.12);
 }
 
 .sidebar.collapsed .collapse-btn {
-left: 50%;
-transform: translate(-50%, -50%);
+  left: -14px;
+  transform: translateY(-50%);
 }
 
 /* Overlay */
