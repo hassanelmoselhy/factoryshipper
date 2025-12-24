@@ -194,7 +194,7 @@ export const OrderDetails = () => {
         loading={loading}
       />
 
-      <TopBar />
+  
 
       <EditOrderModal
         open={showEditOrder}
@@ -258,13 +258,13 @@ export const OrderDetails = () => {
           <h3 className="d-flex justify-content-center align-items-center">تفاصيل الطلب والعميل</h3>
 
           <div className="order-info-grid">
-            <div className="info-item1">
+            <div className="info-item">
               <span className="info-label">حالة الطلب</span>
               <div className={`status-badge ${Shipment?.status} text-black`}>
                 {Shipment?.shipmentStatuses[0].status}
               </div>
             </div>
-            <div className="info-item2">
+            <div className="info-item">
               {/* 1 */}
               <div className="order-info">
                 <span className="info-label">رقم الطلب</span>
@@ -272,6 +272,7 @@ export const OrderDetails = () => {
                   <i className="fa-regular fa-copy"></i> {orderId}
                 </div>
               </div>
+            </div>
               {/* 2 */}
               <div className="barcode-display">
                 <span className="info-label">الباركود</span>
@@ -282,7 +283,6 @@ export const OrderDetails = () => {
                   displayValue={true}
                 />
               </div>
-            </div>
           </div>
 
           {/* Customer Info and Shipment Info in Same Row */}

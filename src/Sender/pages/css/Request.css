@@ -76,23 +76,79 @@
 }
 
 /* Status Badge */
+/* Modern Status Badges */
 .request-page .status-badge {
-  padding: 6px 12px;
+  padding: 6px 14px;
+  border-radius: 99px;
   font-size: 13px;
-  border-radius: 8px;
   font-weight: 600;
-  color: white;
-  background: #2563eb;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+  color: #fff;
 }
 
-.request-page .status-badge.return-requested {
-  background: #f59e0b;
+.request-page .status-badge.status-new,
+.request-page .status-badge.status-pending,
+.request-page .status-badge.status-waitingforpickup {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  border-color: rgba(37, 99, 235, 0.2);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
 }
-.request-page .status-badge.completed {
-  background: #10b981;
+
+.request-page .status-badge.status-completed,
+.request-page .status-badge.status-success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-color: rgba(5, 150, 105, 0.2);
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.15);
 }
-.request-page .status-badge.pending {
-  background: #3b82f6;
+
+.request-page .status-badge.status-cancelled,
+.request-page .status-badge.status-failed {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  border-color: rgba(220, 38, 38, 0.2);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
+}
+
+.request-page .status-badge.status-inprogress {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  border-color: rgba(217, 119, 6, 0.2);
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.15);
+}
+
+.request-page .status-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Specific Pill Badges for COD and Fast Shipping */
+.request-page .pill-badge {
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-size: 12.5px;
+  font-weight: 600;
+  display: inline-flex;
+  border: 1px solid transparent;
+}
+
+.request-page .cod-badge {
+  background: #f8fafc;
+  color: #475569;
+  border-color: #e2e8f0;
+}
+
+.request-page .status-success {
+  background: #ecfdf5;
+  color: #059669;
+  border-color: #d1fae5;
+}
+
+.request-page .status-pending {
+  background: #eff6ff;
+  color: #2563eb;
+  border-color: #dbeafe;
 }
 
 /* Info Bar */
@@ -202,47 +258,57 @@
 
 /* Orders Table */
 .request-page .orders-list .orders-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
   margin-top: 10px;
-  overflow-x: auto;
 }
 
-.request-page .table-head,
-.request-page .table-row {
-  display: grid;
-  grid-template-columns: 140px 1fr 90px 90px 120px 80px 150px;
-  padding: 12px 10px;
-  align-items: center;
-}
-
-.request-page .table-head {
-  border-bottom: 1px solid var(--border);
+.request-page .orders-table th {
+  text-align: center;
+  padding: 16px 12px;
+  background: #f8fafc;
   color: var(--muted);
-  font-size: 13px;
-  background: #f9fafb;
   font-weight: 600;
+  border-bottom: 2px solid var(--border);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.request-page .table-row {
+.request-page .orders-table td {
+  text-align: center;
+  padding: 16px 12px;
   border-bottom: 1px solid var(--border);
   font-size: 14px;
+  vertical-align: middle;
+  color: var(--accent);
 }
 
-.request-page .table-row:hover {
-  background: #f1f5f9;
+.request-page .orders-table tr td {
+  /* No hover background transition needed */
 }
 
-.request-page .table-row .muted {
-  color: var(--muted);
+.request-page .order-link {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
 }
 
-.request-page .badge {
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 12px;
-  background: #eef2ff;
-  font-size: 13px;
-  color: #1e293b;
-  border: 1px solid #e0e7ff;
+.request-page .order-link:hover {
+  text-decoration: underline;
+}
+
+.request-page .pill-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-size: 12.5px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  white-space: nowrap;
 }
 
 /* Actions */

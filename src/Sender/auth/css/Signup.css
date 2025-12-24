@@ -154,4 +154,10 @@ body.signup-page {
   padding-right: 45px;
 }
 
+/* Hide Bootstrap's default validation icon for password fields to prevent overlap with the toggle button */
+.position-relative .form-control.is-invalid {
+  background-image: none !important;
+  padding-right: 45px !important;
+}
+
 /* Remove old media queries as Bootstrap handles responsiveness */

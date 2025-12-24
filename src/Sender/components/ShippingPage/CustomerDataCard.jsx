@@ -1,5 +1,6 @@
 import React from 'react';
 import { User, Mail, Phone, MapPin } from 'lucide-react';
+import ModernSelect from './ModernSelect';
 
 const CustomerDataCard = ({ formData, errors, handleChange, governorateOptions }) => {
   return (
@@ -81,20 +82,15 @@ const CustomerDataCard = ({ formData, errors, handleChange, governorateOptions }
         {/* Governorate */}
         <div className="col-md-4">
           <label className="form-label">المحافظة</label>
-          <div className="input-group">
-            <span className="input-group-text"><MapPin size={18} /></span>
-            <select 
-              className={`form-select ${errors["customerAddress.governorate"] ? 'is-invalid' : ''}`}
-              name="customerAddress.governorate" 
-              value={formData.customerAddress.governorate} 
-              onChange={handleChange}
-            >
-              {governorateOptions.map(opt => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
-          </div>
-          {errors["customerAddress.governorate"] && <span className="text-danger small">{errors["customerAddress.governorate"]}</span>}
+          <ModernSelect
+            startIcon={<MapPin size={18} />}
+            options={governorateOptions}
+            value={formData.customerAddress.governorate}
+            onChange={handleChange}
+            name="customerAddress.governorate"
+            placeholder="اختر المحافظة"
+            error={errors["customerAddress.governorate"]}
+          />
         </div>
 
         {/* City */}
@@ -125,8 +121,28 @@ const CustomerDataCard = ({ formData, errors, handleChange, governorateOptions }
           {errors["customerAddress.street"] && <span className="text-danger small">{errors["customerAddress.street"]}</span>}
         </div>
 
+        {/* Delivery Zone */}
+        <div className="col-md-4">
+          <label className="form-label">منطقة التوصيل</label>
+          <ModernSelect
+            startIcon={<MapPin size={18} />}
+            options={[
+              { value: "", label: "اختر منطقة التوصيل" },
+              { value: "القاهره والجيزه", label: "القاهره والجيزه" },
+              { value: "التجمعات والمدن الجديده", label: "التجمعات والمدن الجديده" },
+              { value: "وجه بحري (الدلتا والقنال)", label: "وجه بحري (الدلتا والقنال)" },
+              { value: "وجه قبلي (الصعيد)", label: "وجه قبلي (الصعيد)" },
+              { value: "البحر الأحمر", label: "البحر الأحمر" }
+            ]}
+            value={formData.deliveryZone}
+            onChange={handleChange}
+            name="deliveryZone"
+            placeholder="اختر منطقة التوصيل"
+          />
+        </div>
+
         {/* Details */}
-        <div className="col-md-8">
+        <div className="col-md-4">
           <label className="form-label">تفاصيل العنوان <span className="optional-badge">اختياري</span></label>
           <input 
             type="text" 
@@ -152,10 +168,9 @@ const CustomerDataCard = ({ formData, errors, handleChange, governorateOptions }
               placeholder="https://maps.google.com/..."
             />
           </div>
-        </div>
-
       </div>
     </div>
+  </div>
   );
 };
 

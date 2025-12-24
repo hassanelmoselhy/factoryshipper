@@ -16,6 +16,7 @@ import LoadingOverlay from '../components/LoadingOverlay';
 import { egypt_governorates } from "../../Shared/Constants";
 import { toast } from "sonner";
 import { getShipperAddresses } from "../Data/ShipperService";
+import { FetchPendingOrders, CreatePickupRequest } from "../Data/ShipmentsService";
 
 export default function PickupRequestManagement() {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ export default function PickupRequestManagement() {
 
   // Select All functionality
   const handleSelectAll = () => {
-    const allOrderIds = PendingOrders.map(order => order.id);
+    const allOrderIds = PendingOrders.map(order => order.orderNumber);
     setSelectedOrders(allOrderIds);
   };
 
@@ -70,21 +71,14 @@ export default function PickupRequestManagement() {
       const fetchPendingOrders= async()=>{
       try{
         setLoading(true);
-        const res=await fetch('https://stakeexpress.runasp.net/api/Shipments/to-pickup',{
-          method: 'GET',
-          headers:{
-            'X-Client-Key':'web api',
-            Authorization: 'Bearer '+ user?.token
-          }
-        })
-        if(res.ok===true){
+        const res = await FetchPendingOrders();
+        if(res.Success){
 
-          const data= await res.json();
-          console.log("Pending orders data:", data.data);
-          setPendingOrders(data.data);
+          console.log("Pending orders data:", res.Data);
+          setPendingOrders(res.Data);
         }
         else{
-          console.error("Failed to fetch pending orders. Status:", res.status);
+          console.error("Failed to fetch pending orders. Status:", res.code);
         }
 
       }catch(err){
@@ -112,6 +106,17 @@ export default function PickupRequestManagement() {
   },[])
 
  const HandleSubmit=async ()=>{
+ // Validation
+ if (selectedOrders.length === 0) {
+   toast.error("Please select at least one order to pickup");
+   return;
+ }
+
+ if (!PickupDetails.street || !PickupDetails.city || !PickupDetails.governorate) {
+   toast.error("Please fill in all required address fields (Street, City, Governorate)");
+   return;
+ }
+
 PickupDetails.shipmentIds=selectedOrders;
 console.log("Pickup details:", PickupDetails);
 const payload={
@@ -125,37 +130,28 @@ const payload={
     // googleMapAddressLink: PickupDetails.googleMapAddressLink,
   },
     
-    shipmentIds:selectedOrders
+    orderNumbers:selectedOrders
 
 }
 try{
-setLoading(true);
-console.log('payload',payload);
-const res=await fetch('https://stakeexpress.runasp.net/api/Requests/pickup-requests',{
-  method:'POST',
-  headers:{
-    'Content-Type':'application/json',
-    'X-Client-Key': 'web API',
-    Authorization: 'Bearer '+ user?.token
-  },
-  body: JSON.stringify(payload)
-})
-
-const data=await res.json();
-if(res.ok===true){
-  console.log("Pickup request submitted successfully:", data);
-  toast.success("Pickup request submitted successfully");
-  navigate('/home');
-}
-else{
-
-  console.log("Failed to submit pickup request. Status:", res.status, "Message:", data);
-  toast.error(`Failed to submit pickup request: ${data.message}`);
-}
+    setLoading(true);
+    const res = await CreatePickupRequest(payload);
+    
+    if(res.Success){
+      console.log("Pickup request submitted successfully:", res.Data);
+      toast.success("Pickup request submitted successfully");
+      navigate('/home');
+    }
+    else{
+    
+      console.log("Failed to submit pickup request.", res.Message);
+      toast.error(`Failed to submit pickup request: ${res.Message}`);
+    }
 
 
 }catch(err){
-console.error("Error in submitting pickup request:", err);
+    console.error("Error in submitting pickup request:", err);
+    toast.error("An unexpected error occurred");
 }finally{
   setLoading(false);
 }
@@ -327,40 +323,46 @@ setPickupDetails((prev)=>({...prev,[name]:value}));
               <tr>
                 <th>#</th>
                 <th>Select</th>
-                <th>Order ID</th>
-                <th>customer</th>
+                <th>Order No</th>
+                <th>Type</th>
+                <th>Customer</th>
                 <th>Phone</th>
-                <th>Description</th>
-                <th>Qty</th>
-                <th>Weight</th>
+                <th>Location</th>
                 <th>COD</th>
-                <th>Fast shipping</th>
+                <th>Fast Shipping</th>
+                <th>Date</th>
               </tr>
             </thead>
             <tbody>
               {PendingOrders.map((p, idx) => (
-                <tr key={p.id}>
+                <tr key={p.orderNumber}>
                   <td>{idx + 1}</td>
                   <td>
                     <input 
                       type="checkbox" 
-                      checked={isOrderSelected(p.id)}
-                      onChange={() => handleCheckboxChange(p.id)}
+                      checked={isOrderSelected(p.orderNumber)}
+                      onChange={() => handleCheckboxChange(p.orderNumber)}
                     />
                   </td>
                   <td>
-                    <Link className="order-link" to={`/order-details/${p.id}`} title="Go To Order Details">{p.id}</Link>
+                    <Link className="order-link" to={`/order-details/${p.orderNumber}`} title="Go To Order Details">{p.orderNumber}</Link>
+                  </td>
+                  <td>
+                    <span className="badge bg-light text-dark">{p.orderType}</span>
                   </td>
                   <td>{p.customerName}</td>
                   <td>{p.customerPhone}</td>
-                  <td>{p.shipmentDescription}</td>
-                  <td>{p.quantity}</td>
-                  <td>{p.shipmentWeight}</td>
+                  <td>{p.city} - {p.governorate}</td>
                   <td>
-                    <span className="pill-badge cod-badge">{p.collectionAmount}</span>
+                    <span className="pill-badge cod-badge">{p.collectionCashAmount}</span>
                   </td>
                   <td>
-                    <span className="pill-badge status-pending">{p.expressDeliveryEnabled===true?"Yes":"No"}</span>
+                    <span className={`pill-badge ${p.expressDeliveryEnabled ? 'status-success' : 'status-pending'}`}>
+                      {p.expressDeliveryEnabled ? "Yes" : "No"}
+                    </span>
+                  </td>
+                  <td>
+                    <small className="text-muted">{new Date(p.createdAt).toLocaleDateString()}</small>
                   </td>
                 </tr>
               ))}

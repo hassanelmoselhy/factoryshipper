@@ -12,7 +12,6 @@ import CustomerDataCard from '../components/ShippingPage/CustomerDataCard';
 import ParcelDetailsCard from '../components/ShippingPage/ParcelDetailsCard';
 import ExchangeReturnParcelCard from '../components/ShippingPage/ExchangeReturnParcelCard';
 import PaymentOptionsCard from '../components/ShippingPage/PaymentOptionsCard';
-import ReturnLocationCard from '../components/ShippingPage/ReturnLocationCard';
 import OrderSummaryCard from '../components/ShippingPage/OrderSummaryCard';
 
 const ShippingPage = () => {
@@ -38,7 +37,8 @@ const ShippingPage = () => {
     returnLocation: "",
     orderReference: "",
     deliveryNotes: "",
-    expressDeliveryEnabled: false,
+    shipmentPrice: 35,
+    additionalWeightFees: 0,
     openPackageOnDeliveryEnabled: false,
     collectionAmount: 0,
     isDelivered: false,
@@ -49,8 +49,11 @@ const ShippingPage = () => {
     returnShipmentNotes: "",
     exchangeOrderReference: "",
     isRefund: false,
+    deliveryZone: "",
     productValue: "",
-    proofFile: null
+    proofFile: null,
+    packageType: "",
+    returnPackageType: "" // New field for exchange return parcel
   });
 
   const [errors, setErrors] = useState({});
@@ -101,19 +104,70 @@ const ShippingPage = () => {
     if (last === "street" || last === "city" || last === "governorate") if (!value) return messages.required;
     if (last === "quantity" && (value < 1 || !Number.isInteger(Number(value)))) return messages.qtyInteger;
     if (last === "shipmentDescription" && !value) return messages.required;
+    if (last === "packageType" && !value) return messages.required;
 
     // Validation for exchange/return specific fields
     if (shipmentType === 'exchange') {
       if (last === "returnQuantity" && (value < 1 || !Number.isInteger(Number(value)))) return messages.qtyInteger;
       if (last === "returnShipmentDescription" && !value) return messages.required;
+      if (last === "returnPackageType" && !value) return messages.required;
     }
     
+    // For cash_collection, we DO validate shipmentDescription, but NOT packageType or quantity
+    if (shipmentType === 'cash_collection') {
+       if (last === "packageType") return null;
+       if (last === "quantity") return null;
+    }
+
     return null;
+  };
+
+  // Helper function to map shipment type
+  const mapShipmentType = (type) => {
+    const typeMap = {
+      'delivery': 'Delivery',
+      'exchange': 'Exchange',
+      'return': 'Return',
+      'cash_collection': 'Cash Collection'
+    };
+    return typeMap[type] || 'Delivery';
+  };
+
+  // Helper function to map package type
+  const mapPackageType = (packageType) => {
+    const packageMap = {
+      'parcel': 'Parcel',
+      'largeshipment': 'LargeShipment',
+      'document': 'Document',
+      'OversizedShipment':'OversizedShipment'
+    };
+    return packageMap[packageType] || 'Parcel';
+  };
+
+  // Helper function to map transaction type
+  const mapTransactionType = (formData, shipmentType) => {
+    if (shipmentType === 'cash_collection') {
+      return 'CollectFromCustomer';
+    }
+    if (formData.isRefund) {
+      return 'RefundToCustomer';
+    }
+    if (formData.collectionAmount > 0) {
+      return 'CollectFromCustomer';
+    }
+    return 'None';
   };
 
   const validateAll = (data) => {
     const newErrors = {};
-    const fields = ["customerName", "customerPhone", "customerAddress.street", "customerAddress.city", "customerAddress.governorate", "quantity", "shipmentDescription"];
+    let fields = ["customerName", "customerPhone", "customerAddress.street", "customerAddress.city", "customerAddress.governorate", "quantity", "shipmentDescription", "packageType"];
+    
+    
+    if (shipmentType === 'cash_collection') {
+      // Just check strictly required fields for cash collection
+      // Parcel Details card is visible but only Description is required. Check logic below.
+      fields = ["customerName", "customerPhone", "customerAddress.street", "customerAddress.city", "customerAddress.governorate", "shipmentDescription"];
+    }
     fields.forEach(f => {
       const val = getByPath(data, f);
       const err = validateField(f, val, data);
@@ -121,7 +175,7 @@ const ShippingPage = () => {
     });
 
     if (shipmentType === 'exchange') {
-      const exchangeFields = ["returnQuantity", "returnShipmentDescription"];
+      const exchangeFields = ["returnQuantity", "returnShipmentDescription", "returnPackageType"];
       exchangeFields.forEach(f => {
         const val = getByPath(data, f);
         const err = validateField(f, val, data);
@@ -167,31 +221,82 @@ const ShippingPage = () => {
     }
 
     setLoading(true);
-    const payload = { ...formData, shipmentType }; // Include shipmentType in payload
-    if(payload.shipmentWeight === "") delete payload.shipmentWeight;
-    if(payload.customerAddress.googleMapAddressLink === "") delete payload.customerAddress.googleMapAddressLink;
-    if(payload.orderReference === "") delete payload.orderReference;
-    if(payload.deliveryNotes === "") delete payload.deliveryNotes;
     
-    // Conditionally remove new empty fields
-    if(payload.returnShipmentWeight === "") delete payload.returnShipmentWeight;
-    if(payload.returnShipmentNotes === "") delete payload.returnShipmentNotes;
-    if(payload.exchangeOrderReference === "") delete payload.exchangeOrderReference;
-    
-    // Remove return-specific fields if not exchange/return
-    if (shipmentType !== 'exchange') {
-      delete payload.returnShipmentDescription;
-      delete payload.returnQuantity;
-      delete payload.returnShipmentWeight;
-      delete payload.returnShipmentNotes;
-    }
-    if (shipmentType === 'delivery') {
-      delete payload.exchangeOrderReference;
+    // Map the form data to the new API schema (OrderType removed - determined by endpoint)
+    const payload = {
+      CustomerInfo: {
+        CustomerName: formData.customerName || "",
+        CustomerPhone: formData.customerPhone || "",
+        CustomerAdditionalPhone: formData.customerAdditionalPhone || "",
+        CustomerEmail: formData.customerEmail || "",
+        CustomerAddress: {
+          Street: formData.customerAddress.street || "",
+          City: formData.customerAddress.city || "",
+          Governorate: formData.customerAddress.governorate || "",
+          AdditionalDetails: formData.customerAddress.details || "",
+          GoogleMapAddressLink: formData.customerAddress.googleMapAddressLink || ""
+        }
+      },
+      
+      DeliveryShipmentDetails: {}, 
+      
+      PaymentAndDeliveryOptionsDto: {
+        TransactionType: mapTransactionType(formData, shipmentType),
+        TransactionCashAmount: formData.collectionAmount ? Number(formData.collectionAmount) : 0,
+        ProductPrice: formData.productValue ? Number(formData.productValue) : 0,
+        ProductPriceProofImage: formData.proofFile || "", // File or empty string
+        OpenPackageOnDeliveryEnabled: formData.openPackageOnDeliveryEnabled || false,
+        ShipmentPrice: formData.shipmentPrice ? Number(formData.shipmentPrice) : 0,
+        AdditionalWeightPrice: formData.additionalWeightFees ? Number(formData.additionalWeightFees) : 0
+      },
+      
+      DeliveryNotes: `[منطقة التوصيل: ${formData.deliveryZone}] ${formData.deliveryNotes || ""}`.trim()
+    };
+
+    // Add delivery shipment details only if not cash collection
+    if (shipmentType !== 'cash_collection') {
+      payload.DeliveryShipmentDetails = {
+        ShipmentType: mapPackageType(formData.packageType),
+        ShipmentDescription: formData.shipmentDescription || "",
+        ShipmentWeight: formData.shipmentWeight ? Number(formData.shipmentWeight) : 0,
+        Quantity: formData.quantity ? Number(formData.quantity) : 0,
+        ShipmentNotes: formData.shipmentNotes || "",
+        ShipmentImage: formData.proofFile || ""
+      };
+    } else {
+      delete payload.DeliveryShipmentDetails;
     }
 
+    // Add ReturnShipmentDetails if exchange type
+    if (shipmentType === 'exchange') {
+      payload.ReturnShipmentDetails = {
+        ShipmentType: mapPackageType(formData.returnPackageType),
+        ShipmentDescription: formData.returnShipmentDescription || "",
+        ShipmentWeight: formData.returnShipmentWeight ? Number(formData.returnShipmentWeight) : 0,
+        Quantity: formData.returnQuantity ? Number(formData.returnQuantity) : 0,
+        ShipmentNotes: formData.returnShipmentNotes || "",
+        ShipmentImage: formData.returnProofFile || ""
+      };
+    }
+
+    // Add ReturnLocation (Always required by API structure)
+    if (shipmentType === 'cash_collection') {
+       // logic for cash collection (if any special logic needed, otherwise it sends fields as needed)
+    } else {
+       // For delivery, exchange, return
+       payload.ReturnLocation = {
+        Street: formData.returnLocation || "string", // Provide default string if empty to match curl
+        City: "string", // Default string as per curl
+        Governorate: "string", // Default string as per curl
+        AdditionalDetails: "string",
+        GoogleMapAddressLink: "string"
+      };
+    }
+
+    console.log('Mapped Payload:', payload);
 
     try {
-      const result = await CreateShipment(payload);
+      const result = await CreateShipment(payload, shipmentType);
       if (result.Success) {
         Swal.fire({ icon: "success", title: "تم إنشاء الشحنة بنجاح", timer: 2000, showConfirmButton: false });
         navigate("/shipments");
@@ -199,6 +304,7 @@ const ShippingPage = () => {
         toast.error(result.Message || "حدث خطأ ما");
       }
     } catch (err) {
+      console.error('Submit error:', err);
       toast.error("خطأ في الاتصال");
     }
     setLoading(false);
@@ -228,12 +334,14 @@ const ShippingPage = () => {
                 governorateOptions={governorateOptions}
               />
 
+              {shipmentType !== 'cash_collection' && (
               <ParcelDetailsCard 
                 shipmentType={shipmentType}
                 formData={formData}
                 errors={errors}
                 handleChange={handleChange}
               />
+              )}
 
               {shipmentType === 'exchange' && (
                 <ExchangeReturnParcelCard 
@@ -251,12 +359,6 @@ const ShippingPage = () => {
                 setFormData={setFormData}
               />
 
-              <ReturnLocationCard 
-                shipmentType={shipmentType}
-                formData={formData}
-                handleChange={handleChange}
-                returnLocationOptions={returnLocationOptions}
-              />
 
             </div>
           </div>
@@ -268,6 +370,7 @@ const ShippingPage = () => {
               loading={loading}
               handleSubmit={handleSubmit}
               navigate={navigate}
+              shipmentType={shipmentType}
             />
           </div>
 

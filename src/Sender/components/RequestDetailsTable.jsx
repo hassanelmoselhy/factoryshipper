@@ -14,41 +14,51 @@ export default function RequestDetailsTable({shipments,head}) {
                     <thead>
                       <tr>
                         <th>#</th>
-                        <th>Order ID</th>
-                        <th>customer</th>
+                        <th>Order No</th>
+                        <th>Type</th>
+                        <th>Customer</th>
                         <th>Phone</th>
-                        <th>Description</th>
-                        <th>governorate</th>
-                        {/* <th>Qty</th>
-                        <th>Weight</th> */}
+                        <th>Location</th>
                         <th>COD</th>
+                        <th>Status</th>
+                        <th>Attempts</th>
                         <th>Fast shipping</th>
-                        <th>Created At</th>
+                        <th>Date</th>
                       </tr>
                     </thead>
                     <tbody>
                       
                       { (shipments || []).map((p, idx) => (
-                        <tr key={p?.id} >
+                        <tr key={p?.orderNumber || p?.id} >
                           <td >{idx + 1}</td>
                          
                           <td >
-                            <Link className="order-link" to={`/order-details/${p.id}`} title="Go To Order Details">{p.id}</Link>
+                            <Link className="order-link" to={`/order-details/${p.orderNumber || p.id}`} title="Go To Order Details">
+                                {p.orderNumber || p.id}
+                            </Link>
                           </td>
+                          <td >{p.orderType || "-"}</td>
                           <td >{p.customerName}</td>
                           <td >{p.customerPhone}</td>
-                          <td >{p.shipmentDescription}</td>
-                          <td >{p.governorate}</td>
-                          {/* <td >{p?.quantity||15}</td>
-                          <td >{p.shipmentWeight||3}</td> */}
+                          <td >{p.city}{p.city && p.governorate ? " - " : ""}{p.governorate}</td>
                           
                           <td >
-                            <span className="pill-badge cod-badge">{p.collectionAmount}</span>
+                            <span className="pill-badge cod-badge">{p?.collectionCashAmount ?? p?.collectionAmount ?? 0}</span>
                           </td>
-                          <td className="d-flex align-items-center justify-content-center">
-                            <span className="pill-badge status-pending">{p.expressDeliveryEnabled===true?"Yes":"No"}</span>
+                          <td >
+                             <span className={`status-badge status-${(p.orderCurrentStatus || "Pending").toLowerCase()}`}>
+                                {p.orderCurrentStatus || "Pending"}
+                             </span>
                           </td>
-                          <td  >{p?.createdAt.split('T')[0]}</td>
+                          <td >
+                            {p.fulfillmentAttempts ?? 0}/3
+                          </td>
+                          <td>
+                            <span className={`pill-badge ${p.expressDeliveryEnabled ? "status-success" : "status-pending"}`}>
+                                {p.expressDeliveryEnabled === true ? "Yes" : "No"}
+                            </span>
+                          </td>
+                          <td  >{p?.createdAt?.split('T')[0] || "-"}</td>
 
                         </tr>
                       ))}

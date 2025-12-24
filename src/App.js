@@ -39,7 +39,6 @@ const Print = lazy(() => import("./Sender/pages/Print"));
 const HangerOrders = lazy(() => import("./Hanger/pages/Orders"));
 const PageNotFound = lazy(() => import("./Components/PageNotFound"));
 const WarehouseList = lazy(() => import("./Hanger/pages/WarehouseList"));
-const OrdersPage = lazy(() => import("./Hanger/pages/OrdersPage"));
 const OrderRelease = lazy(() => import("./Hanger/pages/OrdersRelease"));
 const RequestsReview = lazy(() => import("./Hanger/pages/RequestsReview"));
 const HangerRequestDetails = lazy(() => import("./Hanger/pages/HangerRequestDetails"));
@@ -56,6 +55,8 @@ const Sidebar = lazy(() => import("./Components/Sidebar"));
 const Orders2 = lazy(() => import("./Sender/pages/order2"));
 const ShipperProfile = lazy(() => import("./Sender/pages/ShipperProfile"));
 const ConfirmChangedEmail = lazy(() => import("./Sender/pages/ConfirmChangedEmail"));
+const OrdersPage = lazy(() => import("./Sender/pages/OrdersPage"));
+const PickupRequestDetailsPage = lazy(() => import("./Sender/pages/PickupRequestDetailsPage"));
 
 const MainLayout = ({ header: HeaderComponent, sidebarData }) => {
   return (
@@ -76,7 +77,10 @@ const SessionRestorer = () => {
 
   useEffect(() => {
     const restoreSession = async () => {
-      if (!user) {
+      // Check if user manually logged out
+      const hasLoggedOut = sessionStorage.getItem('sessionRestoreAttempted');
+      
+      if (!user && !hasLoggedOut) {
         try {
           const response = await RefreshToken();
           if (response.Success && response.Data) {
@@ -91,6 +95,7 @@ const SessionRestorer = () => {
         }
       }
     };
+
     restoreSession();
   }, []);
 
@@ -112,14 +117,14 @@ const App = () => {
   return (
     <>
       {/* --- GLOBAL OVERLAYS --- */}
-      <Toaster position="top-right" richColors closeButton />
+      <Toaster position="top-center" richColors closeButton duration={1500} theme="light"/>
       <LoadingOverlay />
 
 
       {/* --- ROUTER & APP CONTENT --- */}
       <Router>
         <SessionRestorer />
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<LoadingOverlay isActive={true} />}>
           <Routes>
             {/* Public Auth */}
             <Route path="/signup" element={<Signup />} />
@@ -141,17 +146,20 @@ const App = () => {
               <Route path="/actions" element={<Actions />} />
               <Route path="/shipping" element={<ShippingPage />} />
               <Route path="/shipments" element={<Orders2 />} />
+              <Route path="/orders" element={<OrdersPage />} />
               <Route path="/wallet" element={<Wallet />} />
               <Route path="/profile" element={<ShipperProfile />} />
+               <Route path="/order-details/:orderId" element={<OrderDetails />} />
             </Route>
 
             {/* Misc sender routes */}
             <Route>
-              <Route path="/order-details/:orderId" element={<OrderDetails />} />
+             
               <Route path="/print/:orderId" element={<Print />} />
               <Route path="/request/:requestype/:id" element={<Request />} />
               <Route path="/change-password" element={<ChangePass />} />
               <Route path="/extchange-request" element={<ExtchangePage />} />
+              <Route path="/pickuprequest/:id" element={<PickupRequestDetailsPage />} />
             </Route>
 
             <Route path="/confirm-email" element={<ConfirmEmailPage />} />

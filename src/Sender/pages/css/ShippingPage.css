@@ -309,3 +309,63 @@ textarea.form-control {
     white-space: nowrap;
   }
 }
+
+/* Custom Tooltip Styles */
+.info-tooltip-container {
+  position: relative;
+  cursor: help;
+}
+
+.custom-tooltip {
+  visibility: hidden;
+  width: 220px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px;
+  position: absolute;
+  z-index: 1000;
+  bottom: 125%; /* Position above */
+  left: 50%;
+  margin-left: -110px; /* Center */
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.custom-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%; /* At the bottom of the tooltip */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+}
+
+.info-tooltip-container:hover .custom-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Upload area styles */
+.dashed-border {
+  border: 1px dashed #dee2e6 !important;
+  background-color: #f8f9fa;
+  transition: all 0.2s;
+}
+.dashed-border:hover {
+  background-color: #e9ecef;
+  border-color: #adb5bd !important;
+}
+.icon-circle {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

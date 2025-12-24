@@ -40,7 +40,7 @@ display: none;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 8px;
+  gap: 12px;
   margin-bottom: 30px;
   padding: 5px 10px;
   position: relative;
@@ -49,13 +49,13 @@ display: none;
 .sidebar-header .logo-icon {
   font-size: 28px;
   color: #000;
-  order: 3; /* Logo on the far right */
+  order: 2; /* Logo in the middle */
 }
 
 .sidebar-header .header-content {
   text-align: right;
   flex: 1;
-  order: 2; /* Content in the middle */
+  order: 1; /* Content on the left */
 }
 
 .sidebar-header h2 {
@@ -98,7 +98,7 @@ display: none;
   border-radius: 8px;
   flex-direction: row-reverse;
   width: 100%;
-  justify-content: flex-start; /* Content starts from right */
+  justify-content: flex-end; /* Content starts from right */
 }
 
 .sidebar .nav-link:hover {
@@ -124,39 +124,31 @@ display: none;
   display: none;
 }
 
-/* Collapse button - Positioned on the left border */
+/* Collapse button - Positioned at the start (right side in RTL) */
 .collapse-btn {
-  position: absolute;
-  left: -14px; /* Half outside the sidebar */
-  top: 50%;
-  transform: translateY(-50%);
-  background: #ffffff;
-  color: #000;
+  background: transparent;
+  color: #666;
   border: 1px solid #e0e0e0;
-  padding: 6px 4px;
-  font-size: 12px;
-  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 14px;
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 48px;
-  z-index: 10;
-  box-shadow: -2px 0 6px rgba(0, 0, 0, 0.08);
+  width: 32px;
+  height: 32px;
+  order: 3; /* Position at the start (right in RTL) */
+  flex-shrink: 0;
 }
 
 .collapse-btn:hover {
-  background: #f8f8f8;
+  background: #f0f0f0;
   border-color: #ccc;
-  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.12);
+  color: #000;
 }
 
-.sidebar.collapsed .collapse-btn {
-  left: -14px;
-  transform: translateY(-50%);
-}
 
 /* Overlay */
 .overlay {

@@ -1,20 +1,20 @@
 import React from 'react';
-import { Truck, RefreshCw, RotateCcw } from 'lucide-react';
+import { Truck, RefreshCw, RotateCcw, Banknote } from 'lucide-react';
 
 const ShipmentTypeTabs = ({ shipmentType, setShipmentType, setFormData }) => {
   return (
     <div className="d-flex justify-content-start align-items-center mt-4">
       <div className="shipment-tabs-container">
-        <button 
-          className={`tab-btn ${shipmentType === 'return' ? 'active' : ''}`}
+       <button 
+          className={`tab-btn ${shipmentType === 'delivery' ? 'active' : ''}`}
           onClick={() => {
-            setShipmentType('return');
-            setFormData(prev => ({ ...prev, isRefund: true }));
+            setShipmentType('delivery');
+            setFormData(prev => ({ ...prev, isRefund: false }));
           }}
           type="button"
         >
-          <RotateCcw size={18} />
-          <span>إرجاع شحنة</span>
+          <Truck size={18} />
+          <span>توصيل شحنة</span>
         </button>
 
         <button 
@@ -29,16 +29,29 @@ const ShipmentTypeTabs = ({ shipmentType, setShipmentType, setFormData }) => {
           <span>تبديل شحنات</span>
         </button>
 
-        <button 
-          className={`tab-btn ${shipmentType === 'delivery' ? 'active' : ''}`}
+       
+          <button 
+          className={`tab-btn ${shipmentType === 'return' ? 'active' : ''}`}
           onClick={() => {
-            setShipmentType('delivery');
+            setShipmentType('return');
+            setFormData(prev => ({ ...prev, isRefund: true }));
+          }}
+          type="button"
+        >
+          <RotateCcw size={18} />
+          <span>إرجاع شحنة</span>
+        </button>
+
+        <button 
+          className={`tab-btn ${shipmentType === 'cash_collection' ? 'active' : ''}`}
+          onClick={() => {
+            setShipmentType('cash_collection');
             setFormData(prev => ({ ...prev, isRefund: false }));
           }}
           type="button"
         >
-          <Truck size={18} />
-          <span>توصيل شحنة</span>
+          <Banknote size={18} />
+          <span>تحصيل نقدي</span>
         </button>
       </div>
     </div>

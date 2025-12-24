@@ -402,6 +402,10 @@ export default function ShipperProfile() {
   };
 
   const removePhoneInput = (index) => {
+    if(personalInfoForm.phones.length===1){
+      Swal.fire("Limit Reached", "Minimum 1 phone number allowed.", "warning");
+    return;
+    }
     const newPhones = personalInfoForm.phones.filter((_, i) => i !== index);
     setPersonalInfoForm((prev) => ({ ...prev, phones: newPhones }));
   };

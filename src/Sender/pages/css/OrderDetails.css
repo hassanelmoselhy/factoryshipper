@@ -166,6 +166,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  align-items: center;
   background-color: var(--gray-50);
   border: 1px solid var(--gray-200);
   border-radius: var(--radius-md);
@@ -173,8 +174,8 @@
   justify-content: flex-end; 
 }
 
-.info-item1,
-.info-item2 {
+
+.info-item {
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -212,6 +213,65 @@
   font-size: 13px;
   font-weight: 600;
   color: white;
+  display: inline-block;
+  margin-top: 5px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ===== Barcode & IDs ===== */
+.order-id-display {
+  font-size: 16px;
+  background-color: white;
+  font-weight: 600;
+  color: var(--gray-800);
+  padding: 12px 16px;
+  margin-top: 5px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+  border: 1px solid var(--gray-200);
+  transition: all var(--transition-base);
+  cursor: pointer;
+}
+.order-id-display:hover {
+  background-color: var(--gray-50);
+  border-color: var(--primary-color);
+}
+
+.barcode-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 10px;
+  border-radius: var(--radius-md);
+}
+
+.barcode-display svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ===== Customer Info & Delivery Sections ===== */
+.customer-info-section,
+.delivery-section {
+  flex: 1 1 300px;
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 24px;
+  min-width: 260px;
+  text-align: right;
+  transition: all var(--transition-base);
+}
+
+.customer-info-section:hover,
+.delivery-section:hover {
+  box-shadow: var(--shadow-lg);
   display: inline-block;
   margin-top: 5px;
   box-shadow: var(--shadow-sm);
@@ -532,4 +592,16 @@
   .back-button {
     width: 100%;
   }
+}
+/* ===== Barcode Placeholder ===== */
+.barcode-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: var(--gray-50);
+  border-radius: var(--radius-md);
+  border: 2px dashed var(--gray-300);
+  min-width: 200px;
 }

@@ -9,7 +9,11 @@ const ActionsList = ({ id, requestype, showModal }) => {
 
   const goToDetails = () => {
     console.log("Navigating to details for request:", requestype, id);
-    navigate(`/request/${requestype}/${id}`);
+    if (requestype === "PickupRequest") {
+      navigate(`/pickuprequest/${id}`);
+    } else {
+      navigate(`/request/${requestype}/${id}`);
+    }
   };
 
   return (

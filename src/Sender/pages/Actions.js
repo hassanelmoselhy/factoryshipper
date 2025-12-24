@@ -9,7 +9,7 @@ import TableSkeleton from "../components/TableSkeleton";
 import CancelModal from "../../Components/CancelModal";
 import axios from "axios";
 import Swal from "sweetalert2";
-import "./css/Actions.css";
+import styles from "./css/Actions.module.css";
 import api from "../../utils/Api";
 
 const Actions = () => {
@@ -34,7 +34,7 @@ const Actions = () => {
     const fetchRequests = async () => {
       setloading(true);
       try {
-        const res = await api.get('/Requests');
+        const res = await api.get('/PickupRequests');
         const result = res.data.data;
 
         console.log('fetching requests sucessfully', result);
@@ -104,31 +104,11 @@ const Actions = () => {
   }, [Requests]);
 
   const getStatusBadge = (status) => {
-    const statusMap = {
-      'pending': 'status-pending',
-      'in-progress': 'status-in-progress',
-      'completed': 'status-completed',
-      'cancelled': 'status-cancelled',
-      'Pending': 'status-pending',
-      'InProgress': 'status-in-progress',
-      'Completed': 'status-completed',
-      'Cancelled': 'status-cancelled'
-    };
-
-    const statusText = {
-      'pending': 'Pending',
-      'in-progress': 'In Progress',
-      'completed': 'Completed',
-      'cancelled': 'Cancelled',
-      'Pending': 'Pending',
-      'InProgress': 'In Progress',
-      'Completed': 'Completed',
-      'Cancelled': 'Cancelled'
-    };
-
+    const statusKey = status || 'Pending';
+    const statusClass = `status-${statusKey}`;
     return (
-      <span className={`status-badge`}>
-        {statusText[status] || 'Pending'}
+      <span className={`${styles['status-badge']} ${styles[statusClass]}`}>
+        {t[statusKey] || statusKey}
       </span>
     );
   };
@@ -214,11 +194,11 @@ const Actions = () => {
         title="Cancel Request"
         message="Are you sure you want to Cancel this Request? This action cannot be undone."
       />
-      <div className={`actions-container ${lang === "ar" ? "rtl" : "ltr"} px-4`}>
+      <div className={`${styles['actions-container']} ${lang === "ar" ? styles.rtl : styles.ltr} px-4`}>
 
         {/* فلتر وبحث */}
-        <div className="filter-search">
-          <button className="filter-btn">
+        <div className={styles['filter-search']}>
+          <button className={styles['filter-btn']}>
             <FaFilter /> {t.advancedFilter}
           </button>
           <input
@@ -230,23 +210,23 @@ const Actions = () => {
         </div>
 
         {/* Tabs */}
-        <div className="tabs">
+        <div className={styles.tabs}>
           <span
-            className={timeFilter === "day" ? "active" : ""}
+            className={timeFilter === "day" ? styles.active : ""}
             onClick={() => setTimeFilter("day")}
             style={{ cursor: "pointer" }}
           >
             {t.today} ({todayCount})
           </span>
           <span
-            className={timeFilter === "week" ? "active" : ""}
+            className={timeFilter === "week" ? styles.active : ""}
             onClick={() => setTimeFilter("week")}
             style={{ cursor: "pointer" }}
           >
             {t.week} ({weekCount})
           </span>
           <span
-            className={timeFilter === "all" ? "active" : ""}
+            className={timeFilter === "all" ? styles.active : ""}
             onClick={() => setTimeFilter("all")}
             style={{ cursor: "pointer" }}
           >
@@ -255,16 +235,16 @@ const Actions = () => {
         </div>
 
         {/* Modern Table Container */}
-        <div className="tasks-wrapper">
-          <table className=" tasks-table modern-table ">
-            <thead className="tableheader">
+        <div className={styles['tasks-wrapper']}>
+          <table className={` ${styles['tasks-table']} ${styles['modern-table']} `}>
+            <thead className={styles.tableheader}>
               <tr>
-                <th>{t.requestId || "Request ID"}</th>
-                <th>{t.requestName || "Request Name"}</th>
-                <th>{t.createDate || "Create Date"}</th>
-                <th>{t.lastUpdate || "Last Update"}</th>
-                <th>{t.status || "Status"}</th>
-               
+                <th>Request No</th>
+                <th>Orders</th>
+                <th>Address</th>
+                <th>Phone</th>
+                <th>Status</th>
+                <th>Date</th>
                 <th>{t.actions || "Actions"}</th>
               </tr>
             </thead>
@@ -285,20 +265,35 @@ const Actions = () => {
                 }
                 {FilteredRequests.map((request, index) => (
                   <tr
-                    key={request.id}
-                    className="table-row"
+                    key={request.requestNumber || request.id}
+                    className={styles['table-row']}
                     style={{ animationDelay: `${index * 0.1}s` }}
                   >
-                    <td>{request.id}</td>
-                    <td>{String(request.requestType).replace("Request", " Request")}</td>
-                    <td>{new Date(request.createdAt).toLocaleDateString()}</td>
-                    <td>{new Date(request.updatedAt).toLocaleDateString()}</td>
-                    <td>{request.requestStatus}</td>
+                    <td>
+                        <span className={styles['task-id']} title={request.requestNumber}>
+                            {request.requestNumber ? String(request.requestNumber).substring(0, 8) + '...' : request.id}
+                        </span>
+                    </td>
+                    <td>
+                        <span className={styles['orders-count']}>{request.ordersCount}</span>
+                    </td>
+                    <td>
+                         <div style={{ fontSize: "0.85rem", lineHeight: "1.4" }}>
+                            {request.pickupAddress?.street}, {request.pickupAddress?.city}
+                            <div className="text-muted" style={{ fontSize: "0.75rem" }}>{request.pickupAddress?.governorate}</div>
+                         </div>
+                    </td>
+                    <td>{request.shipperPhoneNumber}</td>
+                    <td>{getStatusBadge(request.requestStatus)}</td>
+                    <td>
+                        <div>{new Date(request.createdAt).toLocaleDateString()}</div>
+                        <small className="text-muted">{new Date(request.createdAt).toLocaleTimeString()}</small>
+                    </td>
                     <td>
                       <ActionsList
-                        id={request?.id}
-                        requestype={request?.requestType}
-                        showModal={() => handleshow(request?.id, request?.requestType)}
+                        id={request?.requestNumber}
+                        requestype={request?.requestType || "PickupRequest"}
+                        showModal={() => handleshow(request?.requestNumber, request?.requestType || "PickupRequest")}
                       />
                     </td>
                   </tr>

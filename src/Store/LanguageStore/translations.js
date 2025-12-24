@@ -104,7 +104,13 @@ Exchanged: "تم الاستبدال",
   Returned: "تم الإرجاع",
   Delivered:'تم التوصيل',
   Lost: "مفقود",
-  Damaged:"متلف"
+  Damaged:"متلف",
+  New: "جديد",
+  Rejected: "مرفوض",
+  InProgress: "قيد التنفيذ",
+  Completed: "مكتمل",
+  Failed: "غير ناجح",
+  // Canceled is already present above (line 95)
   },
 
   en: {
@@ -213,7 +219,13 @@ Exchanged: "Exchanged",
   Returned: "Returned",
   Delivered:"Delivered",
   Lost: "Lost",
-  Damaged:"Damaged"
+  Damaged:"Damaged",
+  New: "New",
+  Rejected: "Rejected",
+  InProgress: "InProgress",
+  Completed: "Completed",
+  Failed: "Failed",
+  // Canceled is already present above (line 204)
 
   },
 };

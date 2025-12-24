@@ -153,19 +153,55 @@ overflow: scroll;
   font-weight: bold;
 }
 
-.status {
-  padding: 5px 10px;
-  border-radius: 8px;
-  color: #fff;
-  font-size: 12px;
-  white-space: nowrap;
+/* Main Status Badge */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  min-width: 80px; 
 }
 
-.status.blue { background: #007bff; }
-.status.yellow { background: #ffc107; color: #000; }
-.status.green { background: #28a745; }
-.status.purple { background: #6f42c1; }
-.status.red { background: #dc3545; }
+.status-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Status Variants */
+.status-New, .status-new {
+    background: linear-gradient(135deg, #e7f5ff 0%, #d0ebff 100%);
+    color: #1971c2;
+    border-color: #a5d8ff;
+}
+
+.status-Pending, .status-pending {
+  background: linear-gradient(135deg, #fff4e6 0%, #ffe8cc 100%);
+  color: #e8590c;
+  border-color: #ffd699;
+}
+
+.status-Completed, .status-completed {
+  background: linear-gradient(135deg, #e6fcf5 0%, #ccf5e8 100%);
+  color: #0ca678;
+  border-color: #99edd5;
+}
+
+.status-Cancelled, .status-cancelled {
+  background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
+  color: #e03131;
+  border-color: #ffb3b3;
+}
+
+.status-InProgress, .status-in-progress {
+    background: linear-gradient(135deg, #f3f0ff 0%, #e5dbff 100%);
+    color: #5f3dc4;
+    border-color: #d0bfff;
+}
 
 /* ✅ Dropdown Actions */
 .actions-btns {

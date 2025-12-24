@@ -24,6 +24,7 @@
     "react-scripts": "5.0.1",
     "react-spinners": "^0.17.0",
     "react-toastify": "^11.0.5",
+    "recharts": "^3.6.0",
     "sonner": "^2.0.7",
     "sweetalert2": "^11.26.3",
     "use-debounce": "^10.0.6",

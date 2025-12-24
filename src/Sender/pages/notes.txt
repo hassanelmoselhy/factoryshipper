@@ -1,0 +1,7 @@
+at orders page table : remove the tries column (Done)
+remove اوليويه التوصيل
+move shipment price to shipment details
+remove open package option description
+remove return location and keep 
+in order summary add new section called additional weight 
+at money collection remove shipment details card

@@ -2,12 +2,14 @@ import React from "react";
 import UseLoadingStore from "../Store/LoadingController/Loadingstore";
 import "./css/LoadingOverlay.css";
 
-const LoadingOverlay = () => {
+const LoadingOverlay = ({ isActive }) => {
   // Connect to the store
   const { Loading } = UseLoadingStore();
 
+  const isVisible = isActive !== undefined ? isActive : Loading;
+
   return (
-    <div className={`loading-overlay ${Loading ? "active" : ""}`}>
+    <div className={`loading-overlay ${isVisible ? "active" : ""}`}>
       <div className="loading-content">
         {/* Logo with enhanced animations */}
         <div className="loading-logo-wrapper">

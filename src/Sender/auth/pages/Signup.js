@@ -23,7 +23,8 @@ const Signup = () => {
     typeOfProduction: "",
   });
 
-  const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
+
   useEffect(() => {
     document.body.classList.add("signup-page");
     return () => {
@@ -31,54 +32,103 @@ const Signup = () => {
     };
   }, []);
 
+  const validateUrl = (url) => {
+    if (!url) return true; // Optional field
+    const urlPattern = /^https?:\/\/.+/i;
+    return !!urlPattern.test(url);
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // Clear specific field error when user starts typing
+    if (fieldErrors[name]) {
+      setFieldErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+
+    if (name === "companyLink") {
+      if (value && !validateUrl(value)) {
+        setFieldErrors(prev => ({ ...prev, companyLink: "يرجى إدخال رابط شركة صحيح" }));
+      } else {
+        setFieldErrors(prev => {
+          const newErrors = { ...prev };
+          delete newErrors.companyLink;
+          return newErrors;
+        });
+      }
+    }
   };
 
   const validateForm = () => {
-    if (
-      !formData.firstName ||
-      !formData.lastName ||
-      !formData.email ||
-      !formData.phoneNumber ||
-      !formData.companyName ||
-      !formData.city ||
-      !formData.street ||
-      !formData.governorate ||
-      !formData.password ||
-      !formData.confirmPassword ||
-      !formData.typeOfProduction
-    ) {
-      return "الرجاء ملء جميع الحقول المطلوبة *";
+    const errors = {};
+    
+    // Required fields check
+    const requiredFields = [
+      { key: 'firstName', label: 'الاسم الأول' },
+      { key: 'lastName', label: 'الاسم الأخير' },
+      { key: 'email', label: 'البريد الإلكتروني' },
+      { key: 'phoneNumber', label: 'رقم الهاتف' },
+      { key: 'companyName', label: 'اسم الشركة' },
+      { key: 'city', label: 'المدينة' },
+      { key: 'street', label: 'الشارع' },
+      { key: 'governorate', label: 'المحافظة' },
+      { key: 'password', label: 'كلمة المرور' },
+      { key: 'confirmPassword', label: 'تأكيد كلمة المرور' },
+      { key: 'typeOfProduction', label: 'نوع المنتجات' }
+    ];
+
+    requiredFields.forEach(field => {
+      if (!formData[field.key]) {
+        errors[field.key] = `${field.label} مطلوب *`;
+      }
+    });
+
+    // Email pattern check
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (formData.email && !emailRegex.test(formData.email)) {
+      errors.email = "يرجى إدخال بريد إلكتروني صحيح";
     }
 
+    // Phone pattern check
     const phoneRegex = /^(010|011|012|015)\d{8}$/;
-    if (!phoneRegex.test(formData.phoneNumber)) {
-      return "رقم الهاتف يجب أن يكون 11 رقم ويبدأ بـ 010 أو 011 أو 012 أو 015";
+    if (formData.phoneNumber && !phoneRegex.test(formData.phoneNumber)) {
+      errors.phoneNumber = "رقم الهاتف يجب أن يكون 11 رقم ويبدأ بـ 010 أو 011 أو 012 أو 015";
     }
 
-    if (formData.password.length < 8) {
-      return "كلمة المرور يجب ألا تقل عن 8 أحرف";
+    // Password length check (User requested at least 6 characters)
+    if (formData.password && formData.password.length < 6) {
+      errors.password = "كلمة المرور يجب ألا تقل عن 6 أحرف";
     }
 
-    if (formData.password !== formData.confirmPassword) {
-      return "كلمتا المرور غير متطابقتين";
+    // Password matching check
+    if (formData.password && formData.confirmPassword && formData.password !== formData.confirmPassword) {
+      errors.confirmPassword = "كلمتا المرور غير متطابقتين";
     }
 
-    return "";
+    // Company link check
+    if (formData.companyLink && !validateUrl(formData.companyLink)) {
+      errors.companyLink = "يرجى إدخال رابط شركة صحيح";
+    }
+
+    return errors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const validationError = validateForm();
-    if (validationError) {
-      setError(validationError);
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      toast.error("يرجى تصحيح الأخطاء في النموذج");
       return;
     }
 
-    setError("");
+    setFieldErrors({});
 
     const payload = {
       firstName: formData.firstName.trim(),
@@ -92,35 +142,44 @@ const Signup = () => {
           city: formData.city.trim(),
           governorate: formData.governorate.trim(),
           details: formData.details.trim(),
-          // "googleMapAddressLink": "string"
       },
       typeOfProduction: formData.typeOfProduction,
       password: formData.password,
       confirmPassword: formData.confirmPassword,
-      confirmEmailUrl:     window.location.origin+"/confirm-email"
+      confirmEmailUrl: window.location.origin+"/confirm-email"
     };
 
     console.log("🚀 Payload sent:", payload);
 
-          const res=signup(payload)
-          const result=await res
-        if(result.Success){
-
-          toast.success(result.Message);
-          console.log("✅ Signup successful:", result);
-        }else{
-          toast.error(result.Message||"Error in SignUp ,please try again");
-          console.log(" Signup failed", result);
-        }
-
-    
+    try {
+      const res = signup(payload);
+      const result = await res;
+      if (result.Success) {
+        toast.success(result.Message);
+        console.log("✅ Signup successful:", result);
+      } else {
+        toast.error(result.Message || "Error in SignUp, please try again");
+        console.log("Signup failed", result);
+      }
+    } catch (err) {
+      toast.error("حدث خطأ ما، يرجى المحاولة لاحقاً");
+      console.log("Signup error:", err);
+    }
   };
 
-  
+  const renderError = (fieldName) => {
+    if (fieldErrors[fieldName]) {
+      return (
+        <div className="text-danger mt-1" style={{ fontSize: '0.8rem', textAlign: 'right' }}>
+          {fieldErrors[fieldName]}
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <>
-      
       <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center py-4">
         <div className="row w-100 justify-content-center">
           {/* Banner Section */}
@@ -145,12 +204,6 @@ const Signup = () => {
                   Join thousands of satisfied customers who trust us with their shipping needs
                 </p>
 
-                {error && (
-                  <div className="alert alert-danger text-center" role="alert">
-                    {error}
-                  </div>
-                )}
-
                 {/* Personal Info */}
                 <div className="signup-section">
                   <h3 className="signup-section-title">Personal Information</h3>
@@ -159,41 +212,45 @@ const Signup = () => {
                       <input
                         type="text"
                         name="firstName"
-                        className="form-control"
+                        className={`form-control ${fieldErrors.firstName ? 'is-invalid' : ''}`}
                         placeholder="First Name *"
                         value={formData.firstName}
                         onChange={handleChange}
                       />
+                      {renderError('firstName')}
                     </div>
                     <div className="col-12 col-md-6">
                       <input
                         type="text"
                         name="lastName"
-                        className="form-control"
+                        className={`form-control ${fieldErrors.lastName ? 'is-invalid' : ''}`}
                         placeholder="Second Name *"
                         value={formData.lastName}
                         onChange={handleChange}
                       />
+                      {renderError('lastName')}
                     </div>
                     <div className="col-12 col-md-6">
                       <input
                         type="email"
                         name="email"
-                        className="form-control"
+                        className={`form-control ${fieldErrors.email ? 'is-invalid' : ''}`}
                         placeholder="Email Address *"
                         value={formData.email}
                         onChange={handleChange}
                       />
+                      {renderError('email')}
                     </div>
                     <div className="col-12 col-md-6">
                       <input
                         type="tel"
                         name="phoneNumber"
-                        className="form-control"
+                        className={`form-control ${fieldErrors.phoneNumber ? 'is-invalid' : ''}`}
                         placeholder="Phone Number *"
                         value={formData.phoneNumber}
                         onChange={handleChange}
                       />
+                      {renderError('phoneNumber')}
                     </div>
                   </div>
                 </div>
@@ -207,7 +264,7 @@ const Signup = () => {
                         <input
                           type={showPassword ? "text" : "password"}
                           name="password"
-                          className="form-control"
+                          className={`form-control ${fieldErrors.password ? 'is-invalid' : ''}`}
                           placeholder="Password *"
                           value={formData.password}
                           onChange={handleChange}
@@ -224,13 +281,14 @@ const Signup = () => {
                           )}
                         </button>
                       </div>
+                      {renderError('password')}
                     </div>
                     <div className="col-12 col-md-6">
                       <div className="position-relative">
                         <input
                           type={showPassword ? "text" : "password"}
                           name="confirmPassword"
-                          className="form-control"
+                          className={`form-control ${fieldErrors.confirmPassword ? 'is-invalid' : ''}`}
                           placeholder="Confirm Password *"
                           value={formData.confirmPassword}
                           onChange={handleChange}
@@ -247,6 +305,7 @@ const Signup = () => {
                           )}
                         </button>
                       </div>
+                      {renderError('confirmPassword')}
                     </div>
                   </div>
                 </div>
@@ -259,46 +318,50 @@ const Signup = () => {
                       <input
                         type="text"
                         name="companyName"
-                        className="form-control"
+                        className={`form-control ${fieldErrors.companyName ? 'is-invalid' : ''}`}
                         placeholder="Company Name *"
                         value={formData.companyName}
                         onChange={handleChange}
                       />
+                      {renderError('companyName')}
                     </div>
                     <div className="col-12 col-md-6">
                       <input
                         type="text"
                         name="companyLink"
-                        className="form-control"
+                        className={`form-control ${fieldErrors.companyLink ? 'is-invalid' : ''}`}
                         placeholder="Company Website"
                         value={formData.companyLink}
                         onChange={handleChange}
                       />
+                      {renderError('companyLink')}
                     </div>
                     <div className="col-12 col-md-6">
                       <input
                         type="text"
                         name="city"
-                        className="form-control"
+                        className={`form-control ${fieldErrors.city ? 'is-invalid' : ''}`}
                         placeholder="City *"
                         value={formData.city}
                         onChange={handleChange}
                       />
+                      {renderError('city')}
                     </div>
                     <div className="col-12 col-md-6">
                       <input
                         type="text"
                         name="street"
-                        className="form-control"
+                        className={`form-control ${fieldErrors.street ? 'is-invalid' : ''}`}
                         placeholder="Street Address *"
                         value={formData.street}
                         onChange={handleChange}
                       />
+                      {renderError('street')}
                     </div>
                     <div className="col-12 col-md-6">
                       <select 
                         name="governorate" 
-                        className="form-select"
+                        className={`form-select ${fieldErrors.governorate ? 'is-invalid' : ''}`}
                         value={formData.governorate} 
                         onChange={handleChange}
                       >
@@ -309,6 +372,7 @@ const Signup = () => {
                           </option>
                         ))}
                       </select>
+                      {renderError('governorate')}
                     </div>
                     <div className="col-12 col-md-6">
                       <input
@@ -328,7 +392,7 @@ const Signup = () => {
                   <h3 className="signup-section-title">Production Information</h3>
                   <select
                     name="typeOfProduction"
-                    className="form-select"
+                    className={`form-select ${fieldErrors.typeOfProduction ? 'is-invalid' : ''}`}
                     value={formData.typeOfProduction}
                     onChange={handleChange}
                   >
@@ -340,6 +404,7 @@ const Signup = () => {
                     <option value="Furniture">Furniture</option>
                     <option value="Other">Other</option>
                   </select>
+                  {renderError('typeOfProduction')}
                 </div>
 
                 <div className="d-grid">

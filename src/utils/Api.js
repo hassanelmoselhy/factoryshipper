@@ -48,9 +48,14 @@ api.interceptors.request.use(
   async (config) => {
     config.headers = {
       ...config.headers,
-      "Content-Type": "application/json",
       "X-Client-Key": "web API",
     };
+
+    // Only set JSON content type if not already set AND not sending FormData
+    // If sending FormData, do NOT set Content-Type header manually; let axios set it with boundary
+    if (!config.headers["Content-Type"] && !(config.data instanceof FormData)) {
+      config.headers["Content-Type"] = "application/json";
+    }
 
     // Add Authorization headers to private routes
     if (!isPublicRoute(config, publicRoutes)) {

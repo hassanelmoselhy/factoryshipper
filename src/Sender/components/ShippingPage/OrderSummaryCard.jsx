@@ -1,7 +1,7 @@
 import React from 'react';
 import { ClipboardList } from 'lucide-react';
 
-const OrderSummaryCard = ({ formData, loading, handleSubmit, navigate }) => {
+const OrderSummaryCard = ({ formData, loading, handleSubmit, navigate, shipmentType }) => {
   return (
     <div className="sticky-sidebar">
       <div className="summary-card">
@@ -26,15 +26,32 @@ const OrderSummaryCard = ({ formData, loading, handleSubmit, navigate }) => {
             <span className="summary-value">{formData.customerAddress.city || "---"}</span>
           </div>
 
+          {shipmentType !== 'cash_collection' && (
           <div className="summary-row">
             <span className="summary-label">عدد القطع</span>
             <span className="summary-value">{formData.quantity || "0"}</span>
           </div>
+          )}
 
+          {/* Pricing Breakdown */}
+          <div className="summary-divider"></div>
+          
           <div className="summary-row">
-            <span className="summary-label">نوع التوصيل</span>
-            <span className="summary-value">{formData.expressDeliveryEnabled ? "سريع" : "عادي"}</span>
+            <span className="summary-label">سعر الشحن</span>
+            <span className="summary-value">{formData.shipmentPrice || 0} ج.م</span>
           </div>
+          
+          <div className="summary-row">
+            <span className="summary-label">رسوم وزن إضافي</span>
+            <span className="summary-value">{formData.additionalWeightFees || 0} ج.م</span>
+          </div>
+          
+          <div className="summary-row">
+            <span className="summary-label fw-bold">إجمالي رسوم الشحن</span>
+            <span className="summary-value fw-bold">{(Number(formData.shipmentPrice || 0) + Number(formData.additionalWeightFees || 0)).toFixed(1)} ج.م</span>
+          </div>
+
+          <div className="summary-divider"></div>
 
           <div className="summary-row total">
             <span className="summary-label">
@@ -44,7 +61,7 @@ const OrderSummaryCard = ({ formData, loading, handleSubmit, navigate }) => {
           </div>
 
           <button type="submit" className="btn-primary-custom" disabled={loading}>
-            {loading ? "جاري التنفيذ..." : "تأكيد وإنشاء الشحنة"}
+            {loading ? "جاري التنفيذ..." : "تأكيد وإنشاء الأوردر"}
           </button>
 
           <button type="button" className="btn-outline-custom" onClick={() => navigate(-1)}>

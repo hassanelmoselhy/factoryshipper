@@ -182,3 +182,15 @@ body:has(.sidebar.collapsed) .content {
 
 /*animation css*/
 
+
+/* ===========================
+   SweetAlert2 Z-Index Override
+   =========================== */
+.swal2-container {
+  z-index: 2000 !important;
+}
+
+.swal2-popup {
+  z-index: 2000 !important;
+}
+

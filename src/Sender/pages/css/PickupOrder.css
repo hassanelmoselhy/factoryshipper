@@ -37,19 +37,45 @@
   row-gap: 18px;
 }
 .pill-badge {
-  display: inline-block;
-  padding: 6px 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
   border-radius: 20px;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.85rem;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  letter-spacing: 0.3px;
 }
+
+.pill-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
 .cod-badge {
-  background: #e6fff0;
-  color: #0a8f59;
+  background: linear-gradient(135deg, #e7f3ff 0%, #d0e8ff 100%);
+  color: #0056b3;
+  border-color: #b3d9ff;
 }
+
 .status-pending {
-  background: #fff1e6;
-  color: #ff8c42;
+  background: linear-gradient(135deg, #fff4e6 0%, #ffe8cc 100%);
+  color: #e8590c;
+  border-color: #ffd699;
+}
+
+.status-success {
+  background: linear-gradient(135deg, #e6fcf5 0%, #ccf5e8 100%);
+  color: #0ca678;
+  border-color: #99edd5;
+}
+
+.status-failed {
+  background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
+  color: #e03131;
+  border-color: #ffb3b3;
 }
 
 .add-manual-btn {

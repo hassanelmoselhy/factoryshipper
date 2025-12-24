@@ -60,12 +60,12 @@ const Sidebar = ({ title, subtitle, menuItems }) => {
 
       {/* Sidebar */}
       <aside className={`sidebar ${isActive ? "active" : ""} ${isCollapsed ? "collapsed" : ""}`}>
-        {/* Collapse Button - Desktop Only - Positioned on the left */}
-        <button className="collapse-btn" onClick={toggleCollapse} title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}>
-          {isCollapsed ? <FaAngleDoubleLeft /> : <FaAngleDoubleRight />}
-        </button>
-
         <div className="sidebar-header">
+          {/* Collapse Button */}
+          <button className="collapse-btn" onClick={toggleCollapse} title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}>
+            {isCollapsed ? <FaAngleDoubleLeft /> : <FaAngleDoubleRight />}
+          </button>
+          
           <div className={`header-content ${isCollapsed ? "collapsed-header" : ""}`}>
             {!isCollapsed && (
               <>
@@ -75,6 +75,7 @@ const Sidebar = ({ title, subtitle, menuItems }) => {
             )}
           </div>
           <FaCube className="logo-icon" />
+          
         </div>
 
         <nav className="sidebar-nav">
