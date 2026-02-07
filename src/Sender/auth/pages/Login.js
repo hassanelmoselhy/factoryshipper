@@ -8,6 +8,8 @@ import { useLocation } from "react-router-dom";
 
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { login, RefreshToken } from "../../Data/AuthenticationService";
+// Note: RefreshToken is used in shceduleRefreshToken below, not on mount.
+// Session restore on mount is handled by SessionRestorer in App.js.
 
 const Login = () => {
   const SetUser = useUserStore((state) => state.SetUser);
@@ -33,37 +35,14 @@ const Login = () => {
   }, [showUnauthorized]);
 
   useEffect(() => {
-  document.body.classList.add("login-page");
-
-  const img = new Image();
-  img.src = "/hanger.webp"; 
-  img.onload = () => console.log("background preloaded and used");
-
-  return () => {
-    document.body.classList.remove("login-page");
-  };
-}, []);
-
-  // Try to refresh token on mount - if successful, auto-login and redirect
-  useEffect(() => {
-    const tryRefreshToken = async () => {
-      try {
-        const response = await RefreshToken();
-        if (response.Success && response.Data) {
-          console.log("🚀 Auto-login successful via refresh token:", response.Data);
-          SetUser(response.Data);
-          shceduleRefreshToken(response.Data.expiresOn, response.Data.refreshTokenExpiration);
-          navigate("/home");
-          toast.success("Welcome back, " + response.Data?.firstName);
-        }
-      } catch (error) {
-        // If refresh fails, user stays on login page
-        console.log("No valid refresh token, user needs to login");
-      }
+    document.body.classList.add("login-page");
+    document.body.style.backgroundImage = `url(${process.env.PUBLIC_URL}/hanger.webp)`;
+    return () => {
+      document.body.classList.remove("login-page");
+      document.body.style.backgroundImage = "";
     };
-
-    tryRefreshToken();
   }, []);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;

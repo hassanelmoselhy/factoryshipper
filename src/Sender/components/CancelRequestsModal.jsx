@@ -2,9 +2,9 @@
 import React, { useState, useEffect } from "react";
 import { X, Trash2 } from "lucide-react";
 import "../../Components/css/RescheduleModal.css"; // reuse styles where appropriate
-import useUserStore from "../../Store/UserStore/userStore";
 import LoadingOverlay from "./LoadingOverlay";
 import Swal from "sweetalert2";
+import { getShipmentsToCancel, cancelShipments } from "../Data/ShipmentsService";
 
 export default function CancelRequestsModal({
   show = true,
@@ -53,34 +53,21 @@ export default function CancelRequestsModal({
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState(new Set());
   const [selectAll, setSelectAll] = useState(false);
-  const user = useUserStore((state) => state.user);
   const [requestsData, setRequestsData] = useState(initialData);
 
   // Fetch shipments when modal opens
   useEffect(() => {
     async function fetchShipments() {
-      if (!show) return; // only fetch when modal visible
+      if (!show) return;
 
       try {
-        const res = await fetch(
-          "https://stakeexpress.runasp.net/api/Shipments/to-cancel",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "X-Client-Key": "web API",
-              Authorization: `Bearer ${user?.token}`,
-            },
-          }
-        );
-
-        if (res.ok) {
-          const data = await res.json();
-          const list = Array.isArray(data?.data) ? data.data : data || [];
+        const res = await getShipmentsToCancel();
+        if (res.Success) {
+          const list = Array.isArray(res.Data) ? res.Data : [];
           setRequestsData(list.length ? list : initialData);
           console.log("Fetched shipments to cancel:", list);
         } else {
-          console.warn("Failed to fetch shipments to cancel. Status:", res.status);
+          console.warn("Failed to fetch shipments to cancel:", res.Message);
           setRequestsData(initialData);
         }
       } catch (err) {
@@ -91,7 +78,7 @@ export default function CancelRequestsModal({
 
     fetchShipments();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [show]); // fetch when modal is opened
+  }, [show]);
 
   // Reset selection when modal opens/closes or when requestsData changes
   useEffect(() => {
@@ -143,42 +130,24 @@ export default function CancelRequestsModal({
       ? `?requestIds=${encodeURIComponent(requestIds.join(","))}`
       : "";
 
-    const payload = JSON.stringify({ shipmentIds });
-    console.log("Payload for cancellation:", payload);
+    console.log("Payload for cancellation:", { shipmentIds });
     console.log("Appending requestIds to query string:", requestIds);
 
     try {
       setLoading(true);
 
-      const res = await fetch(
-        `https://stakeexpress.runasp.net/api/Requests/${requestIds}/cancellations`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Client-Key": "web API",
-            Authorization: `Bearer ${user?.token}`,
-          },
-          body: payload,
-        }
-      );
+      const res = await cancelShipments(requestIds, shipmentIds);
 
-      if (res.ok) {
-        const data = await res.json();
-        console.log('Shipment deleted successfully',data);
+      if (res.Success) {
+        console.log('Shipment deleted successfully', res.Data);
         Swal.fire({
-                  position: "center-center",
-                  icon: "success",
-                  title: "Shipmens Canceled Successfully",
-                  showConfirmButton: false,
-                  timer: 2000
-            
-                    });
-        onClose()
-        
-      } else {
-        const text = await res.text().catch(() => "");
-        
+          position: "center-center",
+          icon: "success",
+          title: "Shipmens Canceled Successfully",
+          showConfirmButton: false,
+          timer: 2000
+        });
+        onClose();
       }
     } catch (err) {
       console.error("Error deleting requests:", err);

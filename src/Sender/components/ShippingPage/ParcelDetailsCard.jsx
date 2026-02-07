@@ -114,6 +114,7 @@ const ParcelDetailsCard = ({ shipmentType, formData, errors, handleChange }) => 
                   id="proofFile" 
                   name="proofFile" 
                   className="d-none" 
+                  accept="image/*"
                   onChange={handleChange} 
                 />
                 <label htmlFor="proofFile" className="btn btn-upload-proof d-flex align-items-center gap-2 h-100">
@@ -121,6 +122,25 @@ const ParcelDetailsCard = ({ shipmentType, formData, errors, handleChange }) => 
                 </label>
               </div>
             </div>
+            {formData.proofFile && formData.proofFile instanceof File && (
+              <div className="mt-2">
+                <div className="d-flex align-items-center gap-2">
+                   {formData.proofFile.type.startsWith('image/') ? (
+                      <img 
+                        src={URL.createObjectURL(formData.proofFile)} 
+                        alt="Proof Preview" 
+                        className="rounded border"
+                        style={{ width: '40px', height: '40px', objectFit: 'cover' }}
+                      />
+                   ) : (
+                      <div className="p-2 border rounded bg-light">
+                        <span className="small text-muted">{formData.proofFile.name}</span>
+                      </div>
+                   )}
+                   <span className="small text-success">تم اختيار الملف</span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
         )}
@@ -162,9 +182,25 @@ const ParcelDetailsCard = ({ shipmentType, formData, errors, handleChange }) => 
                   <CloudUpload size={20} />
                 </div>
               </div>
-              {formData.returnShipmentImage && (
-                <div className="mt-2 text-success small">
-                  تم اختيار الملف: {formData.returnShipmentImage.name}
+              {formData.returnShipmentImage && formData.returnShipmentImage instanceof File && (
+                <div className="mt-3 text-center">
+                  {formData.returnShipmentImage.type.startsWith('image/') ? (
+                    <div className="position-relative d-inline-block">
+                      <img 
+                        src={URL.createObjectURL(formData.returnShipmentImage)} 
+                        alt="Preview" 
+                        className="img-fluid rounded border shadow-sm"
+                        style={{ maxHeight: '150px' }}
+                      />
+                      <div className="mt-1 text-success small fw-bold">
+                         {formData.returnShipmentImage.name}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="mt-2 text-success small">
+                      تم اختيار الملف: {formData.returnShipmentImage.name}
+                    </div>
+                  )}
                 </div>
               )}
             </div>

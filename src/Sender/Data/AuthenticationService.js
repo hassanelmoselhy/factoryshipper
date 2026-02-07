@@ -49,7 +49,6 @@ export async function login(Payload) {
 
 export async function RefreshToken() {
   try {
-    showLoading();
     console.log("Refreshing token...");
     const response = await api.get("/Accounts/refreshToken", {
       withCredentials: true,
@@ -61,12 +60,10 @@ export async function RefreshToken() {
     return ret;
   } catch (error) {
     console.log("Error refreshing token:", error);
-    const message = error.response.data.message || "";
+    const message = error.response?.data?.message || "";
     console.log("fail", message);
-    const ret = new ApiResponse(error.status, null, false);
+    const ret = new ApiResponse(error.status, null, message, false);
     return ret;
-  } finally {
-    hideLoading();
   }
 }
 

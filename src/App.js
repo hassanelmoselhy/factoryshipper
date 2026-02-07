@@ -106,13 +106,7 @@ const App = () => {
   // 1. Get Control Functions
   const { Show, Hide } = UseLoadingStore();
 
-  // 2. Test Function
-  const handleTest = () => {
-    Show(); 
-    setTimeout(() => {
-      Hide();
-    }, 3000);
-  };
+ 
   
   return (
     <>
@@ -153,14 +147,11 @@ const App = () => {
             </Route>
 
             {/* Misc sender routes */}
-            <Route>
-             
-              <Route path="/print/:orderId" element={<Print />} />
-              <Route path="/request/:requestype/:id" element={<Request />} />
-              <Route path="/change-password" element={<ChangePass />} />
-              <Route path="/extchange-request" element={<ExtchangePage />} />
-              <Route path="/pickuprequest/:id" element={<PickupRequestDetailsPage />} />
-            </Route>
+            <Route path="/print/:orderId" element={<Print />} />
+            <Route path="/request/:requestype/:id" element={<Request />} />
+            <Route path="/change-password" element={<ChangePass />} />
+            <Route path="/extchange-request" element={<ExtchangePage />} />
+            <Route path="/pickuprequest/:id" element={<PickupRequestDetailsPage />} />
 
             <Route path="/confirm-email" element={<ConfirmEmailPage />} />
             <Route path="/confirm-changed-email" element={<ConfirmChangedEmail />} />

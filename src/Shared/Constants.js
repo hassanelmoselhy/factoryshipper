@@ -57,3 +57,11 @@ export const statusOptions = [
   { value: "Lost", label: "ضائع" },
   { value: "Damaged", label: "تالف" },
 ];
+
+export const deliveryZones = [
+  { value: "القاهره والجيزه", label: "القاهره والجيزه" },
+  { value: "التجمعات والمدن الجديده", label: "التجمعات والمدن الجديده" },
+  { value: "وجه بحري (الدلتا والقنال)", label: "وجه بحري (الدلتا والقنال)" },
+  { value: "وجه قبلي (الصعيد)", label: "وجه قبلي (الصعيد)" },
+  { value: "البحر الأحمر", label: "البحر الأحمر" }
+];

@@ -1,6 +1,7 @@
 import React from 'react';
 import { User, Mail, Phone, MapPin } from 'lucide-react';
 import ModernSelect from './ModernSelect';
+import { deliveryZones } from '../../../Shared/Constants';
 
 const CustomerDataCard = ({ formData, errors, handleChange, governorateOptions }) => {
   return (
@@ -128,11 +129,7 @@ const CustomerDataCard = ({ formData, errors, handleChange, governorateOptions }
             startIcon={<MapPin size={18} />}
             options={[
               { value: "", label: "اختر منطقة التوصيل" },
-              { value: "القاهره والجيزه", label: "القاهره والجيزه" },
-              { value: "التجمعات والمدن الجديده", label: "التجمعات والمدن الجديده" },
-              { value: "وجه بحري (الدلتا والقنال)", label: "وجه بحري (الدلتا والقنال)" },
-              { value: "وجه قبلي (الصعيد)", label: "وجه قبلي (الصعيد)" },
-              { value: "البحر الأحمر", label: "البحر الأحمر" }
+              ...deliveryZones
             ]}
             value={formData.deliveryZone}
             onChange={handleChange}

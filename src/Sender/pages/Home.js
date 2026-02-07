@@ -23,7 +23,7 @@ import translations from '../../Store/LanguageStore/translations';
 import { Link } from 'react-router-dom';
 import api from '../../utils/Api'
 import useUserStore from '../../Store/UserStore/userStore'; 
-import { GetOrderStatusStatistics } from '../Data/OrdersService';
+import { getOrderStatusStatistics } from '../Data/OrdersService';
 import DeliveryFailureReasons from '../components/DeliveryFailureReasons';
 import SuccessFailureRate from '../components/SuccessFailureRate';
 
@@ -49,7 +49,7 @@ const Home = () => {
       try {
         setLoading(true);
         console.log("fetching order status...");
-        const res = await GetOrderStatusStatistics();
+        const res = await getOrderStatusStatistics();
         if (res.Success) {
           console.log('order status statistics fetched successfully', res.Data);
           SetShipmentsStatus(res.Data);
@@ -186,7 +186,7 @@ const Home = () => {
               
               return (
                 <Link 
-                  to={"/shipments"} 
+                  to={"/orders"} 
                   state={config.navigationKey} 
                   key={statusKey} 
                   className={`summary-card ${config.color}`} 

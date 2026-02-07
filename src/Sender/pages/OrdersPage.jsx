@@ -16,9 +16,10 @@ import {
   CornerUpLeft,
   Banknote
 } from "lucide-react";
-import { GetAllOrders } from "../Data/ShipmentsService";
+import { getAllOrders } from "../Data/ShipmentsService";
 import { toast } from "sonner";
 import "./css/OrdersPage.css";
+import { Link } from "react-router-dom";
 
 const OrdersPage = () => {
   const [activeTab, setActiveTab] = useState("الكل");
@@ -138,7 +139,7 @@ const OrdersPage = () => {
       }
       
       try {
-        const response = await GetAllOrders(payload);
+        const response = await getAllOrders(payload);
         if (response.Success) {
           console.log(response.Data);
           setOrders(response.Data);
@@ -295,6 +296,8 @@ const OrdersPage = () => {
                 <th>المنطقة</th>
                 <th>مبلغ التحصيل</th>
                 <th>الحالة</th>
+                <th>عدد المحاولات</th>
+
                 <th>تاريخ الإنشاء</th>
                 <th>تاريخ آخر تحديث</th>
                 <th>وقت التوصيل المتوقع</th>
@@ -303,7 +306,7 @@ const OrdersPage = () => {
             </thead>
             <tbody>
               {loading ? (
-                // Skeleton Loader Rows
+             
                 [...Array(5)].map((_, index) => (
                   <tr key={`skeleton-${index}`} className="skeleton-row">
                     <td><div className="skeleton-item checkbox-skeleton placeholder-glow"><span className="placeholder col-12"></span></div></td>
@@ -346,9 +349,15 @@ const OrdersPage = () => {
                     <td>
                       <input type="checkbox" />
                     </td>
+
                     <td>
+                      <Link to={`/order-details/${order.orderNumber}`}
+                      state={{orderType: order.orderType}}
+                      >
                       <span className="order-id">{order.orderNumber}</span>
+                      </Link>
                     </td>
+
                     <td>
                       {order.orderType && TYPE_MAPPING[order.orderType] ? (
                         <span className={`status-badge ${TYPE_MAPPING[order.orderType].class}`}>
@@ -364,19 +373,19 @@ const OrdersPage = () => {
                     </td>
                     <td>
                       <div className="customer-info">
-                        <span className="customer-name">{order.customerName}</span>
-                        <span className="customer-phone">{order.customerPhone}</span>
+                        <span className="customer-name">{order.customer?.customerName}</span>
+                        <span className="customer-phone">{order.customer?.customerPhone}</span>
                       </div>
                     </td>
                     <td>
                       <div className="location-info">
-                        <span className="location-main">{order.governorate}</span>
-                        <span className="location-sub">{order.city}</span>
+                        <span className="location-main">{order.customer?.customerAddress.governorate}</span>
+                        <span className="location-sub">{order.customer?.customerAddress.city}-{order.customer?.customerAddress.street}</span>
                       </div>
                     </td>
                     <td>
                       <div className="amount-info">
-                        <div>{order.collectionCashAmount} ج.م</div>
+                        <div>{order.transactionCashAmount} ج.م</div>
                         <div className="small text-muted">{order.paymentMethod || "الدفع عند الاستلام"}</div>
                       </div>
                     </td>
@@ -394,7 +403,12 @@ const OrdersPage = () => {
                         </span>
                       )}
                     </td>
-                    
+                     <td>
+                      <div className="date-info">
+                        <div>{order.fulfillmentAttempts}</div>
+                        
+                      </div>
+                    </td>
                     <td>
                       <div className="date-info">
                         <div>{new Date(order.createdAt).toLocaleDateString('ar-EG')}</div>

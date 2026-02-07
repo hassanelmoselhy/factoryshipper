@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { FaBars, FaCube, FaAngleDoubleLeft, FaAngleDoubleRight } from "react-icons/fa";
 import useUserStore from "../Store/UserStore/userStore";
 import api from "../utils/Api";
@@ -8,6 +8,7 @@ import "./css/Sidebar.css";
 const Sidebar = ({ title, subtitle, menuItems }) => {
   const [isActive, setIsActive] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const navigate = useNavigate();
   const toggleSidebar = () => setIsActive(!isActive);
   const closeSidebar = () => setIsActive(false);
   const toggleCollapse = () => setIsCollapsed(!isCollapsed);
@@ -43,11 +44,17 @@ const Sidebar = ({ title, subtitle, menuItems }) => {
     }
   };
 
-  const lg = (item) => {
+  const lg = async (e, item) => {
     if (item?.path === "/") {
-      RevokeToken();
+      e.preventDefault(); 
+      try {
+        await RevokeToken(); 
+        navigate("/"); 
+      } catch (error) {
+        console.error("Logout failed:", error);
+        navigate("/"); 
+      }
     }
-
     closeSidebar();
   };
 
@@ -84,7 +91,7 @@ const Sidebar = ({ title, subtitle, menuItems }) => {
               <li key={item.path ?? item.id ?? index}>
                 <NavLink
                   to={item.path}
-                  onClick={() => lg(item)}
+                  onClick={(e) => lg(e, item)}
                   className={({ isActive }) =>
                     isActive ? "nav-link active" : "nav-link"
                   }

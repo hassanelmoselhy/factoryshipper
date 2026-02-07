@@ -27,8 +27,10 @@ const Signup = () => {
 
   useEffect(() => {
     document.body.classList.add("signup-page");
+    document.body.style.backgroundImage = `url(${process.env.PUBLIC_URL}/hanger.webp)`;
     return () => {
       document.body.classList.remove("signup-page");
+      document.body.style.backgroundImage = "";
     };
   }, []);
 

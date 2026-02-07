@@ -18,7 +18,17 @@ import {
 } from "lucide-react";
 import useUserStore from "../../Store/UserStore/userStore";
 import Swal from "sweetalert2";
-import { ChangeEmail } from "../Data/ShipperService";
+import {
+  changeEmail,
+  getShipperProfile,
+  updateShipperName,
+  addPhoneNumber,
+  deletePhoneNumber,
+  addShipperAddress,
+  updateShipperAddress,
+  deleteShipperAddress,
+  updateCompanyInformation,
+} from "../Data/ShipperService";
 import ProfileSkeleton from "../components/ProfileSkeleton";
 
 export default function ShipperProfile() {
@@ -69,26 +79,15 @@ export default function ShipperProfile() {
     if (!user?.token) return;
 
     try {
-      const response = await fetch(
-        "https://stakeexpress.runasp.net/api/Shippers/shipper-profile",
-        {
-          method: "GET",
-          headers: {
-            "X-Client-Key": "web api",
-            Authorization: `Bearer ${user?.token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to fetch profile data");
-
-      const result = await response.json();
-      const fetchedData = result.data || null;
-
-      setData(fetchedData);
-      setOriginalData(JSON.parse(JSON.stringify(fetchedData)));
-      setDeletedAddressIds([]);
+      const res = await getShipperProfile();
+      if (res.Success) {
+        const fetchedData = res.Data || null;
+        setData(fetchedData);
+        setOriginalData(JSON.parse(JSON.stringify(fetchedData)));
+        setDeletedAddressIds([]);
+      } else {
+        Swal.fire("Error", res.Message || "Failed to load profile data", "error");
+      }
     } catch (error) {
       console.error("Error fetching profile:", error);
       Swal.fire("Error", "Failed to load profile data", "error");
@@ -145,12 +144,6 @@ export default function ShipperProfile() {
   // NEW: AUTOMATIC SAVE HANDLER FOR INLINE FIELDS (TICK ICON)
   // ----------------------------------------------------------------
   const handleInlineSave = async () => {
-    const headers = { 
-        "X-Client-Key": "web api", 
-        Authorization: `Bearer ${user?.token}`, 
-        "Content-Type": "application/json" 
-    };
-
     Swal.fire({
       title: "Saving...",
       didOpen: () => Swal.showLoading(),
@@ -158,7 +151,7 @@ export default function ShipperProfile() {
       background: 'transparent',
       color: '#fff',
       backdrop: 'rgba(0,0,0,0.5)',
-      showConfirmButton: false, 
+      showConfirmButton: false,
     });
 
     try {
@@ -168,16 +161,10 @@ export default function ShipperProfile() {
             firstName: personalInfoForm.firstName,
             lastName: personalInfoForm.lastName
         };
-        
-        const response = await fetch("https://stakeexpress.runasp.net/api/Shippers/update-shipper-name", {
-            method: "PUT",
-            headers: headers,
-            body: JSON.stringify(payload)
-        });
 
-        if (!response.ok) throw new Error("Failed to update name");
+        const res = await updateShipperName(payload);
+        if (!res.Success) throw new Error(res.Message || "Failed to update name");
 
-        // Update local state and original state to reflect saved changes
         const newData = { ...data, firstName: payload.firstName, lastName: payload.lastName };
         setData(newData);
         setOriginalData(prev => ({ ...prev, firstName: payload.firstName, lastName: payload.lastName }));
@@ -185,71 +172,54 @@ export default function ShipperProfile() {
 
       // === CASE 2: EMAIL ===
       else if (editingField === 'email') {
-        // The endpoint edits the whole profile, so we need to include existing company data
         const payload = {
-
           newEmail: personalInfoForm.email,
-          confirmNewEmailUrl:window.location.origin+"/confirm-changed-email"           
-         
+          confirmNewEmailUrl: window.location.origin + "/confirm-changed-email"
         };
 
-        const response = await ChangeEmail(payload)
+        const response = await changeEmail(payload);
 
-        if(response.Success){
+        if (response.Success) {
           Swal.fire({
             icon: 'success',
             title: response.Message || 'Email confirmation sent please check your email !',
             toast: true,
             position: 'center',
             showConfirmButton: true,
-            
-            didOpen: () => {
-              Swal.showLoading();
-            },
-            willClose: () => {
-              Swal.hideLoading();
-            },
+            didOpen: () => { Swal.showLoading(); },
+            willClose: () => { Swal.hideLoading(); },
           });
-        }else{
+        } else {
           Swal.fire({
             icon: 'error',
             title: response.Message || 'Failed to update email!',
             toast: true,
             position: 'center',
             showConfirmButton: true,
-            didOpen: () => {
-              Swal.showLoading();
-            },
-            willClose: () => {
-              Swal.hideLoading();
-            },
+            didOpen: () => { Swal.showLoading(); },
+            willClose: () => { Swal.hideLoading(); },
           });
         }
         setEditingField(null);
         return;
-       
       }
 
       // === CASE 3: PHONES ===
       else if (editingField === 'phones') {
         const originalPhones = data.phones || [];
         const currentPhones = personalInfoForm.phones.filter((p) => p.trim() !== "");
-        
+
         const phonesToAdd = currentPhones.filter((p) => !originalPhones.includes(p));
         const phonesToDelete = originalPhones.filter((p) => !currentPhones.includes(p));
-        
+
         const promises = [];
 
-        // Additions
         phonesToAdd.forEach((phone) => {
-          const url = `https://stakeexpress.runasp.net/api/Shippers/Add-Phone-Number`;
-          promises.push(fetch(url, { method: "POST", headers: headers, body: JSON.stringify({ phoneNumber: phone }) }));
+          promises.push(addPhoneNumber({ phoneNumber: phone }));
         });
 
-        // Deletions
         phonesToDelete.forEach((phone) => {
-          const url = `https://stakeexpress.runasp.net/api/Shippers/Delete-Phone-Number`;
-          promises.push(fetch(url, { method: "DELETE", headers: headers, body: JSON.stringify({ phoneNumber: phone }) }));
+          promises.push(deletePhoneNumber({ phoneNumber: phone }));
         });
 
         await Promise.all(promises);
@@ -268,7 +238,7 @@ export default function ShipperProfile() {
         showConfirmButton: false,
         timer: 1500
       });
-      
+
       setEditingField(null);
 
     } catch (error) {
@@ -299,21 +269,11 @@ export default function ShipperProfile() {
     });
 
     const promises = [];
-    const headers = { 
-        "X-Client-Key": "web api", 
-        Authorization: `Bearer ${user?.token}`, 
-        "Content-Type": "application/json" 
-    };
 
-    // Note: Names, Email, and Phone logic is also here as a fallback, 
-    // but the inline edit now handles them immediately.
-    
     // --- ADDRESSES ---
     deletedAddressIds.forEach((id) => {
       if (!id) return;
-      const url = `https://stakeexpress.runasp.net/api/Shippers/delete-shipper-address/${id}`;
-      const promise = fetch(url, { method: "DELETE", headers: headers });
-      promises.push(promise);
+      promises.push(deleteShipperAddress(id));
     });
 
     if (data.addresses) {
@@ -327,15 +287,11 @@ export default function ShipperProfile() {
         };
 
         if (!address.id || address.id < 0) {
-          const url = "https://stakeexpress.runasp.net/api/Shippers/add-shipper-address";
-          const promise = fetch(url, { method: "POST", headers: headers, body: JSON.stringify(payload) });
-          promises.push(promise);
+          promises.push(addShipperAddress(payload));
         } else {
-          // Check if this specific address changed
           const originalAddr = originalData.addresses?.find((a) => a.id === address.id || a.addressId === address.id);
-          
-          // Only update if it actually changed to save bandwidth
-          const hasAddrChanged = !originalAddr || 
+
+          const hasAddrChanged = !originalAddr ||
             originalAddr.street !== address.street ||
             originalAddr.city !== address.city ||
             originalAddr.governorate !== address.governorate ||
@@ -343,16 +299,14 @@ export default function ShipperProfile() {
             originalAddr.googleMapAddressLink !== address.googleMapAddressLink;
 
           if (hasAddrChanged) {
-            const url = `https://stakeexpress.runasp.net/api/Shippers/update-shipper-address/${address.id}`;
-            const promise = fetch(url, { method: "PUT", headers: headers, body: JSON.stringify(payload) });
-            promises.push(promise);
+            promises.push(updateShipperAddress(address.id, payload));
           }
         }
       });
     }
 
     // --- COMPANY INFORMATION ---
-    const isCompanyChanged = 
+    const isCompanyChanged =
       data.companyName !== originalData.companyName ||
       data.typeOfProduction !== originalData.typeOfProduction ||
       data.companyLink !== originalData.companyLink;
@@ -363,8 +317,7 @@ export default function ShipperProfile() {
         companyLink: data.companyLink,
         typeOfProduction: data.typeOfProduction
       };
-      const url = "https://stakeexpress.runasp.net/api/Shippers/update-company-information";
-      promises.push(fetch(url, { method: "PUT", headers: headers, body: JSON.stringify(companyPayload) }));
+      promises.push(updateCompanyInformation(companyPayload));
     }
 
     try {

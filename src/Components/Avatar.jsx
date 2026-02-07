@@ -1,52 +1,50 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom"; 
+import { Link, useNavigate } from "react-router-dom"; 
 import "bootstrap/dist/css/bootstrap.min.css";
-import axios from "axios";
+import api from "../utils/Api";
 import "./css/avatar.css";
-import useUserStore from "../Store/UserStore/userStore";
 
 export default function Avatar({ letter = "A", title = "Avatar A" }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
-  const user=useUserStore((state)=>state.user)
+  const navigate = useNavigate();
 
  const RevokeToken = async () => {
-    const url = "https://stakeexpress.runasp.net/api/Accounts/revokeToken";
-      
     try {
-   
-      const response = await axios.post(
-        url,
-        {}, 
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "X-Client-Key": "web API",
-            Authorization: `Bearer ${user?.token}`,
-          },
-          withCredentials:true
-        }
-      );
+      const response = await api.post("/Accounts/revokeToken", {}, {
+        withCredentials: true
+      });
 
       console.log("success", response.data);
-      sessionStorage.clear()
+      sessionStorage.clear();
+      // Prevent session restore after logout
+      sessionStorage.setItem('sessionRestoreAttempted', 'true');
       return response.data;
     } catch (err) {
-      
       if (err.response) {
-       
         console.log("Fail", {
           status: err.response.status,
           data: err.response.data,
         });
       } else {
-   
         console.log("Failed", err.message);
       }
- 
       throw err;
     }
   };
+  
+  const handleLogout = async (e) => {
+    e.preventDefault(); // Prevent immediate navigation
+    setOpen(false);
+    try {
+      await RevokeToken(); // Wait for logout to complete
+      navigate("/"); // Then navigate programmatically
+    } catch (error) {
+      console.error("Logout failed:", error);
+      navigate("/"); // Navigate anyway on error
+    }
+  };
+  
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -81,7 +79,7 @@ export default function Avatar({ letter = "A", title = "Avatar A" }) {
             Change Password
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-lock-icon lucide-lock"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           </Link>
-          <Link to="/" className="dropdown-link d-flex align-items-center justify-content-between" onClick={() => {RevokeToken() ;setOpen(false)}}>
+          <Link to="/" className="dropdown-link d-flex align-items-center justify-content-between" onClick={handleLogout}>
             Logout
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-log-out-icon lucide-log-out"><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg>
           </Link>

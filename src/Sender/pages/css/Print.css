@@ -1,197 +1,245 @@
-.print-page {
-  display: flex;
-  justify-content: center;
-  padding: 30px;
-  background: #f8f9fa;
-  min-height: 100vh;
-  font-family: "Cairo", sans-serif;
+/* Bosta-inspired Waybill Print Styles */
+:root {
+  --bosta-border: #334155;
+  --bosta-bg-dark: #1e293b;
 }
 
-.print-container {
+.waybill-page {
   background: white;
+  min-height: 100vh;
+  padding: 10px;
+  direction: rtl;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #000;
+}
+
+.bosta-waybill-container {
   width: 100%;
-  max-width: 720px;
-  border: 1px solid #ccc;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  padding: 32px;
-  font-size: 15px;
-  line-height: 1.8;
-  border-radius: 8px;
-}
-
-/* ===== Header ===== */
-.print-header {
+  max-width: 900px;
+  margin: 0 auto;
+  border: 2px solid var(--bosta-border);
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-bottom: 24px;
-  padding-bottom: 12px;
-  border-bottom: 2px solid #6b21a8;
-  gap: 12px;
+  flex-direction: column;
 }
 
-.print-header h2 {
-  font-size: 22px;
-  font-weight: 700;
-  color: #6b21a8;
-  flex: 1;
+/* Header Grid */
+.waybill-top-grid {
+  display: grid;
+  grid-template-columns: 180px 1fr 140px;
+  border-bottom: 2px solid var(--bosta-border);
 }
 
-/* ===== Box ===== */
-.print-box {
-  border: 1px solid #ddd;
-  padding: 20px;
-  border-radius: 6px;
-  margin-bottom: 20px;
-  background: #fafafa;
-}
-
-.print-box-top {
+.top-left-brand {
+  padding: 10px;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
+  gap: 8px;
+  border-left: 2px solid var(--bosta-border);
 }
 
-.print-location {
-  text-align: right;
-  font-size: 14px;
-  line-height: 1.6;
-  flex: 1;
-  min-width: 200px;
+.bosta-logo {
+  height: 40px;
+  width: auto;
 }
 
-/* ===== Logo ===== */
-.print-logo img {
-  height: 60px;
-  display: block;
-  margin: 0 auto 6px;
+.order-type-badge {
+  font-weight: 800;
+  font-size: 16px;
+  padding: 2px 12px;
 }
 
-.print-logo p {
-  font-size: 12px;
-  color: #6b21a8;
+.hub-code-badge {
+  background: var(--bosta-bg-dark);
+  color: white;
+  width: 100%;
   text-align: center;
+  font-weight: 900;
+  padding: 4px 0;
+  font-size: 18px;
+  border-radius: 4px;
+}
+
+.top-center-barcode {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-left: 2px solid var(--bosta-border);
+}
+
+.bosta-barcode {
+  height: 60px;
+  width: 90%;
+}
+
+.barcode-numbers {
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 700;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.hub-name {
+  font-weight: 800;
+  font-size: 14px;
+  margin-top: 8px;
+  text-transform: uppercase;
+}
+
+.top-right-qr {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+}
+
+.bosta-qr {
+  width: 80px;
+  height: 80px;
+}
+
+/* Main Grid */
+.waybill-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+}
+
+/* Left Column */
+.main-left-col {
+  display: flex;
+  flex-direction: column;
+  border-left: 2px solid var(--bosta-border);
+}
+
+.grid-row {
+  padding: 12px;
+  border-bottom: 1px solid var(--bosta-border);
+  display: flex;
+  align-items: center;
+}
+
+.grid-row:last-child {
+  border-bottom: none;
+}
+
+.row-label {
+  font-weight: 700;
+  font-size: 13px;
+  color: #444;
+  margin-left: 8px;
+}
+
+.row-value {
+  font-weight: 800;
+  font-size: 15px;
+}
+
+.region-row {
+  background: #f1f5f9;
+}
+
+.address-details-row {
+  flex: 1;
+  min-height: 120px;
+  align-items: flex-start;
+}
+
+.address-big-text {
+  font-size: 22px;
+  font-weight: 900;
   line-height: 1.4;
 }
 
-/* ===== Barcode ===== */
-.print-barcode {
-  margin-top: 20px;
-  text-align: center;
+/* Right Column */
+.main-right-col {
+  display: flex;
+  flex-direction: column;
 }
 
-.print-barcode img {
-  height: 60px;
-  margin-bottom: 8px;
+.side-row {
+  padding: 10px;
+  border-bottom: 2px solid var(--bosta-border);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-/* ===== Details Grid ===== */
-.print-details {
+.side-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #666;
+  text-align: right;
+}
+
+.side-value {
+  font-weight: 800;
+  font-size: 16px;
+  text-align: right;
+}
+
+.side-value.highlight {
+  font-size: 24px;
+  color: #000;
+}
+
+.side-value-stack {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+
+.customer-name-text {
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.customer-phone-text {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.side-actions-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  margin-top: 20px;
-  overflow: hidden;
+  padding: 10px;
+  gap: 10px;
 }
 
-.print-details > div {
-  border: 1px solid #eee;
-  padding: 12px;
-  font-size: 14px;
+.action-box {
+  border: 2px solid var(--bosta-border);
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+  font-weight: 800;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* ===== Address ===== */
-.print-address {
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  padding: 16px;
-  margin-top: 20px;
-  background: #fafafa;
-}
-
-.print-address p {
-  margin: 6px 0;
-}
-
-/* ===== Text Helpers ===== */
-.bold {
-  font-weight: 600;
-  color: #333;
-}
-
-/* ===== Responsive Design ===== */
-@media (max-width: 992px) {
-  .print-container {
-    padding: 24px;
-  }
-
-  .print-header h2 {
-    font-size: 20px;
-  }
-}
-
-@media (max-width: 768px) {
-  .print-container {
-    padding: 20px;
-    font-size: 14px;
-  }
-
-  .print-header {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .print-box-top {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .print-details {
-    grid-template-columns: 1fr;
-  }
-
-  .print-logo img {
-    height: 50px;
-  }
-}
-
-@media (max-width: 480px) {
-  .print-container {
-    padding: 16px;
-    font-size: 13px;
-  }
-
-  .print-header h2 {
-    font-size: 18px;
-  }
-
-  .print-logo img {
-    height: 40px;
-  }
-
-  .print-barcode img {
-    height: 45px;
-  }
-}
-
-/* ===== Print Mode ===== */
+/* Print Overrides */
 @media print {
+  @page {
+    margin: 0;
+    size: auto;
+  }
+  
   body {
-    background: white;
+    margin: 0;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
-  .print-page {
+  
+  .waybill-page {
     padding: 0;
-    background: white;
+    width: 100vw;
+    height: 100vh;
   }
-  .print-container {
-    box-shadow: none;
-    border: none;
-    width: 100%;
-    max-width: none;
-    padding: 0;
+  
+  .bosta-waybill-container {
+    border-width: 3px;
   }
 }

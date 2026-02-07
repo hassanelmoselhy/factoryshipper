@@ -117,9 +117,25 @@ const ExchangeReturnParcelCard = ({ formData, errors, handleChange }) => {
                   <CloudUpload size={20} />
                 </div>
               </div>
-              {formData.returnShipmentImage && (
-                <div className="mt-2 text-success small">
-                  تم اختيار الملف: {formData.returnShipmentImage.name}
+              {formData.returnShipmentImage && formData.returnShipmentImage instanceof File && (
+                <div className="mt-3 text-center">
+                  {formData.returnShipmentImage.type.startsWith('image/') ? (
+                    <div className="position-relative d-inline-block">
+                      <img 
+                        src={URL.createObjectURL(formData.returnShipmentImage)} 
+                        alt="Preview" 
+                        className="img-fluid rounded border shadow-sm"
+                        style={{ maxHeight: '150px' }}
+                      />
+                      <div className="mt-1 text-success small fw-bold">
+                         {formData.returnShipmentImage.name}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="mt-2 text-success small">
+                      تم اختيار الملف: {formData.returnShipmentImage.name}
+                    </div>
+                  )}
                 </div>
               )}
             </div>

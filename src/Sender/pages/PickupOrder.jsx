@@ -16,7 +16,7 @@ import LoadingOverlay from '../components/LoadingOverlay';
 import { egypt_governorates } from "../../Shared/Constants";
 import { toast } from "sonner";
 import { getShipperAddresses } from "../Data/ShipperService";
-import { FetchPendingOrders, CreatePickupRequest } from "../Data/ShipmentsService";
+import { fetchPendingOrders, createPickupRequest } from "../Data/ShipmentsService";
 
 export default function PickupRequestManagement() {
   const navigate = useNavigate();
@@ -71,7 +71,7 @@ export default function PickupRequestManagement() {
       const fetchPendingOrders= async()=>{
       try{
         setLoading(true);
-        const res = await FetchPendingOrders();
+        const res = await fetchPendingOrders();
         if(res.Success){
 
           console.log("Pending orders data:", res.Data);
@@ -135,7 +135,7 @@ const payload={
 }
 try{
     setLoading(true);
-    const res = await CreatePickupRequest(payload);
+    const res = await createPickupRequest(payload);
     
     if(res.Success){
       console.log("Pickup request submitted successfully:", res.Data);

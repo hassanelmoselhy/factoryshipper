@@ -19,7 +19,7 @@
 .branches-table-wrapper .table-row {
   display: grid;
   grid-template-columns: 120px 200px 180px 150px 120px 120px 120px 150px;
-  padding: 12px 15px;
+  padding: 16px 15px; /* Increased from 12px */
   align-items: center;
   text-align: center;
   direction: rtl;

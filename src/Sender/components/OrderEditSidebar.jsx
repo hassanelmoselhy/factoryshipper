@@ -7,33 +7,40 @@ export default function OrderEditSidebar({ open, onClose, order = {}, onSave }) 
   const [errors, setErrors] = useState({});
   const drawerRef = useRef(null);
 
-  // useEffect(() => {
-  //   // Clone order to local form state
-    
-  //   setForm({
-  //     customerName: order.customerName ?? "",
-  //     customerPhone: order.customerPhone ?? "",
-  //     customerEmail: order.customerEmail ?? "",
-  //     street: order?.customerAddress?.street ?? "",
-  //     city: order?.customerAddress?.city ?? "",
-  //     governorate: order?.customerAddress?.governorate ?? "",
-  //     addressDetails: order?.customerAddress?.details ?? "",
-  //     shipmentDescription: order.shipmentDescription ?? "",
-  //     shipmentWeight: order.shipmentWeight ?? "",
-  //     shipmentLength: order.shipmentLength ?? "",
-  //     shipmentWidth: order.shipmentWidth ?? "",
-  //     shipmentHeight: order.shipmentHeight ?? "",
-  //     quantity: order.quantity ?? 1,
-  //     shipmentNotes: order.shipmentNotes ?? "",
-  //     cashOnDeliveryEnabled: !!order.cashOnDeliveryEnabled,
-  //     openPackageOnDeliveryEnabled: !!order.openPackageOnDeliveryEnabled,
-  //     expressDeliveryEnabled: !!order.expressDeliveryEnabled,
-  //     collectionAmount: order.collectionAmount ?? "",
-      
-  //   });
-  //   setDirty(false);
-  //   setErrors({});
-  // }, [order, open]);
+  useEffect(() => {
+    // Clone order to local form state
+    if (!open) return;
+
+    setForm({
+      id: order.id,
+      orderType: order.orderType || "Delivery",
+      customerName: order?.customer?.customerName ?? "",
+      customerPhone: order?.customer?.customerPhone ?? "",
+      customerEmail: order?.customer?.customerEmail ?? "",
+      street: order?.customer?.customerAddress?.street ?? "",
+      city: order?.customer?.customerAddress?.city ?? "",
+      governorate: order?.customer?.customerAddress?.governorate ?? "",
+      addressDetails: order?.customer?.customerAddress?.additionalDetails ?? "",
+      shipmentDescription: order?.shipment?.shipmentDescription ?? "",
+      shipmentWeight: order?.shipment?.shipmentWeight ?? "",
+      shipmentLength: order?.shipment?.shipmentLength ?? "",
+      shipmentWidth: order?.shipment?.shipmentWidth ?? "",
+      shipmentHeight: order?.shipment?.shipmentHeight ?? "",
+      quantity: order?.shipment?.quantity ?? 1,
+      shipmentNotes: order?.shipment?.shipmentNotes ?? "",
+      cashOnDeliveryEnabled: !!order.cashOnDeliveryEnabled,
+      openPackageOnDeliveryEnabled: !!order.openPackageOnDeliveryEnabled,
+      expressDeliveryEnabled: !!order.expressDeliveryEnabled,
+      collectionAmount: order.transactionCashAmount ?? "",
+      // Return details
+      returnQuantity: order?.returnShipmentDetails?.quantity || order?.returnQuantity || "",
+      returnShipmentWeight: order?.returnShipmentDetails?.shipmentWeight || order?.returnShipmentWeight || "",
+      returnShipmentDescription: order?.returnShipmentDetails?.shipmentDescription || order?.returnShipmentDescription || "",
+      returnShipmentNotes: order?.returnShipmentDetails?.shipmentNotes || order?.returnShipmentNotes || "",
+    });
+    setDirty(false);
+    setErrors({});
+  }, [order, open]);
 
   useEffect(() => {
     function handleKey(e) {
@@ -65,11 +72,15 @@ export default function OrderEditSidebar({ open, onClose, order = {}, onSave }) 
     if (!form.governorate) err.governorate = "مطلوب";
 
     const positiveNum = (v) => v !== "" && v !== null && v !== undefined && !isNaN(v) && Number(v) >= 0;
-    if (!positiveNum(form.shipmentWeight)) err.shipmentWeight = "أدخل رقم (≥ 0)";
-    if (!positiveNum(form.shipmentLength)) err.shipmentLength = "أدخل رقم (≥ 0)";
-    if (!positiveNum(form.shipmentWidth)) err.shipmentWidth = "أدخل رقم (≥ 0)";
-    if (!positiveNum(form.shipmentHeight)) err.shipmentHeight = "أدخل رقم (≥ 0)";
-    if (!Number.isInteger(Number(form.quantity)) || Number(form.quantity) < 1) err.quantity = "أدخل عدد صحيح ≥ 1";
+    
+    if (form.orderType === 'Delivery' || form.orderType === 'Exchange') {
+      if (!positiveNum(form.shipmentWeight)) err.shipmentWeight = "أدخل رقم (≥ 0)";
+      if (!positiveNum(form.shipmentLength)) err.shipmentLength = "أدخل رقم (≥ 0)";
+      if (!positiveNum(form.shipmentWidth)) err.shipmentWidth = "أدخل رقم (≥ 0)";
+      if (!positiveNum(form.shipmentHeight)) err.shipmentHeight = "أدخل رقم (≥ 0)";
+      if (!Number.isInteger(Number(form.quantity)) || Number(form.quantity) < 1) err.quantity = "أدخل عدد صحيح ≥ 1";
+    }
+
     if (form.collectionAmount !== "" && form.collectionAmount !== null && (!positiveNum(form.collectionAmount))) err.collectionAmount = "قيمة غير صحيحة";
 
     setErrors(err);
@@ -94,6 +105,9 @@ export default function OrderEditSidebar({ open, onClose, order = {}, onSave }) 
         shipmentHeight: form.shipmentHeight === "" ? 0 : Number(form.shipmentHeight),
         quantity: Number(form.quantity),
         collectionAmount: form.collectionAmount === "" ? 0 : Number(form.collectionAmount),
+        // Return details
+        returnQuantity: form.returnQuantity === "" ? 0 : Number(form.returnQuantity),
+        returnShipmentWeight: form.returnShipmentWeight === "" ? 0 : Number(form.returnShipmentWeight),
       };
       await onSave?.(payload);
       setDirty(false);
@@ -124,7 +138,7 @@ export default function OrderEditSidebar({ open, onClose, order = {}, onSave }) 
       {/* drawer */}
       <div
         ref={drawerRef}
-        className="position-absolute top-0 end-0 bg-white h-100 shadow"
+        className="position-absolute top-0 start-0 bg-white h-100 shadow"
         style={{ width: "min(760px, 100%)", overflowY: "auto" }}
       >
         <div className="d-flex align-items-center justify-content-between p-3 border-bottom">
@@ -175,18 +189,19 @@ export default function OrderEditSidebar({ open, onClose, order = {}, onSave }) 
 
               <div className="col-12 col-md-6">
                 <label className="form-label small">المحافظه*</label>
-                <input className={`form-control ${errors.governorate ? 'is-invalid' : ''}`} value={form.governorate} onChange={e => updateField('country', e.target.value)} />
+                <input className={`form-control ${errors.governorate ? 'is-invalid' : ''}`} value={form.governorate} onChange={e => updateField('governorate', e.target.value)} />
                 <div className="invalid-feedback">{errors.governorate}</div>
               </div>
             </div>
           </section>
 
-          {/* Shipment */}
+          {/* Shipment Details - Delivery/Exchange */}
+          {(form.orderType === 'Delivery' || form.orderType === 'Exchange') && (
           <section className="mb-4">
-            <h6>تفاصيل الطرد</h6>
+            <h6>تفاصيل الشحنة الصادرة</h6>
             <div className="row g-3">
               <div className="col-12">
-                <label className="form-label small">محتوى الطرد</label>
+                <label className="form-label small">محتوى الشحنة</label>
                 <input className="form-control" value={form.shipmentDescription} onChange={e => updateField('shipmentDescription', e.target.value)} />
               </div>
 
@@ -221,33 +236,76 @@ export default function OrderEditSidebar({ open, onClose, order = {}, onSave }) 
               </div>
 
               <div className="col-12">
-                <label className="form-label small">ملاحظات خاصة بالشحن</label>
+                <label className="form-label small">ملاحظات الشحن</label>
                 <textarea className="form-control" rows={3} value={form.shipmentNotes} onChange={e => updateField('shipmentNotes', e.target.value)} />
               </div>
             </div>
           </section>
+          )}
+
+          {/* Return Shipment Details - Exchange/Return */}
+          {(form.orderType === 'Exchange' || form.orderType === 'Return') && (
+            <section className="mb-4">
+              <h6>تفاصيل الشحنة المرتجعة</h6>
+              <div className="row g-3">
+                <div className="col-12">
+                  <label className="form-label small">محتوى المرتجع</label>
+                  <input className="form-control" value={form.returnShipmentDescription} onChange={e => updateField('returnShipmentDescription', e.target.value)} />
+                </div>
+                <div className="col-6 col-md-6">
+                  <label className="form-label small">الكمية</label>
+                  <input type="number" min="1" className="form-control" value={form.returnQuantity} onChange={e => updateField('returnQuantity', e.target.value)} />
+                </div>
+                <div className="col-6 col-md-6">
+                  <label className="form-label small">الوزن</label>
+                  <input type="number" step="0.1" className="form-control" value={form.returnShipmentWeight} onChange={e => updateField('returnShipmentWeight', e.target.value)} />
+                </div>
+                <div className="col-12">
+                  <label className="form-label small">ملاحظات المرتجع</label>
+                  <textarea className="form-control" rows={2} value={form.returnShipmentNotes} onChange={e => updateField('returnShipmentNotes', e.target.value)} />
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* Cash Collection Specific Description */}
+          {form.orderType === 'CashCollection' && (
+            <section className="mb-4">
+              <h6>بيانات التحصيل</h6>
+              <div className="col-12">
+                <label className="form-label small">ملاحظات/وصف التحصيل</label>
+                <textarea className="form-control" rows={3} value={form.shipmentDescription} onChange={e => updateField('shipmentDescription', e.target.value)} />
+              </div>
+            </section>
+          )}
 
           {/* Payment & Delivery */}
           <section className="mb-4">
             <h6>خيارات الدفع والتسليم</h6>
             <div className="row g-3 align-items-center">
-              <div className="col-12 col-md-6 form-check">
-                <input className="form-check-input" type="checkbox" id="cod" checked={!!form.cashOnDeliveryEnabled} onChange={e => updateField('cashOnDeliveryEnabled', e.target.checked)} />
-                <label className="form-check-label" htmlFor="cod">الدفع عند الاستلام</label>
-              </div>
+              {form.orderType !== 'CashCollection' && (
+                <>
+                  <div className="col-12 col-md-6 form-check">
+                    <input className="form-check-input" type="checkbox" id="cod" checked={!!form.cashOnDeliveryEnabled} onChange={e => updateField('cashOnDeliveryEnabled', e.target.checked)} />
+                    <label className="form-check-label" htmlFor="cod">الدفع عند الاستلام</label>
+                  </div>
 
-              <div className="col-12 col-md-6 form-check">
-                <input className="form-check-input" type="checkbox" id="openOnDelivery" checked={!!form.openPackageOnDeliveryEnabled} onChange={e => updateField('openPackageOnDeliveryEnabled', e.target.checked)} />
-                <label className="form-check-label" htmlFor="openOnDelivery">فتح الطرد عند الاستلام</label>
-              </div>
+                  <div className="col-12 col-md-6 form-check">
+                    <input className="form-check-input" type="checkbox" id="openOnDelivery" checked={!!form.openPackageOnDeliveryEnabled} onChange={e => updateField('openPackageOnDeliveryEnabled', e.target.checked)} />
+                    <label className="form-check-label" htmlFor="openOnDelivery">فتح الطرد عند الاستلام</label>
+                  </div>
 
-              <div className="col-12 col-md-6 form-check">
-                <input className="form-check-input" type="checkbox" id="express" checked={!!form.expressDeliveryEnabled} onChange={e => updateField('expressDeliveryEnabled', e.target.checked)} />
-                <label className="form-check-label" htmlFor="express">أولوية/توصيل سريع</label>
-              </div>
+                  <div className="col-12 col-md-6 form-check">
+                    <input className="form-check-input" type="checkbox" id="express" checked={!!form.expressDeliveryEnabled} onChange={e => updateField('expressDeliveryEnabled', e.target.checked)} />
+                    <label className="form-check-label" htmlFor="express">أولوية/توصيل سريع</label>
+                  </div>
+                </>
+              )}
 
               <div className="col-12 col-md-6">
-                <label className="form-label small">قيمة التحصيل (إن وُجدت)</label>
+                <label className="form-label small">
+                  {form.orderType === 'CashCollection' ? 'المبلغ المراد تحصيله' : 'قيمة التحصيل (إن وُجدت)'}
+                </label>
                 <input type="number" step="0.01" min="0" className={`form-control ${errors.collectionAmount ? 'is-invalid' : ''}`} value={form.collectionAmount} onChange={e => updateField('collectionAmount', e.target.value)} />
                 <div className="invalid-feedback">{errors.collectionAmount}</div>
               </div>

@@ -312,7 +312,7 @@
 }
 
 .shipments-table th {
-  padding: 16px 12px;
+  padding: 20px 12px; /* Increased from 16px */
   text-align: right;
   font-weight: 600;
   color: #374151;
@@ -371,7 +371,7 @@
 }
 
 .shipments-table td {
-  padding: 16px 12px;
+  padding: 20px 12px; /* Increased from 16px */
   color: #374151;
   vertical-align: middle;
 }

@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
 import { egypt_governorates } from '../../Shared/Constants';
-import { CreateShipment } from '../Data/ShipmentsService';
+import { createShipment } from '../Data/ShipmentsService';
 
 // Import components
 import ShipmentTypeTabs from '../components/ShippingPage/ShipmentTypeTabs';
@@ -105,6 +105,7 @@ const ShippingPage = () => {
     if (last === "quantity" && (value < 1 || !Number.isInteger(Number(value)))) return messages.qtyInteger;
     if (last === "shipmentDescription" && !value) return messages.required;
     if (last === "packageType" && !value) return messages.required;
+    if (last === "collectionAmount" && (value <= 0)) return messages.collectionRequired;
 
     // Validation for exchange/return specific fields
     if (shipmentType === 'exchange') {
@@ -147,7 +148,7 @@ const ShippingPage = () => {
   // Helper function to map transaction type
   const mapTransactionType = (formData, shipmentType) => {
     if (shipmentType === 'cash_collection') {
-      return 'CollectFromCustomer';
+      return formData.isRefund ? 'RefundToCustomer' : 'CollectFromCustomer';
     }
     if (formData.isRefund) {
       return 'RefundToCustomer';
@@ -166,7 +167,7 @@ const ShippingPage = () => {
     if (shipmentType === 'cash_collection') {
       // Just check strictly required fields for cash collection
       // Parcel Details card is visible but only Description is required. Check logic below.
-      fields = ["customerName", "customerPhone", "customerAddress.street", "customerAddress.city", "customerAddress.governorate", "shipmentDescription"];
+      fields = ["customerName", "customerPhone", "customerAddress.street", "customerAddress.city", "customerAddress.governorate", "collectionAmount"];
     }
     fields.forEach(f => {
       const val = getByPath(data, f);
@@ -222,8 +223,8 @@ const ShippingPage = () => {
 
     setLoading(true);
     
-    // Map the form data to the new API schema (OrderType removed - determined by endpoint)
-    const payload = {
+    // Map the form data to the new API schema
+    let payload = {
       CustomerInfo: {
         CustomerName: formData.customerName || "",
         CustomerPhone: formData.customerPhone || "",
@@ -237,69 +238,101 @@ const ShippingPage = () => {
           GoogleMapAddressLink: formData.customerAddress.googleMapAddressLink || ""
         }
       },
-      
-      DeliveryShipmentDetails: {}, 
-      
-      PaymentAndDeliveryOptionsDto: {
-        TransactionType: mapTransactionType(formData, shipmentType),
-        TransactionCashAmount: formData.collectionAmount ? Number(formData.collectionAmount) : 0,
-        ProductPrice: formData.productValue ? Number(formData.productValue) : 0,
-        ProductPriceProofImage: formData.proofFile || "", // File or empty string
-        OpenPackageOnDeliveryEnabled: formData.openPackageOnDeliveryEnabled || false,
-        ShipmentPrice: formData.shipmentPrice ? Number(formData.shipmentPrice) : 0,
-        AdditionalWeightPrice: formData.additionalWeightFees ? Number(formData.additionalWeightFees) : 0
-      },
-      
       DeliveryNotes: `[منطقة التوصيل: ${formData.deliveryZone}] ${formData.deliveryNotes || ""}`.trim()
     };
 
-    // Add delivery shipment details only if not cash collection
-    if (shipmentType !== 'cash_collection') {
-      payload.DeliveryShipmentDetails = {
+    if (shipmentType === 'delivery') {
+      // New structure for delivery as requested
+      payload.ShipmentDetails = {
         ShipmentType: mapPackageType(formData.packageType),
         ShipmentDescription: formData.shipmentDescription || "",
         ShipmentWeight: formData.shipmentWeight ? Number(formData.shipmentWeight) : 0,
         Quantity: formData.quantity ? Number(formData.quantity) : 0,
         ShipmentNotes: formData.shipmentNotes || "",
-        ShipmentImage: formData.proofFile || ""
+        ShipmentImage: formData.proofFile || "",
+        ProductPrice: formData.productValue ? Number(formData.productValue) : 0,
+        ProductPriceProofImage: formData.proofFile || ""
       };
+      payload.CollectionCashAmount = formData.collectionAmount ? Number(formData.collectionAmount) : 0;
+      payload.OpenPackageOnDeliveryEnabled = formData.openPackageOnDeliveryEnabled || false;
+    } else if (shipmentType === 'return') {
+      // New structure for return as requested
+      payload.ShipmentDetails = {
+        ShipmentType: mapPackageType(formData.packageType),
+        ShipmentDescription: formData.shipmentDescription || "",
+        ShipmentWeight: formData.shipmentWeight ? Number(formData.shipmentWeight) : 0,
+        Quantity: formData.quantity ? Number(formData.quantity) : 0,
+        ShipmentNotes: formData.shipmentNotes || "",
+        ShipmentImage: formData.proofFile || "",
+        ProductPrice: formData.productValue ? Number(formData.productValue) : 0,
+        ProductPriceProofImage: formData.proofFile || ""
+      };
+      payload.RefundCashAmount = formData.collectionAmount ? Number(formData.collectionAmount) : 0;
+      payload.OpenPackageOnDeliveryEnabled = formData.openPackageOnDeliveryEnabled || false;
     } else {
-      delete payload.DeliveryShipmentDetails;
-    }
+      // Existing logic for exchange, return, cash_collection
+      if (shipmentType === 'cash_collection') {
+        payload.TransactionType = mapTransactionType(formData, shipmentType);
+        payload.TransactionCashAmount = formData.collectionAmount ? Number(formData.collectionAmount) : 0;
+      } else {
+        payload.DeliveryShipmentDetails = {}; 
+        payload.PaymentAndDeliveryOptionsDto = {
+          TransactionType: mapTransactionType(formData, shipmentType),
+          TransactionCashAmount: formData.collectionAmount ? Number(formData.collectionAmount) : 0,
+          ProductPrice: formData.productValue ? Number(formData.productValue) : 0,
+          ProductPriceProofImage: formData.proofFile || "", // File or empty string
+          OpenPackageOnDeliveryEnabled: formData.openPackageOnDeliveryEnabled || false,
+          ShipmentPrice: formData.shipmentPrice ? Number(formData.shipmentPrice) : 0,
+          AdditionalWeightPrice: formData.additionalWeightFees ? Number(formData.additionalWeightFees) : 0
+        };
+      }
 
-    // Add ReturnShipmentDetails if exchange type
-    if (shipmentType === 'exchange') {
-      payload.ReturnShipmentDetails = {
-        ShipmentType: mapPackageType(formData.returnPackageType),
-        ShipmentDescription: formData.returnShipmentDescription || "",
-        ShipmentWeight: formData.returnShipmentWeight ? Number(formData.returnShipmentWeight) : 0,
-        Quantity: formData.returnQuantity ? Number(formData.returnQuantity) : 0,
-        ShipmentNotes: formData.returnShipmentNotes || "",
-        ShipmentImage: formData.returnProofFile || ""
-      };
-    }
+      // Add delivery shipment details only if not cash collection
+      if (shipmentType !== 'cash_collection') {
+        payload.DeliveryShipmentDetails = {
+          ShipmentType: mapPackageType(formData.packageType),
+          ShipmentDescription: formData.shipmentDescription || "",
+          ShipmentWeight: formData.shipmentWeight ? Number(formData.shipmentWeight) : 0,
+          Quantity: formData.quantity ? Number(formData.quantity) : 0,
+          ShipmentNotes: formData.shipmentNotes || "",
+          ShipmentImage: formData.proofFile || ""
+        };
+      }
 
-    // Add ReturnLocation (Always required by API structure)
-    if (shipmentType === 'cash_collection') {
-       // logic for cash collection (if any special logic needed, otherwise it sends fields as needed)
-    } else {
-       // For delivery, exchange, return
-       payload.ReturnLocation = {
-        Street: formData.returnLocation || "string", // Provide default string if empty to match curl
-        City: "string", // Default string as per curl
-        Governorate: "string", // Default string as per curl
-        AdditionalDetails: "string",
-        GoogleMapAddressLink: "string"
-      };
+      // Add ReturnShipmentDetails if exchange type
+      if (shipmentType === 'exchange') {
+        payload.ReturnShipmentDetails = {
+          ShipmentType: mapPackageType(formData.returnPackageType),
+          ShipmentDescription: formData.returnShipmentDescription || "",
+          ShipmentWeight: formData.returnShipmentWeight ? Number(formData.returnShipmentWeight) : 0,
+          Quantity: formData.returnQuantity ? Number(formData.returnQuantity) : 0,
+          ShipmentNotes: formData.returnShipmentNotes || "",
+          ShipmentImage: formData.returnProofFile || ""
+        };
+      }
+
+      // Add ReturnLocation (Always required by API structure)
+      if (shipmentType === 'cash_collection') {
+         // logic for cash collection (if any special logic needed, otherwise it sends fields as needed)
+      } else {
+         // For delivery, exchange, return
+         payload.ReturnLocation = {
+          Street: formData.returnLocation || "string", // Provide default string if empty to match curl
+          City: "string", // Default string as per curl
+          Governorate: "string", // Default string as per curl
+          AdditionalDetails: "string",
+          GoogleMapAddressLink: "string"
+        };
+      }
     }
 
     console.log('Mapped Payload:', payload);
 
     try {
-      const result = await CreateShipment(payload, shipmentType);
+      const result = await createShipment(payload, shipmentType);
       if (result.Success) {
-        Swal.fire({ icon: "success", title: "تم إنشاء الشحنة بنجاح", timer: 2000, showConfirmButton: false });
-        navigate("/shipments");
+        Swal.fire({ icon: "success", title: "تم إنشاء الأوردر بنجاح", timer: 2000, showConfirmButton: false });
+        navigate("/orders");
       } else {
         toast.error(result.Message || "حدث خطأ ما");
       }
