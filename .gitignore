@@ -23,3 +23,4 @@ yarn-debug.log*
 yarn-error.log*
 nul
 .claude/settings.local.json
+/.vs
