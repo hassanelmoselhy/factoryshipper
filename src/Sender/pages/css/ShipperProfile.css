@@ -1,9 +1,9 @@
-/* ================= MAIN CONTAINER ================= */
 .shipper-profile {
-width: 95%;
-margin: 25px auto;
-font-family: Arial, sans-serif;
-color: #333;
+  width: 95%;
+  margin: 25px auto;
+  font-family: Arial, sans-serif;
+  color: #333;
+  direction: rtl;
 }
 
 .loading, .error {
@@ -286,17 +286,17 @@ color: #555;
 
 /* ================= MODAL STYLES ================= */
 .modal-overlay {
-position: fixed;
-text-align: left;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background-color: rgba(0, 0, 0, 0.5);
-display: flex;
-justify-content: center;
-align-items: center;
-z-index: 1000;
+  position: fixed;
+  text-align: right;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
 .modal-content {
@@ -342,20 +342,20 @@ margin-bottom: 25px;
 }
 
 .form-group { margin-bottom: 20px; }
-.form-group label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; color: #444; }
+.form-group label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; color: #444; text-align: right; }
 
 .form-group input[type="text"],
 .form-group input[type="email"],
 .form-group textarea,
 .phone-input-group input {
-width: 100%; 
-padding: 11px;
-text-align: left;
-border: 1px solid #ddd;
-border-radius: 8px;
-font-size: 14px;
-box-sizing: border-box;
-transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  width: 100%; 
+  padding: 11px;
+  text-align: right;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .form-group input:focus, .form-group textarea:focus {

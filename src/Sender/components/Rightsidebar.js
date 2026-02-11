@@ -14,7 +14,7 @@ export const senderSidebarData = [
 export default function Rightsidebar() {
   return (
     <Sidebar
-      title="Stake Express"
+      title="Zone Express"
       subtitle="لوحة المرسل"
       menuItems={senderSidebarData}
     />

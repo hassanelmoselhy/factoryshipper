@@ -1,7 +1,10 @@
 import React, { useState } from "react";
-import './css/AddHubModal.css';
+import { Modal, Button, Form, Row, Col } from "react-bootstrap";
+import { Building2, MapPin, Phone, Maximize2, Link, FileText, Globe } from "lucide-react";
 import { toast } from "sonner";
-import { egypt_governorates } from '../../Shared/Constants';
+import { CreateHub } from "../Data/HubsService";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./css/AdminModals.css";
 
 const AddHubModal = ({ isOpen, onClose, onAdd }) => {
   const [formData, setFormData] = useState({
@@ -15,38 +18,25 @@ const AddHubModal = ({ isOpen, onClose, onAdd }) => {
     phoneNumber: "",
     areaInSquareMeters: ""
   });
-
-  const [workingAreas, setWorkingAreas] = useState([]);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-
-  if (!isOpen) return null;
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleAddWorkingArea = (governorate) => {
-    if (governorate && !workingAreas.includes(governorate)) {
-      setWorkingAreas([...workingAreas, governorate]);
-      setIsDropdownOpen(false);
-      setSearchTerm("");
-    }
-  };
-
-  const handleRemoveWorkingArea = (governorate) => {
-    setWorkingAreas(workingAreas.filter(area => area !== governorate));
-  };
-
-  const handleSelectAll = () => {
-    if (workingAreas.length === egypt_governorates.length) {
-      setWorkingAreas([]);
-    } else {
-      const allGovernorates = egypt_governorates.map(gov => gov.name_arabic);
-      setWorkingAreas(allGovernorates);
-    }
-    setIsDropdownOpen(false);
+  const resetForm = () => {
+    setFormData({
+      type: "MainHub",
+      name: "",
+      governorate: "",
+      city: "",
+      street: "",
+      details: "",
+      googleMapAddressLink: "",
+      phoneNumber: "",
+      areaInSquareMeters: ""
+    });
   };
 
   const handleAdd = async () => {
@@ -69,277 +59,209 @@ const AddHubModal = ({ isOpen, onClose, onAdd }) => {
         street: formData.street,
         city: formData.city,
         governorate: formData.governorate,
-        details: formData.details,
+        additionalDetails: formData.details,
         googleMapAddressLink: formData.googleMapAddressLink || ""
       },
       phoneNumber: formData.phoneNumber,
-      areaInSquareMeters: Number(formData.areaInSquareMeters),
-      workingAreas: workingAreas.filter(area => area !== "")
+      areaInSquareMeters: Number(formData.areaInSquareMeters)
     };
 
+    setIsSubmitting(true);
     try {
-      const response = await fetch('https://stakeexpress.runasp.net/api/Hubs', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-client-key': 'web API'
-        },
-        body: JSON.stringify(payload)
-      });
+      const response = await CreateHub(payload);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'حدث خطأ أثناء إضافة الفرع.');
+      if (response.Success) {
+        toast.success("تم إضافة الفرع بنجاح!");
+        onAdd();
+        resetForm();
+        onClose();
+      } else {
+        throw new Error(response.Message || 'حدث خطأ أثناء إضافة الفرع.');
       }
-
-      const addedHub = await response.json();
-      toast.success("تم إضافة الفرع بنجاح!");
-
-
-      const newBranchForTable = {
-        branch: addedHub.type,
-        data: { name: addedHub.name, id: addedHub.id || "HUB-" + Math.floor(Math.random() * 1000) },
-        city: addedHub.address?.city || "",
-        managerName: "غير متاح",
-        managerPhone: addedHub.phoneNumber || "",
-        area: `${addedHub.areaInSquareMeters || 0} م²`,
-        employees: "0",
-        status: "نشط",
-        locationLink: addedHub.address?.googleMapAddressLink || null
-      };
-
-      onAdd(newBranchForTable);
-
-      setFormData({
-        type: "MainHub",
-        name: "",
-        governorate: "",
-        city: "",
-        street: "",
-        details: "",
-        googleMapAddressLink: "",
-        phoneNumber: "",
-        areaInSquareMeters: ""
-      });
-      setWorkingAreas([]);
-
-      onClose();
     } catch (error) {
       console.error("Error adding hub:", error);
       toast.error(error.message || "فشل إضافة الفرع.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
+  const handleClose = () => {
+    resetForm();
+    onClose();
+  };
+
   return (
-    <div className="modal-overlay">
-      <div className="modal-container">
-        <div className="modal-header">
-          <h2>إضافة فرع \ مخزن</h2>
-          <span className="close-btn" onClick={onClose}>&times;</span>
+    <Modal show={isOpen} onHide={handleClose} size="lg"  dir="rtl" className="admin-modal">
+      <Modal.Header closeButton>
+        <Modal.Title  className="d-flex align-items-center gap-2 flex-grow-1">
+          <Building2 size={24} />
+          <span>إضافة فرع أو مخزن جديد</span>
+        </Modal.Title>
+      </Modal.Header>
+
+      <Modal.Body>
+        <div className="modal-intro mb-4">
+          <p className="text-muted">قم بتعبئة البيانات أدناه لإنشاء مركز توزيع أو مخزن فرعي جديد في المنظومة.</p>
         </div>
-        <p className="modal-subtitle">إضافة مركز توزيع جديد</p>
 
-        <div className="modal-body">
-          {/* Row 1: Type & Name */}
-          <div className="row">
-            <div className="form-content half">
-              <label>النوع</label>
-              <select name="type" value={formData.type} onChange={handleChange}>
-                <option value="MainHub">فرع رئيسي</option>
-                <option value="SubHub">مخزن فرعي</option>
-              </select>
-            </div>
-            <div className="form-content half">
-              <label>الاسم</label>
-              <input
-                type="text"
-                name="name"
-                placeholder="اسم الفرع أو المخزن"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
-            </div>
-          </div>
+        <Form>
+          <Row className="mb-4">
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>
+                  <Building2 size={16} /> نوع المنشأة
+                </Form.Label>
+                <Form.Select
+                  name="type"
+                  value={formData.type}
+                  onChange={handleChange}
+                >
+                  <option value="MainHub">فرع رئيسي</option>
+                  <option value="SubHub">مخزن فرعي</option>
+                </Form.Select>
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>
+                  <FileText size={16} /> اسم الفرع / المخزن
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  name="name"
+                  placeholder="مثال: فرع القاهرة الرئيسي"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+            </Col>
+          </Row>
 
-          {/* Row 2: Governorate & City */}
-          <div className="row">
-            <div className="form-content half">
-              <label>المحافظة</label>
-              <input
-                type="text"
-                name="governorate"
-                placeholder="المحافظة"
-                value={formData.governorate}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="form-content half">
-              <label>المدينة</label>
-              <input
-                type="text"
-                name="city"
-                placeholder="المدينة"
-                value={formData.city}
-                onChange={handleChange}
-                required
-              />
-            </div>
-          </div>
+          <Row className="mb-4">
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>
+                  <MapPin size={16} /> المحافظة
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  name="governorate"
+                  placeholder="المحافظة"
+                  value={formData.governorate}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>
+                  <Globe size={16} /> المدينة
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  name="city"
+                  placeholder="المدينة"
+                  value={formData.city}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+            </Col>
+          </Row>
 
-          {/* Row 3: Street & Phone */}
-          <div className="row">
-            <div className="form-content half">
-              <label>الشارع</label>
-              <input
-                type="text"
-                name="street"
-                placeholder="الشارع"
-                value={formData.street}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="form-content half">
-              <label>رقم الهاتف</label>
-              <input
-                type="text"
-                name="phoneNumber"
-                placeholder="+20..."
-                value={formData.phoneNumber}
-                onChange={handleChange}
-                required
-              />
-            </div>
-          </div>
+          <Row className="mb-4">
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>
+                  <MapPin size={16} /> الشارع
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  name="street"
+                  placeholder="اسم الشارع"
+                  value={formData.street}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>
+                  <Phone size={16} /> رقم الهاتف للتواصل
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  name="phoneNumber"
+                  placeholder="01xxxxxxxxx"
+                  value={formData.phoneNumber}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+            </Col>
+          </Row>
 
-          {/* Row 4: Area & Map Link */}
-          <div className="row">
-            <div className="form-content half">
-              <label>المساحة (م²)</label>
-              <input
-                type="number"
-                name="areaInSquareMeters"
-                placeholder="المساحة"
-                value={formData.areaInSquareMeters}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="form-content half">
-              <label>رابط العنوان (اختياري)</label>
-              <input
-                type="url"
-                name="googleMapAddressLink"
-                placeholder="https://maps.google.com/..."
-                value={formData.googleMapAddressLink}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
+          <Row className="mb-4">
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>
+                  <Maximize2 size={16} /> المساحة الكلية (م²)
+                </Form.Label>
+                <Form.Control
+                  type="number"
+                  name="areaInSquareMeters"
+                  placeholder="المساحة بالمتر المربع"
+                  value={formData.areaInSquareMeters}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group>
+                <Form.Label>
+                  <Link size={16} /> رابط الموقع على الخريطة
+                </Form.Label>
+                <Form.Control
+                  type="url"
+                  name="googleMapAddressLink"
+                  placeholder="https://maps.google.com/..."
+                  value={formData.googleMapAddressLink}
+                  onChange={handleChange}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
 
-          {/* Full Width: Details */}
-          <div className="form-content">
-            <label>تفاصيل إضافية</label>
-            <textarea
+          <Form.Group className="mb-2">
+            <Form.Label>
+              <FileText size={16} /> تفاصيل إضافية عن العنوان
+            </Form.Label>
+            <Form.Control
+              as="textarea"
               name="details"
-              placeholder="تفاصيل إضافية عن العنوان..."
+              placeholder="وصف إضافي للموقع (مثال: بجانب مطعم ...)"
               value={formData.details}
               onChange={handleChange}
-              rows={2}
+              rows={3}
             />
-          </div>
+          </Form.Group>
+        </Form>
+      </Modal.Body>
 
-          <div className="form-content">
-            <div className="working-areas-header">
-              <label>مناطق العمل</label>
-              <button 
-                type="button" 
-                className="btn-select-all" 
-                onClick={handleSelectAll}
-              >
-                {workingAreas.length === egypt_governorates.length ? "إلغاء تحديد الكل" : "تحديد الكل"}
-              </button>
-            </div>
-            
-            {/* Custom Modern Dropdown */}
-            <div className="custom-dropdown-wrapper">
-              <div 
-                className="custom-dropdown-trigger"
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              >
-                <span className="dropdown-placeholder">
-                  {isDropdownOpen ? "ابحث أو اختر المحافظة..." : "اختر المحافظة لإضافتها"}
-                </span>
-                <span className={`dropdown-arrow ${isDropdownOpen ? 'open' : ''}`}>▼</span>
-              </div>
-
-              {isDropdownOpen && (
-                <div className="custom-dropdown-menu">
-                  <div className="dropdown-search">
-                    <input
-                      type="text"
-                      placeholder="ابحث عن المحافظة..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      autoFocus
-                      onClick={(e) => e.stopPropagation()}
-                    />
-                  </div>
-                  <div className="dropdown-options">
-                    {egypt_governorates
-                      .filter(gov => 
-                        !workingAreas.includes(gov.name_arabic) &&
-                        gov.name_arabic.includes(searchTerm)
-                      )
-                      .map((gov) => (
-                        <div
-                          key={gov.id}
-                          className="dropdown-option"
-                          onClick={() => handleAddWorkingArea(gov.name_arabic)}
-                        >
-                          {gov.name_arabic}
-                        </div>
-                      ))
-                    }
-                    {egypt_governorates.filter(gov => 
-                      !workingAreas.includes(gov.name_arabic) &&
-                      gov.name_arabic.includes(searchTerm)
-                    ).length === 0 && (
-                      <div className="dropdown-empty">لا توجد نتائج</div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-            
-            <div className="working-areas-tags-container">
-              {workingAreas.map((area) => (
-                <div key={area} className="area-tag">
-                  <span className="area-tag-text">{area}</span>
-                  <button
-                    type="button"
-                    className="area-tag-remove"
-                    onClick={() => handleRemoveWorkingArea(area)}
-                  >
-                    ✕
-                  </button>
-                </div>
-              ))}
-              {workingAreas.length === 0 && (
-                <div className="empty-tags-message">لم يتم اختيار مناطق عمل بعد</div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="modal-footer">
-          <button className="btn-add" onClick={handleAdd}>إضافة</button>
-          <button className="btn-cancel" onClick={onClose}>إلغاء</button>
-        </div>
-      </div>
-    </div>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={handleClose} disabled={isSubmitting}>
+          إلغاء
+        </Button>
+        <Button variant="primary" onClick={handleAdd} disabled={isSubmitting}>
+          {isSubmitting ? "جاري الإضافة..." : "تأكيد الإضافة"}
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
 

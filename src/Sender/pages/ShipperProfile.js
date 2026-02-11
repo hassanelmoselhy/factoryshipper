@@ -145,7 +145,7 @@ export default function ShipperProfile() {
   // ----------------------------------------------------------------
   const handleInlineSave = async () => {
     Swal.fire({
-      title: "Saving...",
+      title: "جاري الحفظ...",
       didOpen: () => Swal.showLoading(),
       allowOutsideClick: false,
       background: 'transparent',
@@ -232,7 +232,7 @@ export default function ShipperProfile() {
       Swal.close();
       Swal.fire({
         icon: 'success',
-        title: 'Saved!',
+        title: 'تم الحفظ!',
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
@@ -251,7 +251,7 @@ export default function ShipperProfile() {
   // ================= 5. GLOBAL SAVE ENGINE (Still used for Addresses/Company) =================
 
   const handleGlobalCancelChanges = () => {
-    if (window.confirm("Are you sure you want to discard all changes?")) {
+    if (window.confirm("هل أنت متأكد أنك تريد إلغاء جميع التغييرات؟")) {
       setData(JSON.parse(JSON.stringify(originalData)));
       setDeletedAddressIds([]);
       setEditingField(null);
@@ -262,8 +262,8 @@ export default function ShipperProfile() {
     setEditingField(null);
 
     Swal.fire({
-      title: "Saving...",
-      text: "Updating database records",
+      title: "جاري الحفظ...",
+      text: "تحديث سجلات قاعدة البيانات",
       didOpen: () => Swal.showLoading(),
       allowOutsideClick: false,
     });
@@ -322,7 +322,7 @@ export default function ShipperProfile() {
 
     try {
       await Promise.all(promises);
-      Swal.fire({ icon: "success", title: "All Changes Saved!", timer: 1500, showConfirmButton: false });
+      Swal.fire({ icon: "success", title: "تم حفظ جميع التغييرات!", timer: 1500, showConfirmButton: false });
       fetchProfile();
     } catch (error) {
       console.error("Global Save Error:", error);
@@ -332,7 +332,7 @@ export default function ShipperProfile() {
   };
 
   if (loading) return <ProfileSkeleton />;
-  if (!data) return <p className="error">Failed to load profile data.</p>;
+  if (!data) return <p className="error">فشل في تحميل بيانات الملف الشخصي.</p>;
 
   // ================= FORM HANDLERS =================
   const handlePersonalInfoChange = (e) => {
@@ -463,10 +463,10 @@ export default function ShipperProfile() {
                 {data.firstName || ""} {data.lastName || ""}
               </h1>
               <div className="shipper-id-badge">
-                <span>ID:</span> {data.shipperId || "-"}
+                <span>المعرف:</span> {data.shipperId || "-"}
               </div>
             </div>
-            <p className="sub-title">Shipper Account</p>
+            <p className="sub-title">حساب الشاحن</p>
           </div>
         </div>
 
@@ -474,10 +474,10 @@ export default function ShipperProfile() {
         {hasChanges && (
           <div className="header-right-section">
             <button className="btn-header-cancel" onClick={handleGlobalCancelChanges}>
-              <RotateCcw size={16} /> Cancel
+              <RotateCcw size={16} /> إلغاء
             </button>
             <button className="btn-header-save" onClick={handleGlobalSaveChanges}>
-              <Save size={16} /> Save Changes
+              <Save size={16} /> حفظ التغييرات
             </button>
           </div>
         )}
@@ -488,7 +488,7 @@ export default function ShipperProfile() {
         {/* ============ PERSONAL INFO SECTION ============ */}
         <div className="profile-card">
           <div className="card-header">
-            <h3><User className="card-icon" style={{ marginRight: '8px' }} /> Personal Information</h3>
+            <h3><User className="card-icon" style={{ marginRight: '8px' }} /> المعلومات الشخصية</h3>
           </div>
 
           {/* --- FIRST NAME --- */}
@@ -496,7 +496,7 @@ export default function ShipperProfile() {
             <div className="field-content" style={{ width: '100%' }}>
               <UserPen className="icon" />
               <div className="field-info" style={{ width: '100%' }}>
-                <strong>First Name</strong>
+                <strong>الاسم الأول</strong>
                 {editingField === 'firstName' ? (
                   <div className="inline-edit-wrapper">
                     <input
@@ -514,7 +514,7 @@ export default function ShipperProfile() {
                     </button>
                   </div>
                 ) : (
-                  <p>{data.firstName || "Not provided"}</p>
+                  <p>{data.firstName || "غير متوفر"}</p>
                 )}
               </div>
             </div>
@@ -531,7 +531,7 @@ export default function ShipperProfile() {
             <div className="field-content" style={{ width: '100%' }}>
               <UserPen className="icon" />
               <div className="field-info" style={{ width: '100%' }}>
-                <strong>Last Name</strong>
+                <strong>اسم العائلة</strong>
                 {editingField === 'lastName' ? (
                   <div className="inline-edit-wrapper">
                     <input
@@ -549,7 +549,7 @@ export default function ShipperProfile() {
                     </button>
                   </div>
                 ) : (
-                  <p>{data.lastName || "Not provided"}</p>
+                  <p>{data.lastName || "غير متوفر"}</p>
                 )}
               </div>
             </div>
@@ -566,7 +566,7 @@ export default function ShipperProfile() {
             <div className="field-content" style={{ width: '100%' }}>
               <Mail className="icon" />
               <div className="field-info" style={{ width: '100%' }}>
-                <strong>Email</strong>
+                <strong>البريد الإلكتروني</strong>
                 {editingField === 'email' ? (
                   <div className="inline-edit-wrapper">
                     <input
@@ -585,7 +585,7 @@ export default function ShipperProfile() {
                     </button>
                   </div>
                 ) : (
-                  <p>{data.email || "Not provided"}</p>
+                  <p>{data.email || "غير متوفر"}</p>
                 )}
               </div>
             </div>
@@ -602,7 +602,7 @@ export default function ShipperProfile() {
             <div className="field-content" style={{ alignItems: 'flex-start', width: '100%' }}>
               <Phone className="icon" style={{ marginTop: '4px' }} />
               <div className="field-info" style={{ width: '100%' }}>
-                <strong>Phone(s)</strong>
+                <strong>أرقام الهاتف</strong>
 
                 {editingField === 'phones' ? (
                   <div className="phone-inline-list">
@@ -612,7 +612,7 @@ export default function ShipperProfile() {
                           className="inline-input"
                           value={phone}
                           onChange={(e) => handlePhoneChange(idx, e)}
-                          placeholder="Enter phone number"
+                          placeholder="أدخل رقم الهاتف"
                         />
                         <button className="remove-phone" onClick={() => removePhoneInput(idx)} type="button">
                           <Trash size={16} />
@@ -622,16 +622,16 @@ export default function ShipperProfile() {
 
                     {personalInfoForm.phones.length < 3 && (
                       <button type="button" className="add-phone-initial" onClick={addPhoneInput} style={{ padding: '5px 0' }}>
-                        <Plus size={16} /> Add Phone
+                        <Plus size={16} /> إضافة رقم
                       </button>
                     )}
 
                     <div className="inline-edit-wrapper" style={{ marginTop: '10px' }}>
                       <button className="btn-inline-action btn-inline-save" onClick={handleInlineSave} style={{ flex: 1 }}>
-                        <Check size={18} /> Save Phones
+                        <Check size={18} /> حفظ الأرقام
                       </button>
                       <button className="btn-inline-action btn-inline-cancel" onClick={cancelEditing} style={{ flex: 1 }}>
-                        <X size={18} /> Cancel
+                        <X size={18} /> إلغاء
                       </button>
                     </div>
                   </div>
@@ -650,7 +650,7 @@ export default function ShipperProfile() {
                         </span>
                       ))
                     ) : (
-                      <p style={{ fontSize: '0.9rem', color: '#9ca3af' }}>No phone provided</p>
+                      <p style={{ fontSize: '0.9rem', color: '#9ca3af' }}>لم يتم توفير رقم هاتف</p>
                     )}
                   </div>
                 )}
@@ -668,19 +668,19 @@ export default function ShipperProfile() {
         {/* ADDRESSES */}
         <div className="profile-card">
           <div className="card-header">
-            <h3><MapPin className="card-icon" /> Addresses</h3>
+            <h3><MapPin className="card-icon" /> العناوين</h3>
             <button className="add-btn" onClick={() => openEditAddressModal(-1)}>
-              <Plus /> Add
+              <Plus /> إضافة
             </button>
           </div>
           <div className="addresses-container">
             {(data.addresses || []).map((address, index) => (
               <div className="address-box" key={index}>
                 <div className="address-header">
-                  <strong>Address {index + 1}</strong>
+                  <strong>عنوان {index + 1}</strong>
                   {(!address.id || address.id < 0) && (
                     <span style={{ fontSize: "0.75rem", color: "#e67e22", marginLeft: "5px" }}>
-                      (Pending Save)
+                      (بانتظار الحفظ)
                     </span>
                   )}
                   <div className="address-actions">
@@ -688,11 +688,11 @@ export default function ShipperProfile() {
                     <button className="delete-icon" onClick={() => handleDeleteAddress(index)}><Trash size={16} /></button>
                   </div>
                 </div>
-                <p><strong>Street</strong><br />{address.street}</p>
-                <p><strong>City</strong><br />{address.city}</p>
-                <p><strong>Governorate</strong><br />{address.governorate}</p>
-                <p><strong>Details</strong><br />{address.details}</p>
-                <p><strong>Google Map</strong><br />{address.googleMapAddressLink}</p>
+                <p><strong>الشارع</strong><br />{address.street}</p>
+                <p><strong>المدينة</strong><br />{address.city}</p>
+                <p><strong>المحافظة</strong><br />{address.governorate}</p>
+                <p><strong>التفاصيل</strong><br />{address.details}</p>
+                <p><strong>رابط الخريطة</strong><br />{address.googleMapAddressLink}</p>
               </div>
             ))}
           </div>
@@ -701,15 +701,15 @@ export default function ShipperProfile() {
         {/* COMPANY INFO */}
         <div className="profile-card">
           <div className="card-header">
-            <h3><Building2 /> Company Information</h3>
+            <h3><Building2 /> معلومات الشركة</h3>
             <button className="edit-btn-small" onClick={openCompanyInfoModal}>
-              <PencilLine /> Edit
+              <PencilLine /> تعديل
             </button>
           </div>
           <div className="card-body">
-            <p><strong>Company Name</strong><br />{data.companyName}</p>
-            <p><strong>Type of Production</strong><br />{data.typeOfProduction}</p>
-            <p><strong>Website</strong><br />{data.companyLink}</p>
+            <p><strong>اسم الشركة</strong><br />{data.companyName}</p>
+            <p><strong>نوع الإنتاج</strong><br />{data.typeOfProduction}</p>
+            <p><strong>الموقع الإلكتروني</strong><br />{data.companyLink}</p>
           </div>
         </div>
       </div>
@@ -720,30 +720,30 @@ export default function ShipperProfile() {
           <div className="modal-content">
             <div className="modal-header">
               <X className="close-button" onClick={closeEditAddressModal} />
-              <h4>Edit Address</h4>
+              <h4>تعديل العنوان</h4>
             </div>
             <form onSubmit={handleSaveAddress}>
               <div className="form-group">
-                <label>Street</label>
+                <label>الشارع</label>
                 <input name="street" value={addressForm.street} onChange={handleAddressChange} />
               </div>
               <div className="form-group">
-                <label>City</label>
+                <label>المدينة</label>
                 <input name="city" value={addressForm.city} onChange={handleAddressChange} />
               </div>
               <div className="form-group">
-                <label>Governorate</label>
+                <label>المحافظة</label>
                 <input name="governorate" value={addressForm.governorate} onChange={handleAddressChange} />
               </div>
               <div className="form-group">
-                <label>Details</label>
+                <label>التفاصيل</label>
                 <textarea name="details" value={addressForm.details} onChange={handleAddressChange} />
               </div>
               <div className="form-group">
-                <label>Map Link</label>
+                <label>رابط الخريطة</label>
                 <input name="googleMapLink" value={addressForm.googleMapLink} onChange={handleAddressChange} />
               </div>
-              <button type="submit" className="btn-save-changes">Update Address Info</button>
+              <button type="submit" className="btn-save-changes">تحديث بيانات العنوان</button>
             </form>
           </div>
         </div>
@@ -754,22 +754,22 @@ export default function ShipperProfile() {
           <div className="modal-content">
             <div className="modal-header">
               <X className="close-button" onClick={closeCompanyInfoModal} />
-              <h4>Edit Company Info</h4>
+              <h4>تعديل معلومات الشركة</h4>
             </div>
             <form onSubmit={handleSaveCompanyInfo}>
               <div className="form-group">
-                <label>Company Name</label>
+                <label>اسم الشركة</label>
                 <input name="companyName" value={companyInfoForm.companyName} onChange={handleCompanyInfoChange} />
               </div>
               <div className="form-group">
-                <label>Type</label>
+                <label>النوع</label>
                 <input name="typeOfProduction" value={companyInfoForm.typeOfProduction} onChange={handleCompanyInfoChange} />
               </div>
               <div className="form-group">
-                <label>Website</label>
+                <label>الموقع الإلكتروني</label>
                 <input name="website" value={companyInfoForm.website} onChange={handleCompanyInfoChange} />
               </div>
-              <button type="submit" className="btn-save-changes">Update Company Info</button>
+              <button type="submit" className="btn-save-changes">تحديث بيانات الشركة</button>
             </form>
           </div>
         </div>

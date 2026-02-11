@@ -1,6 +1,7 @@
 import React from "react";
 import UseLoadingStore from "../Store/LoadingController/Loadingstore";
 import "./css/LoadingOverlay.css";
+import ZoneExpressLogo from "../Images/ZoneExpress.jpeg";
 
 const LoadingOverlay = ({ isActive }) => {
   // Connect to the store
@@ -14,18 +15,18 @@ const LoadingOverlay = ({ isActive }) => {
         {/* Logo with enhanced animations */}
         <div className="loading-logo-wrapper">
           <img
-            src="/favicon.png"
-            alt="Stake Express Logo"
+            src={ZoneExpressLogo}
+            alt="Zone Express Logo"
             className="loading-logo"
           />
           {/* Circular spinner behind logo */}
           <div className="loading-spinner"></div>
         </div>
 
-        {/* Animated "Stake Express" text */}
+        {/* Animated "Zone Express" text */}
         <div className="loading-text-wrapper">
           <h1 className="loading-brand-name">
-            {"Stake Express".split("").map((char, index) => (
+            {"Zone Express".split("").map((char, index) => (
               <span 
                 key={index} 
                 className="loading-letter"

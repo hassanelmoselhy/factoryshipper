@@ -1,5 +1,5 @@
 import  { useEffect, useState } from "react";
-import { FaShippingFast } from "react-icons/fa";
+import ZoneExpressLogo from "../../../Images/ZoneExpress.jpeg";
 import "../css/Signup.css";
 import { toast } from "sonner";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
@@ -188,8 +188,8 @@ const Signup = () => {
           <div className="col-12 col-lg-10 col-xl-8 mb-4">
             <div className="signup-banner mx-auto" style={{ maxWidth: '500px' }}>
               <div className="signup-logo">
-                <FaShippingFast className="signup-icon" />
-                <h1 className="signup-title">Stake Express</h1>
+                <img src={ZoneExpressLogo} alt="Zone Express Logo" className="signup-icon" style={{ width: '60px', height: '60px', objectFit: 'contain' }} />
+                <h1 className="signup-title">Zone Express</h1>
               </div>
               <p className="signup-slogan">
                 Your trusted logistics partner for fast and reliable shipping

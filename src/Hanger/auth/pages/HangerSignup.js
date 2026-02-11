@@ -1,6 +1,6 @@
 import React from 'react';
 import '../css/HangerSignup.css';
-import { FaShippingFast } from 'react-icons/fa';
+import ZoneExpressLogo from '../../../Images/ZoneExpress.jpeg';
 
 
 function SignUp() {
@@ -9,8 +9,8 @@ function SignUp() {
     <div className="signup-contain" style={{ backgroundImage: `url('/hanger.jpg')` }}>
               <div className="banner">
             <div className="logo">
-              <FaShippingFast className="signup-icon" />
-              <h1 className="title">Stake Express</h1>
+              <img src={ZoneExpressLogo} alt="Zone Express Logo" className="signup-icon" style={{ width: '60px', height: '60px', objectFit: 'contain' }} />
+              <h1 className="title">Zone Express</h1>
             </div>
             <p className="slogan">
               Your trusted logistics partner for fast and reliable shipping

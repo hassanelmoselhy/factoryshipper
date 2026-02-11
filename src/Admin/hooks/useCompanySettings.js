@@ -2,10 +2,10 @@ import { useState } from 'react';
 
 const useCompanySettings = () => {
     const [companyInfo, setCompanyInfo] = useState({
-        companyName: 'Stake Express',
+        companyName: 'Zone Express',
         phoneNumber: '+20 123 456 7890',
-        email: 'admin@stakeexpress.com',
-        website: 'www.stakeexpress.com',
+        email: 'admin@zoneexpress.com',
+        website: 'www.zoneexpress.com',
         address: 'القاهرة, مصر',
         timezone: 'Africa/Cairo (GMT+2)',
         currency: 'Egyptian Pound (EGP)',

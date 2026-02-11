@@ -28,7 +28,7 @@ export const adminSidebarData = [
 export default function AdminSidebar() {
   return (
     <Sidebar
-      title="Stake Express"
+      title="Zone Express"
       subtitle="لوحة المتحكم"
       menuItems={adminSidebarData}
     />

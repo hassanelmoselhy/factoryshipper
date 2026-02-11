@@ -15,7 +15,7 @@ export const hangerSidebarData = [
 export default function HangerSidebar() {
   return (
     <Sidebar
-      title="Stake Express"
+      title="Zone Express"
       subtitle="لوحة الهانجر"
       menuItems={hangerSidebarData}
     />

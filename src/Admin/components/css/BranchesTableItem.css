@@ -1,76 +1,123 @@
-.actions-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #999;
-  padding: 5px;
-  border-radius: 5px;
-  transition: background-color 0.2s;
-  display: flex; 
-  align-items: center;
-  justify-content: center;
+.table-row {
+    display: grid;
+    grid-template-columns: 140px 1fr 180px 160px 140px 140px 140px 160px;
+    padding: 16px 30px;
+    align-items: center;
+    direction: rtl;
+    gap: 15px;
+    border-bottom: 1px solid #f1f3f4;
+    transition: all 0.2s ease;
+    background: #fff;
 }
 
-.actions-btn:hover {
-  background-color: #f0f0f0;
-  color: #333;
+.table-row:hover {
+    background-color: #f8fbff;
+    transform: scale(1.002);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    z-index: 1;
 }
 
-.status-badge.معطل{
-  background-color: #fee2e2;
-  color: #ef4444;
-}
-.status-badge.نشط {
-  background-color: #dbeafe;
-  color: #3b82f6;
-}
-.no-branches {
-  text-align: center;
-  padding: 20px;
-  color: #666;
-  font-size: 1rem;
+.cell-content {
+    display: flex;
+    align-items: center;
+    text-align: right;
+    overflow: hidden;
 }
 
+.hub-name {
+    font-weight: 600;
+    color: #1a73e8;
+    display: block;
+    font-size: 1rem;
+}
+
+.hub-id {
+    font-size: 0.8rem;
+    color: #9aa0a6;
+    margin-top: 2px;
+}
+
+.type-badge {
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.type-main {
+    background-color: #e8f0fe;
+    color: #1a73e8;
+}
+
+.type-secondary {
+    background-color: #f1f3f4;
+    color: #5f6368;
+}
+
+.cell-icon {
+    color: #5f6368;
+    margin-left: 8px;
+    flex-shrink: 0;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.status-badge.active {
+    background-color: #e6f4ea;
+    color: #1e8e3e;
+}
+
+.status-badge.inactive {
+    background-color: #fce8e6;
+    color: #d93025;
+}
+
+.status-badge .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: currentColor;
+}
 
 .details-btn {
-display: flex;
-gap:1px;
-background-color: #1b73e8;
-color: #ffff;
-border: none;
-padding: 6px;
-border-radius: 20px;
-font-size: smaller;
-}
-.details-btn .icon{
-color: #ffff;
-font-size: smaller;
-}
-.details-btn:hover {
-background-color: #6facfc;
-}
-
-@media (max-width: 768px) {
-  .actions-btn {
-    padding: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background-color: #fff;
+    border: 1.5px solid #e0e0e0;
+    color: #3c4043;
+    border-radius: 10px;
+    cursor: pointer;
     font-size: 0.9rem;
-  }
-
-
-  .status-badge {
-    padding: 3px 6px;
-    font-size: 0.7rem;
-  }
+    font-weight: 600;
+    transition: all 0.2s ease;
+    width: fit-content;
 }
 
-@media (max-width: 480px) {
-  .actions-btn {
-    font-size: 0.8rem;
-  }
+.details-btn:hover {
+    border-color: #1b73e8;
+    color: #1b73e8;
+    background-color: #f8fbff;
+}
 
+.phone-wrapper, .area-wrapper, .employees-wrapper {
+    display: flex;
+    align-items: center;
+    color: #3c4043;
+}
 
-  .status-badge {
-    padding: 2px 5px;
-    font-size: 0.65rem;
-  }
+@media (max-width: 1200px) {
+    .table-row {
+        padding: 12px 20px;
+    }
 }

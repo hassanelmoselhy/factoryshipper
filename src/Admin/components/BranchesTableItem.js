@@ -1,53 +1,78 @@
 import React from 'react';
 import './css/BranchesTableItem.css';
-import { Building2, Eye, MapPin, Phone } from 'lucide-react';
+import { Building2, Eye, MapPin, Phone, Users, Square, ChevronLeft } from 'lucide-react';
 
 const BranchesTableItem = ({ branch, onViewDetails }) => {
   const getStatusClass = (status) => {
     switch (status) {
       case 'نشط':
-        return 'نشط';
+        return 'active';
       case 'معطل':
-        return 'معطل';
+        return 'inactive';
       default:
         return '';
     }
   };
 
+  const getBranchTypeClass = (type) => {
+    return type.includes('رئيسي') ? 'type-main' : 'type-secondary';
+  };
+
   return (
     <div className="table-row">
-      <div className="cell-content branch">{branch.branch}</div>
+      <div className="cell-content branch">
+        <span className={`type-badge ${getBranchTypeClass(branch.branch)}`}>
+          {branch.branch}
+        </span>
+      </div>
+      
       <div className="cell-content data">
-        <span>{branch.data.name}</span>
-        <span className="data-id">{branch.data.id}</span>
+        <div className="name-wrapper">
+          <span className="hub-name">{branch.data.name}</span>
+          <span className="hub-id">#{branch.data.id}</span>
+        </div>
       </div>
-      {/* <div className="cell-content city">
-        <MapPin /> {branch.city}
+
+      <div className="cell-content manager-name">
+        <div className="manager-info">
+          <span>{branch.managerName.trim() ? branch.managerName.trim() : "لم يحدد بعد"}</span>
+        </div>
       </div>
-      <div className="cell-content governorate">{branch.governorate}</div>
-      <div className="cell-content street">{branch.street}</div>
-      <div className="cell-content details">{branch.details}</div>
-      <div className="cell-content googleMap">
-        <a href={branch.googleMapAddressLink} target="_blank" rel="noreferrer">
-          رابط الخريطة
-        </a>
-      </div> */}
-      <div className="cell-content manager-name">{branch.managerName.trim()?branch.managerName.trim():"لم يحدد بعد"}</div>
+
       <div className="cell-content manager-phone">
-        <Phone /> {branch.managerPhone}
+        <div className="phone-wrapper">
+          <Phone size={14} className="cell-icon" />
+          <span>{branch.managerPhone || '—'}</span>
+        </div>
       </div>
-      <div className="cell-content area">{branch.area}</div>
+
+      <div className="cell-content area">
+        <div className="area-wrapper">
+          <Square size={14} className="cell-icon" />
+          <span>{branch.area}</span>
+        </div>
+      </div>
+
       <div className="cell-content employees">
-        <Building2 /> {branch.employees}
+        <div className="employees-wrapper">
+          <Users size={14} className="cell-icon" />
+          <span>{branch.employees} موظف</span>
+        </div>
       </div>
+
       <div className="cell-content status">
         <span className={`status-badge ${getStatusClass(branch.status)}`}>
+          <span className="dot"></span>
           {branch.status}
         </span>
       </div>
-      <button className="details-btn" onClick={() => onViewDetails(branch)}>
-        <Eye className='icon' /> عرض التفاصيل
-      </button>
+
+      <div className="cell-content actions">
+        <button className="details-btn" onClick={() => onViewDetails(branch)}>
+          <span>التفاصيل</span>
+          <ChevronLeft size={16} />
+        </button>
+      </div>
     </div>
   );
 };

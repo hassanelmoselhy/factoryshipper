@@ -20,3 +20,55 @@ export async function GetAllHubs() {
     // hideLoading();
   }
 }
+
+export async function GetSelectableHubs() {
+  try {
+    const response = await api.get("/Hubs/selectable");
+    const result = response.data.data;
+    const message = response.data.message;
+    return new ApiResponse(response.status, result, message, true);
+  } catch (error) {
+    console.error("Error:", error);
+    const message = error.response?.data?.message || "Failed to get selectable hubs";
+    return new ApiResponse(error.response?.status || 500, null, message, false);
+  }
+}
+
+export async function GetHubProfile(hubId) {
+  try {
+    const response = await api.get(`/Hubs/hub-profiles/${hubId}`);
+    const result = response.data.data;
+    const message = response.data.message;
+    return new ApiResponse(response.status, result, message, true);
+  } catch (error) {
+    console.error("Error:", error);
+    const message = error.response?.data?.message || "Failed to get hub profile";
+    return new ApiResponse(error.response?.status || 500, null, message, false);
+  }
+}
+
+export async function AddCourierToHub(hubId, courierId) {
+  try {
+    const response = await api.put(`/Hubs/${hubId}/add-Courier`, { courierId });
+    const result = response.data.data;
+    const message = response.data.message;
+    return new ApiResponse(response.status, result, message, true);
+  } catch (error) {
+    console.error("Error:", error);
+    const message = error.response?.data?.message || "Failed to add courier to hub";
+    return new ApiResponse(error.response?.status || 500, null, message, false);
+  }
+}
+
+export async function CreateHub(hubData) {
+  try {
+    const response = await api.post("/Hubs", hubData);
+    const result = response.data.data;
+    const message = response.data.message;
+    return new ApiResponse(response.status, result, message, true);
+  } catch (error) {
+    console.error("Error:", error);
+    const message = error.response?.data?.message || "Failed to create hub";
+    return new ApiResponse(error.response?.status || 500, null, message, false);
+  }
+}

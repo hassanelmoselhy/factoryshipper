@@ -61,7 +61,7 @@ const PickupRequestDetailsPage = lazy(() => import("./Sender/pages/PickupRequest
 const MainLayout = ({ header: HeaderComponent, sidebarData }) => {
   return (
     <div className="layout">
-      <Sidebar title="Stake Express" subtitle="لوحة التحكم" menuItems={sidebarData} />
+      <Sidebar title="Zone Express" subtitle="لوحة التحكم" menuItems={sidebarData} />
       <div className="content">
         {HeaderComponent && <HeaderComponent />}
         <Outlet />

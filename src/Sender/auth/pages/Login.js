@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/LoginPage.css";
-import { FaShippingFast } from "react-icons/fa";
+import ZoneExpressLogo from "../../../Images/ZoneExpress.jpeg";
 import useUserStore from "../../../Store/UserStore/userStore";
 import { toast } from "sonner";
 import { useLocation } from "react-router-dom";
@@ -30,7 +30,7 @@ const Login = () => {
       // const sound = new Audio(ss);
       // sound.play().catch(() => {  });
 
-      toast.error("Unauthorized, please Login first");
+      toast.error("غير مصرح، يرجى تسجيل الدخول أولاً");
     }
   }, [showUnauthorized]);
 
@@ -89,7 +89,7 @@ const Login = () => {
                   SetUser(response.Data);
                   navigate("/home");
                   shceduleRefreshToken(response.Data.expiresOn);
-                  toast.success("Welcome back , "+response.Data?.firstName );
+                  toast.success("مرحباً بعودتك، " + response.Data?.firstName);
         }
       }else{
             
@@ -104,7 +104,7 @@ const Login = () => {
     navigate("/login");
     SetUser(null);
     sessionStorage.removeItem("user");
-    toast.error("Session expired, please login again");
+    toast.error("انتهت الجلسة، يرجى تسجيل الدخول مرة أخرى");
   };
   const shceduleRefreshToken = (expiresOn, refreshTokenExpiration) => {
     const expirems =
@@ -137,20 +137,20 @@ const Login = () => {
         <div className="loginPage-container">
           <div className="login-banner">
             <div className="login-logo">
-              <FaShippingFast className="login-icon" />
-              <h1 className="login-title">Stake Express</h1>
+              <img src={ZoneExpressLogo} alt="Zone Express Logo" className="login-icon" style={{ width: '60px', height: '60px', objectFit: 'contain' }} />
+              <h1 className="login-title">Zone Express</h1>
             </div>
             <p className="login-slogan">
-              Your trusted logistics partner for fast and reliable shipping
+              شريكك الموثوق في الشحن السريع والآمن
             </p>
           </div>
 
           <div className="login-container">
             <div className="login-form-wrapper">
               <form onSubmit={handleSubmit}>
-                <h2 className="login-form-title">Sign In to Your Account</h2>
+                <h2 className="login-form-title">تسجيل الدخول إلى حسابك</h2>
                 <p className="login-form-subtitle">
-                  Welcome back! Please enter your credentials to continue
+                  مرحباً بعودتك! يرجى إدخال بياناتك للمتابعة
                 </p>
 
                 {error && <p style={{ color: "red" }}>{error}</p>}
@@ -159,7 +159,7 @@ const Login = () => {
                   <input
                     type="email"
                     name="email"
-                    placeholder="Email Address *"
+                    placeholder="البريد الإلكتروني *"
                     value={formData.email}
                     onChange={handleChange}
                   />
@@ -167,7 +167,7 @@ const Login = () => {
                     <input
                       type={showPassword ? "text" : "password"}
                       name="password"
-                      placeholder="Password *"
+                      placeholder="كلمة المرور *"
                       value={formData.password}
                       onChange={handleChange}
                       className="w-100"
@@ -188,10 +188,10 @@ const Login = () => {
 
                 <div className="login-options">
                   <label>
-                    <input type="checkbox" /> Remember me
+                    <input type="checkbox" /> تذكرني
                   </label>
                   <a href="/forget-password" className="login-forgot-link">
-                    Forgot password?
+                    نسيت كلمة المرور؟
                   </a>
                 </div>
 
@@ -200,11 +200,11 @@ const Login = () => {
                   className="login-submit-button"
                   disabled={loading}
                 >
-                  {loading ? "Signing In..." : "Sign In & Continue"}
+                  {loading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
                 </button>
                 <p className="login-footer-text">
-                  Are you shipper?,Don't have an account?{" "}
-                  <a href="/signup">Sign up here</a>
+                  هل أنت تاجر؟ ليس لديك حساب؟{" "}
+                  <a href="/signup">سجل من هنا</a>
                 </p>
               </form>
             </div>

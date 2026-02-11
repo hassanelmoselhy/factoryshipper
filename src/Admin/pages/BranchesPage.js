@@ -3,14 +3,16 @@ import BranchesFilterBar from "../components/BranchesFilterBar";
 import BranchesHeader from "../components/BranchesHeader";
 import BranchesTable from "../components/BranchesTable";
 import AddHubModal from "../components/AddHubModal";
+import HubDetailsModal from "../components/HubDetailsModal";
 import './css/BranchesPage.css';
 import { toast } from "sonner";
 import { GetAllHubs } from "../Data/HubsService";
 
 const BranchesPage = () => {
   const [branches, setBranches] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [selectedBranch, setSelectedBranch] = useState(null);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [selectedHubId, setSelectedHubId] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const fetchBranches = async () => {
@@ -19,21 +21,17 @@ const BranchesPage = () => {
       const response = await GetAllHubs();
       console.log("response", response.Data);
 
-      const hubsData = Array.isArray(response.Data) ? response.Data : response.Data.data;
+      const hubsData = Array.isArray(response.Data) ? response.Data : response.Data?.data;
       if (!Array.isArray(hubsData)) throw new Error("بيانات الفروع غير صالحة");
 
       const formattedBranches = hubsData.map(hub => ({
+        id: hub.id,
         branch: hub.type,
         data: { name: hub.name, id: hub.id },
-        city: hub.city || "غير محدد",
-        governorate: hub.governorate || "غير محدد",
-        street: hub.street || "",
-        details: hub.details || "",
-        googleMapAddressLink: hub.googleMapAddressLink || "",
         managerName: hub.managerName || "غير متاح",
         managerPhone: hub.phoneNumber || "",
         area: `${hub.areaInSquareMeters || 0} م²`,
-        employees: hub.employeeCount || 0,
+        employees: hub.courierCount || 0,
         status: hub.hubStatus === 1 ? "نشط" : "معطل"
       }));
 
@@ -53,13 +51,19 @@ const BranchesPage = () => {
   }, []);
 
   const handleAdd = () => {
-
     fetchBranches();
-    setShowModal(false);
+    setShowAddModal(false);
   };
 
-  const openModal = (branch) => setSelectedBranch(branch);
-  const closeModal = () => setSelectedBranch(null);
+  const openDetailsModal = (branch) => {
+    setSelectedHubId(branch.id || branch.data?.id);
+    setShowDetailsModal(true);
+  };
+
+  const closeDetailsModal = () => {
+    setSelectedHubId(null);
+    setShowDetailsModal(false);
+  };
 
   const [filters, setFilters] = useState({
     branches: 'All Branches',
@@ -86,7 +90,7 @@ const BranchesPage = () => {
 
   return (
     <div className="branches-page-container">
-      <BranchesHeader onAddClick={() => setShowModal(true)} />
+      <BranchesHeader onAddClick={() => setShowAddModal(true)} />
 
       <BranchesFilterBar
         filters={filters}
@@ -96,14 +100,20 @@ const BranchesPage = () => {
 
       <BranchesTable
         branches={filteredBranches}
-        onViewDetails={openModal}
+        onViewDetails={openDetailsModal}
         loading={loading}
       />
 
       <AddHubModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        onAdd={handleAdd} 
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onAdd={handleAdd}
+      />
+
+      <HubDetailsModal
+        isOpen={showDetailsModal}
+        onClose={closeDetailsModal}
+        hubId={selectedHubId}
       />
     </div>
   );
