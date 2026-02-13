@@ -20,7 +20,6 @@ const LoadingOverlay = ({ isActive }) => {
             className="loading-logo"
           />
           {/* Circular spinner behind logo */}
-          <div className="loading-spinner"></div>
         </div>
 
         {/* Animated "Zone Express" text */}

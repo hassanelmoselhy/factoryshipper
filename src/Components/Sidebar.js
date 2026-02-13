@@ -4,6 +4,7 @@ import { FaBars, FaCube, FaAngleDoubleLeft, FaAngleDoubleRight } from "react-ico
 import useUserStore from "../Store/UserStore/userStore";
 import api from "../utils/Api";
 import "./css/Sidebar.css";
+import ZoneExpressLogo from "../Images/ZoneExpress.jpeg";
 
 const Sidebar = ({ title, subtitle, menuItems }) => {
   const [isActive, setIsActive] = useState(false);
@@ -81,7 +82,7 @@ const Sidebar = ({ title, subtitle, menuItems }) => {
               </>
             )}
           </div>
-          <FaCube className="logo-icon" />
+          <img src={ZoneExpressLogo} alt="Logo" className="logo-icon-img" />
           
         </div>
 

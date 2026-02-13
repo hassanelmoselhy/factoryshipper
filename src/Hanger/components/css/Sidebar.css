@@ -57,16 +57,17 @@
 }
 
 .nav-link:hover {
-  background: #f4f4f4;
+  background: var(--brand-bg-light);
+  color: var(--brand-primary);
 }
 
 .nav-link.active {
-  background: #000;
-  color: #fff;
+  background: var(--brand-primary);
+  color: var(--brand-white);
 }
 
 .nav-link.active svg {
-  color: #fff;
+  color: var(--brand-white);
 }
 
 .nav-link svg {

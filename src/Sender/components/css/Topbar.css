@@ -18,7 +18,7 @@
 .left-icons {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px; /* Increased gap */
   margin-left: auto;
 }
 
@@ -26,11 +26,11 @@
 .icon-button {
   display: flex;
   align-items: center;
-  gap: 5px;
-    background: linear-gradient(135deg, #0846AA 0%, #00B4D8 100%);
+  gap: 6px;
+  background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-primary-dark) 100%);
   color: white;
   border: none;
-  padding: 8px 12px;
+  padding: 8px 14px;
   border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
@@ -41,7 +41,7 @@
 }
 
 .icon-button:hover {
-  background-color: #0056b3;
+  background: var(--brand-primary-dark);
 }
 
 /* Dropdown */

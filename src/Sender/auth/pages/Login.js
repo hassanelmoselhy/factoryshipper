@@ -134,82 +134,99 @@ const Login = () => {
   return (
     <>
       <div>
-        <div className="loginPage-container">
-          <div className="login-banner">
-            <div className="login-logo">
-              <img src={ZoneExpressLogo} alt="Zone Express Logo" className="login-icon" style={{ width: '60px', height: '60px', objectFit: 'contain' }} />
-              <h1 className="login-title">Zone Express</h1>
-            </div>
-            <p className="login-slogan">
-              شريكك الموثوق في الشحن السريع والآمن
-            </p>
-          </div>
+      <div className="login-split-screen">
+        {/* Left Side: Brand Background Only */}
+        <div className="login-brand-side">
+           {/* Content removed, just background now */}
+        </div>
 
-          <div className="login-container">
-            <div className="login-form-wrapper">
-              <form onSubmit={handleSubmit}>
-                <h2 className="login-form-title">تسجيل الدخول إلى حسابك</h2>
-                <p className="login-form-subtitle">
-                  مرحباً بعودتك! يرجى إدخال بياناتك للمتابعة
+        {/* Right Side: Form + Brand Header */}
+        <div className="login-form-side">
+          <div className="form-container">
+            <div className="login-header-group">
+                {/* Logo removed as per request */}
+                <h1 className="form-brand-title">Zone Express</h1>
+                <p className="form-brand-slogan">
+                  شريكك الموثوق في الشحن السريع والآمن
                 </p>
+            </div>
 
-                {error && <p style={{ color: "red" }}>{error}</p>}
+            <form onSubmit={handleSubmit}>
+              <div className="form-header">
+                <h2 className="form-title">مرحباً بعودتك 👋</h2>
+                <p className="form-subtitle">
+                  يرجى تسجيل الدخول للمتابعة إلى لوحة التحكم
+                </p>
+              </div>
 
-                <div className="login-input-group">
+              {error && <div className="error-alert">{error}</div>}
+
+              <div className="input-group">
+                <label>البريد الإلكتروني</label>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="name@company.com"
+                  value={formData.email}
+                  onChange={handleChange}
+                  dir="ltr"
+                />
+              </div>
+
+              <div className="input-group">
+                <label>كلمة المرور</label>
+                <div className="password-wrapper">
                   <input
-                    type="email"
-                    name="email"
-                    placeholder="البريد الإلكتروني *"
-                    value={formData.email}
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    placeholder="••••••••"
+                    value={formData.password}
                     onChange={handleChange}
+                    className="w-100"
+                    dir="ltr"
                   />
-                  <div className="d-flex align-items-center position-relative">
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      name="password"
-                      placeholder="كلمة المرور *"
-                      value={formData.password}
-                      onChange={handleChange}
-                      className="w-100"
-                    ></input>
-                    <button
-                      type="button"
-                      className=" btn-link p-2 text-muted password-toggle"
-                      onClick={() => setShowPassword((prev) => !prev)}
-                    >
-                      {showPassword ? (
-                        <AiOutlineEyeInvisible size={"1.2em"} />
-                      ) : (
-                        <AiOutlineEye size={"1.2em"} />
-                      )}
-                    </button>
-                  </div>
+                  <button
+                    type="button"
+                    className="password-toggle-btn"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                  >
+                    {showPassword ? (
+                      <AiOutlineEyeInvisible size={20} />
+                    ) : (
+                      <AiOutlineEye size={20} />
+                    )}
+                  </button>
                 </div>
+              </div>
 
-                <div className="login-options">
-                  <label>
-                    <input type="checkbox" /> تذكرني
-                  </label>
-                  <a href="/forget-password" className="login-forgot-link">
-                    نسيت كلمة المرور؟
-                  </a>
-                </div>
+              <div className="form-options">
+                <label className="checkbox-label">
+                  <input type="checkbox" /> 
+                  <span>تذكرني</span>
+                </label>
+                <a href="/forget-password" className="forgot-link">
+                  نسيت كلمة المرور؟
+                </a>
+              </div>
 
-                <button
-                  type="submit"
-                  className="login-submit-button"
-                  disabled={loading}
-                >
-                  {loading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
-                </button>
-                <p className="login-footer-text">
-                  هل أنت تاجر؟ ليس لديك حساب؟{" "}
-                  <a href="/signup">سجل من هنا</a>
+              <button
+                type="submit"
+                className="submit-btn"
+                disabled={loading}
+              >
+                {loading ? "جاري التحميل..." : "تسجيل الدخول"}
+              </button>
+
+              <div className="form-footer">
+                <p>
+                  ليس لديك حساب؟ 
+                  <a href="/signup"> إنشاء حساب جديد</a>
                 </p>
-              </form>
-            </div>
+              </div>
+            </form>
           </div>
         </div>
+      </div>
       </div>
     </>
   );

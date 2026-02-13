@@ -32,8 +32,8 @@
 }
 
 .new-request-btn {
-  background-color: #0d6efd;
-  color: white;
+  background-color: var(--brand-primary);
+  color: var(--brand-white);
   border: none;
   padding: 8px 16px;
   border-radius: 8px;
@@ -46,7 +46,7 @@
 }
 
 .new-request-btn:hover {
-  background-color: #0b5ed7;
+  background-color: var(--brand-primary-dark);
 }
 
 .user-profile {
@@ -74,7 +74,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #0d6efd;
+  background-color: var(--brand-primary);
   color: white;
   display: flex;
   align-items: center;

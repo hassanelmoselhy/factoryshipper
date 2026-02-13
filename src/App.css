@@ -1,6 +1,14 @@
 :root{
   --latn: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
   --arab: "Cairo", "Noto Sans Arabic", Tahoma, sans-serif;
+
+  /* Global Brand Colors - Zone Express Red & Yellow */
+  --brand-primary: #D32F2F;       /* Main Red */
+  --brand-primary-dark: #B71C1C;  /* Darker Red for hovers */
+  --brand-secondary: #FBC02D;     /* Yellow Accent */
+  --brand-text: #1A1A1A;          /* Dark Text */
+  --brand-bg-light: #F8F9FA;      /* Light Background */
+  --brand-white: #FFFFFF;
 }
 
 html[lang="ar"] { font-family: var(--arab); direction: rtl; }

@@ -90,15 +90,16 @@ justify-content: center;
 }
 
 .sidebar-menu li .sidebar-item:hover {
-background: #f4f4f4;
+  background: var(--brand-bg-light);
+  color: var(--brand-primary);
 }
 
 .sidebar-menu li .sidebar-item.active {
-background: black;
-color: #fff;
+  background: var(--brand-primary);
+  color: var(--brand-white);
 }
 .sidebar-menu li .sidebar-item.active .icon{
-color: #fff;
+  color: var(--brand-white);
 }
 
 .sidebar-menu .icon {
